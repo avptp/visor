@@ -16,15 +16,24 @@
   ],
   "mapesBase": [
     {
-      "id": "gris-osm",
+      "id": "gris",
       "nom": {
-        "ca": "Gris (OSM)",
-        "es": "Gris (OSM)"
+        "ca": "Gris",
+        "es": "Gris"
       },
-      "url": "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-      "subdominis": "abcd",
-      "maxZoom": 20,
-      "atribucio": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>, &copy; <a href=\"https://carto.com/attributions\">CARTO</a>"
+      "tipus": "vectorial",
+      "estil": "https://tiles.openfreemap.org/styles/positron",
+      "atribucio": "<a href=\"https://openfreemap.org\" target=\"_blank\">OpenFreeMap</a> &copy; <a href=\"https://www.openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a>, dades &copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">OpenStreetMap</a>"
+    },
+    {
+      "id": "color",
+      "nom": {
+        "ca": "Color",
+        "es": "Color"
+      },
+      "tipus": "vectorial",
+      "estil": "https://tiles.openfreemap.org/styles/bright",
+      "atribucio": "<a href=\"https://openfreemap.org\" target=\"_blank\">OpenFreeMap</a> &copy; <a href=\"https://www.openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a>, dades &copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">OpenStreetMap</a>"
     },
     {
       "id": "gris-ign",
@@ -32,20 +41,8 @@
         "ca": "Gris (IGN)",
         "es": "Gris (IGN)"
       },
-      "url": "https://www.ign.es/wmts/ign-base?service=WMTS&request=GetTile&version=1.0.0&format=image/png&style=default&tilematrixset=GoogleMapsCompatible&tilematrix={z}&tilerow={y}&tilecol={x}&layer=IGNBase-gris",
-      "maxZoom": 19,
-      "atribucio": "&copy; <a href=\"https://www.ign.es\">IGN</a> (CC BY 4.0)"
-    },
-    {
-      "id": "gris-esri",
-      "nom": {
-        "ca": "Gris (Esri)",
-        "es": "Gris (Esri)"
-      },
-      "url": "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-      "etiquetes": "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}",
-      "maxNativeZoom": 16,
-      "atribucio": "&copy; <a href=\"https://www.esri.com\">Esri</a>, HERE, Garmin, &copy; OpenStreetMap"
+      "url": "https://www.ign.es/wmts/ign-base?service=WMTS&request=GetTile&version=1.0.0&style=default&tilematrixset=GoogleMapsCompatible&tilematrix={z}&tilerow={y}&tilecol={x}&format=image/jpeg&layer=IGNBase-gris",
+      "atribucio": "&copy; <a href=\"https://www.ign.es\" target=\"_blank\">IGN</a> (CC BY 4.0)"
     },
     {
       "id": "orto",
@@ -53,11 +50,21 @@
         "ca": "Ortofoto",
         "es": "Ortofoto"
       },
-      "url": "https://www.ign.es/wmts/pnoa-ma?service=WMTS&request=GetTile&version=1.0.0&format=image/jpeg&style=default&tilematrixset=GoogleMapsCompatible&tilematrix={z}&tilerow={y}&tilecol={x}&layer=OI.OrthoimageCoverage",
-      "maxZoom": 19,
-      "atribucio": "&copy; <a href=\"https://www.ign.es\">IGN</a> (CC BY 4.0) PNOA"
+      "url": "https://www.ign.es/wmts/pnoa-ma?service=WMTS&request=GetTile&version=1.0.0&style=default&tilematrixset=GoogleMapsCompatible&tilematrix={z}&tilerow={y}&tilecol={x}&format=image/jpeg&layer=OI.OrthoimageCoverage",
+      "atribucio": "&copy; <a href=\"https://www.ign.es\" target=\"_blank\">IGN</a> (CC BY 4.0) PNOA"
     }
   ],
+  "etiquetesMapa": {
+    "_comentari": "Mapes vectorials: els noms es mostren en este idioma (camp name:ca d'OpenStreetMap) i, si no n'hi ha, amb el nom oficial. «substitucions» canvia un nom concret per un altre.",
+    "idioma": "ca",
+    "substitucions": {}
+  },
+  "maplibre": {
+    "_comentari": "Llibreries per als mapes vectorials. Només es baixen si se'n tria un.",
+    "css": "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css",
+    "js": "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js",
+    "leaflet": "https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.1.3/leaflet-maplibre-gl.js"
+  },
   "limit": {
     "fitxer": "dades/limit_cv.geojson",
     "vora": "#30364B",

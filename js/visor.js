@@ -234,19 +234,89 @@
     E.mapa.on('click', () => { if (E.sel) tancaFitxa(); });
   }
 
-  function posaMapaBase(id) {
-    const m = E.cfg.mapesBase.find((x) => x.id === id) || E.cfg.mapesBase[0];
-    if (E.base) E.base.remove();
-    if (E.etiquetesBase) { E.etiquetesBase.remove(); E.etiquetesBase = null; }
+  // Carrega MapLibre i el connector per a Leaflet només la primera vegada que cal un mapa vectorial
+  let promesaMaplibre = null;
+  function carregaMaplibre() {
+    if (window.L?.maplibreGL) return Promise.resolve();
+    if (promesaMaplibre) return promesaMaplibre;
+    const c = E.cfg.maplibre || {};
+    const script = (src) => new Promise((ok, ko) => {
+      const s = document.createElement('script');
+      s.src = src; s.onload = ok; s.onerror = () => ko(new Error(src));
+      document.head.append(s);
+    });
+    if (c.css) {
+      const l = document.createElement('link');
+      l.rel = 'stylesheet'; l.href = c.css;
+      document.head.append(l);
+    }
+    promesaMaplibre = script(c.js).then(() => script(c.leaflet)).catch((e) => { promesaMaplibre = null; throw e; });
+    return promesaMaplibre;
+  }
+
+  // Noms del mapa vectorial en l'idioma configurat (name:ca), amb el nom oficial si no n'hi ha
+  function idiomaEtiquetes(gl) {
+    const cfg = E.cfg.etiquetesMapa || {};
+    const nom = ['coalesce', ['get', `name:${cfg.idioma || 'ca'}`], ['get', 'name']];
+    const subs = Object.entries(cfg.substitucions || {}).filter(([k]) => !k.startsWith('_'));
+    const text = subs.length ? ['match', nom, ...subs.flat(), nom] : nom;
+    for (const capa of gl.getStyle().layers || []) {
+      if (capa.type !== 'symbol') continue;
+      const actual = gl.getLayoutProperty(capa.id, 'text-field');
+      // Només les etiquetes amb nom (no els números de carretera)
+      if (actual && /name/.test(JSON.stringify(actual))) gl.setLayoutProperty(capa.id, 'text-field', text);
+    }
+  }
+
+  function capaRaster(m) {
     const opc = {
       maxZoom: 19, attribution: m.atribucio, crossOrigin: true,
       subdomains: m.subdominis || 'abc', detectRetina: false,
       ...(m.maxNativeZoom ? { maxNativeZoom: m.maxNativeZoom } : {}),
     };
-    E.base = L.tileLayer(m.url, opc).addTo(E.mapa);
     if (m.etiquetes) E.etiquetesBase = L.tileLayer(m.etiquetes, { ...opc, attribution: '', pane: 'etiquetesBase' }).addTo(E.mapa);
+    return L.tileLayer(m.url, opc);
+  }
+
+  let tornBase = 0;
+  async function posaMapaBase(id, desa = true) {
+    const m = E.cfg.mapesBase.find((x) => x.id === id) || E.cfg.mapesBase[0];
+    const torn = ++tornBase;   // si es canvia de mapa mentre se'n carrega un, només val l'últim
+    if (E.base) { E.base.remove(); E.base = null; }
+    if (E.etiquetesBase) { E.etiquetesBase.remove(); E.etiquetesBase = null; }
     E.idBase = m.id;
-    try { localStorage.setItem('visor-mapa', m.id); } catch { /* res */ }
+    if (desa) try { localStorage.setItem('visor-mapa', m.id); } catch { /* res */ }
+
+    let capa;
+    if (m.tipus === 'vectorial') {
+      try {
+        await carregaMaplibre();
+        if (torn !== tornBase) return;
+        capa = L.maplibreGL({ style: m.estil, interactive: false, attribution: m.atribucio });
+        capa.addTo(E.mapa);
+        const gl = capa.getMaplibreMap();
+        const aplica = () => { try { idiomaEtiquetes(gl); } catch { /* estil encara no llest */ } };
+        gl.on('style.load', aplica);
+        if (gl.isStyleLoaded()) aplica();
+      } catch {
+        if (torn !== tornBase) return;
+        capa?.remove();
+        // Sense WebGL o sense accés a les llibreries: es passa al primer mapa raster
+        const alternatiu = E.cfg.mapesBase.find((x) => x.tipus !== 'vectorial');
+        avis(t('err_mapa_vectorial'));
+        if (alternatiu) { posaMapaBase(alternatiu.id, false); pintaCapesSiCal(); }
+        return;
+      }
+    } else {
+      capa = capaRaster(m).addTo(E.mapa);
+    }
+    E.base = capa;
+  }
+
+  // Actualitza el selector de mapa de fons si ja està dibuixat
+  function pintaCapesSiCal() {
+    const r = document.querySelector(`input[name="mapa-base"][value="${CSS.escape(E.idBase)}"]`);
+    if (r) r.checked = true;
   }
 
   // Delimitació de la Comunitat: el que queda fora es cobrix amb un vel semitransparent

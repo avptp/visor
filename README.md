@@ -174,16 +174,25 @@ Els documents no s'importen: el visor enllaça directament a on estiguen (el ser
 
 ## Mapa de fons
 
-Hi ha quatre mapes de fons (`mapesBase` de `config.json`); el primer és el predeterminat i l'última tria de cada usuari es recorda:
+Hi ha quatre mapes de fons (`mapesBase` de `config.json`). El primer és el predeterminat i es recorda l'última tria de cada usuari.
 
 | Opció | Proveïdor | Notes |
 |---|---|---|
-| Gris (OSM) | CARTO Positron, sobre OpenStreetMap | Predeterminat. Gratuït per a ús no comercial dins dels límits de CARTO. |
-| Gris (IGN) | Mapa base gris de l'Institut Geogràfic Nacional | CC BY 4.0, sense límits d'ús. Molt detallat al País Valencià. |
-| Gris (Esri) | Esri World Light Gray Canvas | Arriba fins al zoom 16; per a un ús continuat Esri demana un compte d'ArcGIS. |
+| Gris | [OpenFreeMap](https://openfreemap.org), estil Positron, sobre OpenStreetMap | Predeterminat. Vectorial: els noms es mostren en valencià. Gratuït, sense clau ni límits. |
+| Color | OpenFreeMap, estil Bright | Igual que l'anterior, amb colors. |
+| Gris (IGN) | Mapa base gris de l'Institut Geogràfic Nacional | CC BY 4.0. Imatge fixa: els noms són els oficials de l'IGN. |
 | Ortofoto | PNOA de l'IGN | CC BY 4.0. |
 
-Per a canviar el predeterminat, n'hi ha prou amb moure'l al primer lloc de la llista. Cada entrada admet `url`, `subdominis`, `maxNativeZoom`, `etiquetes` (una segona capa de noms, com la d'Esri) i `atribucio`.
+Els mapes **vectorials** (`"tipus": "vectorial"`, amb un `estil` de MapLibre) es dibuixen amb [MapLibre GL](https://maplibre.org) i el connector per a Leaflet, que només es baixen si es tria un mapa d'este tipus (adreces a `maplibre`). Si el navegador no els pot mostrar, el visor avisa i passa al primer mapa raster de la llista.
+
+### Idioma dels noms del mapa
+
+A `etiquetesMapa` de `config.json`:
+
+- `idioma`: els noms es prenen del camp `name:ca` d'OpenStreetMap («Alacant», «Castelló de la Plana», «Oriola») i, si una població no en té, del nom oficial.
+- `substitucions`: per a canviar un nom concret, per exemple `{ "País Valencià": "Comunitat Valenciana" }`.
+
+Si algun nom ix malament, la correcció de fons és editar-lo a OpenStreetMap: OpenFreeMap actualitza les dades cada setmana.
 
 ### Delimitació de la Comunitat
 
@@ -192,7 +201,7 @@ Per a canviar el predeterminat, n'hi ha prou amb moure'l al primer lloc de la ll
 ## Llicències i atribucions
 
 - **Dades de transport:** NAP del Ministeri de Transports i Mobilitat Sostenible. La llicència obliga a citar «Powered by MITRAMS» amb un enllaç a https://www.transportes.gob.es. El visor ho mostra en l'atribució del mapa.
-- **Mapa de fons:** © col·laboradors d'OpenStreetMap (ODbL) i © CARTO; © IGN (CC BY 4.0, mapa base gris i PNOA); © Esri.
+- **Mapa de fons:** OpenFreeMap, © OpenMapTiles, © col·laboradors d'OpenStreetMap (ODbL); © IGN (CC BY 4.0, mapa base gris i PNOA). Llibreria MapLibre GL (BSD-3).
 - **Límit de la Comunitat:** IGN, Equipamiento Geográfico de Referencia Nacional, simplificat (paquet es-atlas).
 - **Llibreria de mapes:** Leaflet 1.9.4 (BSD-2).
 - **Codi:** llicència MIT (vegeu `LICENSE`). Les dades i els logotips tenen les llicències indicades ací damunt.
