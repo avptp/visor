@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <!-- Si s'obri com a /visor (sense barra final), les rutes relatives han d'apuntar a /visor/ -->
+  <script>(function () { var p = location.pathname; if (!/\/$|\.html?$/.test(p)) { var b = document.createElement('base'); b.href = p + '/'; document.head.appendChild(b); } })();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Visor de la xarxa de transport públic · AVPTP</title>
+  <meta name="description" content="Visor de la xarxa de transport públic de la Comunitat Valenciana de l'Associació Valenciana pel Transport Públic.">
+  <link rel="icon" href="img/avptp-isotip.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="css/visor.css">
+</head>
+<body>
+  <div id="mapa"></div>
+
+  <div class="columna">
+    <header class="capcalera">
+      <div class="franja">
+        <a class="logo" href="https://avptp.org" target="_top">
+          <img src="img/avptp-blanc.svg" alt="Associació Valenciana pel Transport Públic" width="116" height="32">
+        </a>
+        <div class="idiomes" role="group" aria-label="Idioma">
+          <button type="button" data-idioma="ca" lang="ca">Valencià</button>
+          <button type="button" data-idioma="es" lang="es">Castellano</button>
+        </div>
+      </div>
+      <div class="capcalera-cos">
+        <h1 id="titol"></h1>
+        <div class="cerca" role="search">
+          <svg class="cerca-icona" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12.6 12.6 17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="cerca" type="search" autocomplete="off" spellcheck="false"
+                 role="combobox" aria-expanded="false" aria-controls="resultats" aria-autocomplete="list">
+          <ul id="resultats" role="listbox" hidden></ul>
+        </div>
+      </div>
+    </header>
+
+    <details class="capes" id="capes">
+      <summary data-t="capes"></summary>
+      <div id="capes-cos"></div>
+    </details>
+  </div>
+
+  <aside id="fitxa" aria-labelledby="fitxa-titol" aria-hidden="true"></aside>
+
+  <div id="carregant" role="status" data-t="carregant"></div>
+  <div id="avisos" aria-live="polite"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/visor.js"></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+{
+  "titol": {
+    "ca": "Visor de la xarxa de transport públic",
+    "es": "Visor de la red de transporte público"
+  },
+  "web": "https://avptp.org",
+  "limits": [
+    [
+      37.84,
+      -1.53
+    ],
+    [
+      40.79,
+      0.69
+    ]
+  ],
+  "mapesBase": [
+    {
+      "id": "gris-osm",
+      "nom": {
+        "ca": "Gris (OSM)",
+        "es": "Gris (OSM)"
+      },
+      "url": "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+      "subdominis": "abcd",
+      "maxZoom": 20,
+      "atribucio": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>, &copy; <a href=\"https://carto.com/attributions\">CARTO</a>"
+    },
+    {
+      "id": "gris-ign",
+      "nom": {
+        "ca": "Gris (IGN)",
+        "es": "Gris (IGN)"
+      },
+      "url": "https://www.ign.es/wmts/ign-base?service=WMTS&request=GetTile&version=1.0.0&format=image/png&style=default&tilematrixset=GoogleMapsCompatible&tilematrix={z}&tilerow={y}&tilecol={x}&layer=IGNBase-gris",
+      "maxZoom": 19,
+      "atribucio": "&copy; <a href=\"https://www.ign.es\">IGN</a> (CC BY 4.0)"
+    },
+    {
+      "id": "gris-esri",
+      "nom": {
+        "ca": "Gris (Esri)",
+        "es": "Gris (Esri)"
+      },
+      "url": "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+      "etiquetes": "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}",
+      "maxNativeZoom": 16,
+      "atribucio": "&copy; <a href=\"https://www.esri.com\">Esri</a>, HERE, Garmin, &copy; OpenStreetMap"
+    },
+    {
+      "id": "orto",
+      "nom": {
+        "ca": "Ortofoto",
+        "es": "Ortofoto"
+      },
+      "url": "https://www.ign.es/wmts/pnoa-ma?service=WMTS&request=GetTile&version=1.0.0&format=image/jpeg&style=default&tilematrixset=GoogleMapsCompatible&tilematrix={z}&tilerow={y}&tilecol={x}&layer=OI.OrthoimageCoverage",
+      "maxZoom": 19,
+      "atribucio": "&copy; <a href=\"https://www.ign.es\">IGN</a> (CC BY 4.0) PNOA"
+    }
+  ],
+  "limit": {
+    "fitxer": "dades/limit_cv.geojson",
+    "vora": "#30364B",
+    "gruixVora": 1.6,
+    "opacitatVora": 0.75,
+    "colorFora": "#ffffff",
+    "opacitatFora": 0.6,
+    "_comentari": "Delimitació de la Comunitat Valenciana. La resta del mapa es cobrix amb «colorFora» a «opacitatFora» (0 = sense vel, 1 = opac)."
+  },
+  "atribucioDades": "Dades: <a href=\"https://nap.transportes.gob.es\">NAP</a>, Powered by <a href=\"https://www.transportes.gob.es\">MITRAMS</a>",
+  "grups": [
+    {
+      "id": "ferrocarril",
+      "nom": {
+        "ca": "Ferrocarril",
+        "es": "Ferrocarril"
+      },
+      "serveis": [
+        "metrovalencia",
+        "rodalies_valencia",
+        "rodalies_alacant",
+        "tram_alacant",
+        "renfe"
+      ]
+    },
+    {
+      "id": "autobus",
+      "nom": {
+        "ca": "Autobús",
+        "es": "Autobús"
+      },
+      "serveis": [
+        "bus_interurba"
+      ]
+    },
+    {
+      "id": "nodes",
+      "nom": {
+        "ca": "Nodes de transport",
+        "es": "Nodos de transporte"
+      },
+      "serveis": [
+        "nodes_bus",
+        "nodes_adif"
+      ]
+    }
+  ],
+  "serveis": {
+    "metrovalencia": {
+      "nom": {
+        "ca": "Metrovalència",
+        "es": "Metrovalencia"
+      },
+      "logo": "img/logos/metrovalencia.webp",
+      "color": "#D52B1E",
+      "gruix": 4
+    },
+    "rodalies_valencia": {
+      "nom": {
+        "ca": "Rodalies València",
+        "es": "Cercanías Valencia"
+      },
+      "logo": "img/logos/rodalies.webp",
+      "origen": [
+        {
+          "servei": "rodalies",
+          "prefix": "rodalies:valencia:"
+        }
+      ],
+      "color": "#E2001A",
+      "gruix": 4
+    },
+    "rodalies_alacant": {
+      "nom": {
+        "ca": "Rodalies Alacant-Murcia",
+        "es": "Cercanías Murcia/Alicante"
+      },
+      "logo": "img/logos/rodalies.webp",
+      "origen": [
+        {
+          "servei": "rodalies",
+          "prefix": "rodalies:alacant-murcia:"
+        }
+      ],
+      "color": "#E2001A",
+      "gruix": 4
+    },
+    "tram_alacant": {
+      "nom": {
+        "ca": "TRAM d’Alacant",
+        "es": "TRAM d’Alacant"
+      },
+      "logo": "img/logos/tram.webp",
+      "color": "#E07B00",
+      "gruix": 4
+    },
+    "renfe": {
+      "nom": {
+        "ca": "Regionals i Mitja distància",
+        "es": "Regionales y Media distancia"
+      },
+      "logo": "img/logos/renfe.webp",
+      "origen": [
+        {
+          "servei": "regionals",
+          "etiqueta": {
+            "ca": "Regional",
+            "es": "Regional"
+          },
+          "color": "#8A2B5E"
+        },
+        {
+          "servei": "md",
+          "etiqueta": {
+            "ca": "Mitja distància",
+            "es": "Media distancia"
+          },
+          "color": "#55606E"
+        }
+      ],
+      "color": "#8A2B5E",
+      "gruix": 3.5
+    },
+    "bus_interurba": {
+      "nom": {
+        "ca": "Línies interurbanes",
+        "es": "Líneas interurbanas"
+      },
+      "detall": {
+        "ca": "Agrupades per concessió",
+        "es": "Agrupadas por concesión"
+      },
+      "logo": "img/logos/gva.webp",
+      "color": "#2E7D32",
+      "gruix": 2.2
+    },
+    "nodes_bus": {
+      "nom": {
+        "ca": "Estacions d’autobusos",
+        "es": "Estaciones de autobuses"
+      },
+      "color": "#30364B"
+    },
+    "nodes_adif": {
+      "nom": {
+        "ca": "Estacions principals d’Adif",
+        "es": "Estaciones principales de Adif"
+      },
+      "color": "#30364B"
+    }
+  },
+  "_colors": "El color de cada línia ve de les dades (scripts/serveis.json → geometries_propies.linies). Per a provar-ne un sense regenerar-les, afegiu-lo a «colorsLinies», p. ex. {\"metrovalencia:2\": \"#E4007C\"}.",
+  "colorsLinies": {},
+  "productesRenfe": {
+    "REGIONAL": "Regional",
+    "REG.EXP.": "Regional Exprés",
+    "MD": "Media Distancia",
+    "PROXIMDAD": "Proximidad",
+    "AVE INT": "AVE Internacional",
+    "AVANT EXP": "Avant Exprés"
+  },
+  "fitxers": [
+    "dades/bus_interurba.geojson",
+    "dades/metrovalencia.geojson",
+    "dades/rodalies.geojson",
+    "dades/tram_alacant.geojson",
+    "dades/regionals.geojson",
+    "dades/md.geojson",
+    "dades/estacions.geojson",
+    "dades/nodes.geojson"
+  ],
+  "metadades": "dades/metadades.json",
+  "documentacio": [
+    "dades/documentacio.csv"
+  ],
+  "etiquetesCamps": {
+    "ca": {
+      "web": "Web"
+    },
+    "es": {
+      "web": "Web"
+    }
+  }
+}
