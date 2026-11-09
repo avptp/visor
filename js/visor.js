@@ -1,3 +1,4 @@
+
 /* Visor de la xarxa de transport públic · AVPTP
  *
  * Llig dades/config.json, els GeoJSON que s'hi indiquen i la documentació,
@@ -5,6 +6,11 @@
  *   linia      línia de ferrocarril (servei, codi, color, parades)
  *   concessio  concessió d'autobús interurbà (servei, linies_bus)
  *   node       estació principal d'autobusos o d'Adif (subtipus, estacions)
+ * Camps opcionals de les línies i concessions:
+ *   estat      «servei» (per defecte) o «projecte»: les línies en projecte es dibuixen discontínues
+ *   complet    recorregut sencer (MultiLineString) quan la geometria està retallada al límit de la
+ *              Comunitat: es mostra difuminat en seleccionar la línia
+ *   ramals     [{nom, parades}] per a les línies amb ramals (es mostren davall del recorregut)
  * Les estacions (tipus «estacio») no es poden seleccionar: només es mostren com a
  * parades de la línia seleccionada i al seu recorregut.
  */
@@ -18,11 +24,14 @@
     objectes: new Map(), alies: new Map(), estacions: new Map(), docs: new Map(), index: [],
     perServei: new Map(), regles: [],
     actius: new Set(), ocults: new Set(), desplegats: new Set(),
-    sel: null, halo: null, parades: null, radi: 0,
+    sel: null, halo: null, parades: null, complet: null, radi: 0,
+    estatsOcults: new Set(),
   };
   const INTERNES = new Set(['id', 'id_avptp', 'tipus', 'servei', 'serveis', 'nom', 'nom_ca', 'nom_es', 'codi', 'color',
     'parades', 'linies', 'sistema', 'sistema_es', 'subtipus', 'estacions', 'nodes', 'productes', 'concessions',
-    'linies_bus', 'n_parades', 'web']);
+    'linies_bus', 'linies_bus_es', 'n_parades', 'web', 'estat', 'complet', 'ramals', 'corredor', 'fora_cv']);
+  const ESTATS = ['servei', 'projecte'];
+  const estatDe = (o) => (o.f.properties.estat === 'projecte' ? 'projecte' : 'servei');
 
   const $ = (s, el = document) => el.querySelector(s);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
@@ -125,7 +134,8 @@
 
   function textTipus(o) {
     if (o.tipus === 'node') return t(o.f.properties.subtipus === 'bus' ? 'tipus_node_bus' : 'tipus_node_ferrocarril');
-    return t(`tipus_${o.tipus}`);
+    const propi = tx(E.cfg.serveis[o.servei]?.textTipus);
+    return propi || t(`tipus_${o.tipus}`);
   }
 
   function urlSegura(u) {
@@ -352,7 +362,11 @@
 
   function estilLinia(o, hover = false) {
     const g = Number(E.cfg.serveis[o.servei]?.gruix) || 3;
-    return { color: colorObjecte(o), weight: hover ? g + 2.5 : g, opacity: o.tipus === 'concessio' ? 0.85 : 0.95, lineCap: 'round', lineJoin: 'round' };
+    const projecte = estatDe(o) === 'projecte';
+    return {
+      color: colorObjecte(o), weight: hover ? g + 2.5 : g, opacity: o.tipus === 'concessio' ? 0.85 : 0.95,
+      lineCap: projecte ? 'butt' : 'round', lineJoin: 'round', dashArray: projecte ? `${g * 2.6} ${g * 1.6}` : null,
+    };
   }
 
   function estilParada(color) {
@@ -454,7 +468,7 @@
 
   /* ---------- Visibilitat i ordre ---------- */
 
-  const esVisible = (o) => E.actius.has(o.servei) && !E.ocults.has(o.id);
+  const esVisible = (o) => E.actius.has(o.servei) && !E.ocults.has(o.id) && (o.tipus === 'node' || !E.estatsOcults.has(estatDe(o)));
 
   function aplicaVisibilitat() {
     let afegit = false;
@@ -500,6 +514,19 @@
     if (marques.length) E.parades = L.layerGroup(marques).addTo(E.mapa);
   }
 
+  // Recorregut sencer d'una línia retallada al límit de la Comunitat (p. ex. les línies estatals)
+  function mostraComplet(o) {
+    if (E.complet) { E.complet.remove(); E.complet = null; }
+    const g = o?.f.properties.complet;
+    if (!g || !['LineString', 'MultiLineString'].includes(g.type)) return;
+    const gr = Number(E.cfg.serveis[o.servei]?.gruix) || 3;
+    E.complet = L.polyline(L.GeoJSON.coordsToLatLngs(g.coordinates, g.type === 'LineString' ? 0 : 1), {
+      renderer: E.renderer, interactive: false, color: colorObjecte(o), weight: gr, opacity: 0.35,
+      lineCap: 'butt', lineJoin: 'round', dashArray: estatDe(o) === 'projecte' ? `${gr * 2.6} ${gr * 1.6}` : null,
+    }).addTo(E.mapa);
+    E.complet.bringToBack();
+  }
+
   function dibuixaHalo(o) {
     if (E.halo) { E.halo.remove(); E.halo = null; }
     document.querySelectorAll('.node-marca.seleccionat').forEach((el) => el.classList.remove('seleccionat'));
@@ -532,12 +559,16 @@
         for (const x of E.perServei.get(o.servei) || []) if (x !== o) E.ocults.add(x.id);
       }
       E.ocults.delete(o.id);
+      if (o.tipus !== 'node') E.estatsOcults.delete(estatDe(o));
       aplicaVisibilitat();
       actualitzaChecks();
+      const ce = $(`#capes-cos input[data-estat="${estatDe(o)}"]`);
+      if (ce) ce.checked = true;
     }
 
     if (E.sel && E.sel !== o && E.sel.tipus !== 'node') E.sel.capa.setStyle(estilLinia(E.sel, false));
     E.sel = o;
+    mostraComplet(o);
     mostraParades(o);
     dibuixaHalo(o);
     pintaFitxa(o);
@@ -553,6 +584,7 @@
     fitxa.setAttribute('aria-hidden', 'true');
     if (E.halo) { E.halo.remove(); E.halo = null; }
     if (E.parades) { E.parades.remove(); E.parades = null; }
+    if (E.complet) { E.complet.remove(); E.complet = null; }
     document.querySelectorAll('.node-marca.seleccionat').forEach((el) => el.classList.remove('seleccionat'));
     E.sel = null;
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
@@ -577,6 +609,17 @@
     if (o.tipus === 'node') { centra(o.capa.getLatLng(), 15); return; }
     const m = marges();
     E.mapa.fitBounds(o.capa.getBounds(), { paddingTopLeft: m.tl, paddingBottomRight: m.br, maxZoom: 15 });
+  }
+
+  function etiquetaEstat(o) {
+    if (o.tipus === 'node') return '';
+    const e = estatDe(o);
+    return `<span class="estat estat-${e}">${esc(t(`estat_${e}`))}</span>`;
+  }
+
+  function codiLlegenda(o) {
+    const p = o.f.properties;
+    return o.tipus === 'concessio' && p.codi ? `[${p.codi}] ` : '';
   }
 
   // En triar una parada del recorregut, el mapa s'hi centra i en mostra el nom
@@ -606,6 +649,10 @@
     else if (o.tipus === 'concessio') etiqueta = nomServei(o.servei);
 
     let cos = '';
+    const sc = E.cfg.serveis[o.servei] || {};
+    if (sc.logoFitxa) {
+      cos += `<section class="marca-servei"><img src="${esc(sc.logoFitxa)}" alt="${esc(tx(sc.textLogoFitxa) || nomServei(o.servei))}">${sc.textFitxa ? `<p>${esc(tx(sc.textFitxa))}</p>` : ''}</section>`;
+    }
     if (o.tipus === 'linia') cos += seccioRecorregut(o);
     if (o.tipus === 'concessio') cos += seccioConcessio(o);
     if (o.tipus === 'node') cos += seccioNode(o);
@@ -617,7 +664,7 @@
         <div class="fitxa-cap-fila">
           ${distintiu(o)}
           <div>
-            <p class="fitxa-tipus">${esc(textTipus(o))}${etiqueta ? `<span class="fitxa-sistema">${esc(etiqueta)}</span>` : ''}</p>
+            <p class="fitxa-tipus">${esc(textTipus(o))}${etiqueta ? `<span class="fitxa-sistema">${esc(etiqueta)}</span>` : ''}${etiquetaEstat(o)}</p>
             <h2 id="fitxa-titol" tabindex="-1">${esc(nomDe(p))}</h2>
           </div>
         </div>
@@ -641,19 +688,26 @@
   function seccioRecorregut(o) {
     const parades = orientaParades(o, (o.f.properties.parades || []).map((id) => E.estacions.get(id)).filter(Boolean));
     if (!parades.length) return `<section><h3>${esc(t('recorregut'))}</h3><p class="buit">${esc(t('sense_parades'))}</p></section>`;
-    const items = parades.map((e) => `<li><button type="button" class="boto-text" data-parada="${esc(e.id)}">${esc(nomDe(e.f.properties))}</button></li>`).join('');
+    const item = (e) => `<li class="${e.f.properties.fora_cv ? 'fora-cv' : ''}"><button type="button" class="boto-text" data-parada="${esc(e.id)}">${esc(nomDe(e.f.properties))}</button></li>`;
+    let ramals = '';
+    for (const r of o.f.properties.ramals || []) {
+      const ps = (r.parades || []).map((id) => E.estacions.get(id)).filter(Boolean);
+      if (ps.length) ramals += `<h4>${esc(t('ramal', { s: r.nom_es && E.idioma === 'es' ? r.nom_es : r.nom }))}</h4><ol class="recorregut">${ps.map(item).join('')}</ol>`;
+    }
+    const nota = parades.some((e) => e.f.properties.fora_cv) ? `<p class="nota-fora">${esc(t('parades_fora'))}</p>` : '';
     return `<section><h3>${esc(t('recorregut'))} <span class="n">${esc(t('parades_n', { n: parades.length }))}</span></h3>
-      <ol class="recorregut">${items}</ol></section>`;
+      <ol class="recorregut">${parades.map(item).join('')}</ol>${ramals}${nota}</section>`;
   }
 
   function seccioConcessio(o) {
     const p = o.f.properties;
     const c = colorObjecte(o);
-    const linies = (p.linies_bus || []).map((l) => {
+    const llista = (E.idioma === 'es' && p.linies_bus_es) || p.linies_bus || [];
+    const linies = llista.map((l) => {
       const [codi, ...resta] = String(l).split(' ');
       return `<li><span class="bala" style="--c:${esc(c)};--ct:${colorText(c)}">${esc(codi)}</span><span>${esc(resta.join(' '))}</span></li>`;
     }).join('');
-    let html = linies ? `<section><h3>${esc(t('linies_concessio'))} <span class="n">${p.linies_bus.length}</span></h3>
+    let html = linies ? `<section><h3>${esc(tx(E.cfg.serveis[o.servei]?.textLinies) || t('linies_concessio'))} <span class="n">${llista.length}</span></h3>
       <ul class="llista-simple llista-bus">${linies}</ul></section>` : '';
     const extra = [];
     if (p.n_parades) extra.push(`<p class="buit">${esc(t('parades_n', { n: p.n_parades }))}</p>`);
@@ -765,6 +819,7 @@
   function construeixIndex() {
     E.index = [...E.objectes.values()].map((o) => {
       const p = o.f.properties;
+      // (el codi de la concessió ja forma part del text de cerca)
       const extra = [p.codi, sistemaDe(p), tx(o.origen?.etiqueta), nomServei(o.servei), p.nom, p.nom_es, E.editor ? p.id_avptp : ''].filter(Boolean).join(' ');
       return { o, n: norm(nomDe(p)), t: norm(`${nomDe(p)} ${extra}`) };
     });
@@ -850,7 +905,8 @@
     const n = (E.perServei.get(s) || []).length;
     if (!n) return t('pendent');
     if (s.startsWith('nodes_')) return t('nodes_n', { n });
-    if (s === 'bus_interurba') return t('concessions_n', { n });
+    if (E.cfg.serveis[s]?.recompte) return t(E.cfg.serveis[s].recompte, { n });
+    if ((E.perServei.get(s) || [])[0]?.tipus === 'concessio') return t('concessions_n', { n });
     return t('linies_n', { n });
   }
 
@@ -858,7 +914,14 @@
     const p = o.f.properties;
     const marca = o.tipus === 'node' ? distintiu(o) : o.tipus === 'concessio'
       ? `<span class="punt-linia" style="--c:${esc(colorObjecte(o))}" aria-hidden="true"></span>` : distintiu(o);
-    return `<li><label><input type="checkbox" data-linia="${esc(o.id)}">${marca}<span class="nom-linia">${esc(nomDe(p))}</span></label></li>`;
+    const proj = estatDe(o) === 'projecte' && !serveiEnProjecte(o.servei) ? ` <span class="estat estat-projecte petit">${esc(t('estat_projecte'))}</span>` : '';
+    return `<li><label><input type="checkbox" data-linia="${esc(o.id)}">${marca}<span class="nom-linia">${esc(codiLlegenda(o) + nomDe(p))}${proj}</span></label></li>`;
+  }
+
+  // Un servei amb totes les línies en projecte porta l'etiqueta al nom, no a cada línia
+  function serveiEnProjecte(s) {
+    const ls = (E.perServei.get(s) || []).filter((o) => o.tipus !== 'node');
+    return ls.length > 0 && ls.every((o) => estatDe(o) === 'projecte');
   }
 
   function llistaLinies(s) {
@@ -867,7 +930,7 @@
     if (origens.length < 2) return `<ul>${ls.map(itemLinia).join('')}</ul>`;
     // Servei que n'agrupa diversos (Renfe): un subapartat per a cadascun
     return origens.map((r) => {
-      const sub = ls.filter((o) => o.origen?.servei === r.servei);
+      const sub = ls.filter((o) => o.origen?.servei === r.servei && (o.origen?.prefix || '') === (r.prefix || ''));
       return sub.length ? `<p class="subgrup">${esc(tx(r.etiqueta))}</p><ul>${sub.map(itemLinia).join('')}</ul>` : '';
     }).join('');
   }
@@ -880,7 +943,7 @@
       return `<li class="servei ${te ? '' : 'buida'}" data-servei="${esc(s)}">
         <div class="fila-servei">
           <label><input type="checkbox" data-servei="${esc(s)}" ${te ? '' : 'disabled'}>
-            ${iconaServei(s)}<span class="nom-servei">${esc(nomServei(s))}${detall ? `<small>${esc(detall)}</small>` : ''}</span></label>
+            ${iconaServei(s)}<span class="nom-servei">${esc(nomServei(s))}${serveiEnProjecte(s) ? ` <span class="estat estat-projecte petit">${esc(t('estat_projecte'))}</span>` : ''}${detall ? `<small>${esc(detall)}</small>` : ''}</span></label>
           ${te ? `<button type="button" class="desplega" data-desplega="${esc(s)}" aria-expanded="${obert}" aria-controls="linies-${esc(s)}"
               aria-label="${esc(t('mostra_linies', { s: nomServei(s) }))}"><span class="recompte">${esc(recompte(s))}</span>${SVG_FLETXA}</button>`
             : `<span class="recompte">${esc(recompte(s))}</span>`}
@@ -891,13 +954,17 @@
 
     const mapes = E.cfg.mapesBase.map((m) => `<label><input type="radio" name="mapa-base" value="${esc(m.id)}" ${m.id === E.idBase ? 'checked' : ''}>${esc(tx(m.nom))}</label>`).join('');
 
-    let credits = `<p>${esc(t('font_dades'))}</p>`;
+    const fonts = (E.cfg.fonts || []).map((f) => (f.url ? `<a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(tx(f.nom))}</a>` : esc(tx(f.nom)))).join(' · ');
+    let credits = fonts ? `<p>${esc(t('fonts'))}: ${fonts}</p>` : '';
     if (E.meta?.generat) {
       const [a, m, d] = E.meta.generat.slice(0, 10).split('-');
       credits = `<p>${esc(t('dades_actualitzades', { data: `${d}/${m}/${a}` }))}</p>` + credits;
     }
+    const estats = ESTATS.map((e) => `<label><input type="checkbox" data-estat="${e}" ${E.estatsOcults.has(e) ? '' : 'checked'}>
+      <span class="mostra-estat mostra-${e}" aria-hidden="true"></span>${esc(t(`estat_${e}`))}</label>`).join('');
 
     $('#capes-cos').innerHTML = `${grups}
+      <div class="bloc"><h3>${esc(t('estat'))}</h3><div class="estats">${estats}</div></div>
       <div class="bloc"><h3>${esc(t('mapa_fons'))}</h3><div class="mapes-base" role="radiogroup" aria-label="${esc(t('mapa_fons'))}">${mapes}</div></div>
       <div class="credits">${credits}</div>`;
     actualitzaChecks();
@@ -945,7 +1012,8 @@
     const cos = $('#capes-cos');
     cos.addEventListener('change', (e) => {
       const el = e.target;
-      if (el.dataset.servei) canviaServei(el.dataset.servei, el.checked);
+      if (el.dataset.estat) { if (el.checked) E.estatsOcults.delete(el.dataset.estat); else E.estatsOcults.add(el.dataset.estat); }
+      else if (el.dataset.servei) canviaServei(el.dataset.servei, el.checked);
       else if (el.dataset.linia) canviaLinia(el.dataset.linia, el.checked);
       else if (el.name === 'mapa-base') { posaMapaBase(el.value); return; }
       else return;
@@ -1035,3 +1103,4 @@
 
   inici();
 })();
+

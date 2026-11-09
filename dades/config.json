@@ -74,7 +74,7 @@
     "opacitatFora": 0.6,
     "_comentari": "Delimitació de la Comunitat Valenciana. La resta del mapa es cobrix amb «colorFora» a «opacitatFora» (0 = sense vel, 1 = opac)."
   },
-  "atribucioDades": "Dades: <a href=\"https://nap.transportes.gob.es\">NAP</a>, Powered by <a href=\"https://www.transportes.gob.es\">MITRAMS</a>",
+  "atribucioDades": "Dades: <a href=\"https://www.transportes.gob.es\" target=\"_blank\">MITMS</a> · <a href=\"https://www.gva.es\" target=\"_blank\">GVA</a> · ATMV · <a href=\"https://icv.gva.es\" target=\"_blank\">ICV</a> · Powered by <a href=\"https://www.transportes.gob.es\" target=\"_blank\">MITRAMS</a>",
   "grups": [
     {
       "id": "ferrocarril",
@@ -97,7 +97,10 @@
         "es": "Autobús"
       },
       "serveis": [
-        "bus_interurba"
+        "tram_castello",
+        "atmv",
+        "bus_interurba",
+        "estatals"
       ]
     },
     {
@@ -127,7 +130,7 @@
         "ca": "Rodalies València",
         "es": "Cercanías Valencia"
       },
-      "logo": "img/logos/rodalies.webp",
+      "logo": "img/logos/rodalies_valencia.webp",
       "origen": [
         {
           "servei": "rodalies",
@@ -142,7 +145,7 @@
         "ca": "Rodalies Alacant-Murcia",
         "es": "Cercanías Murcia/Alicante"
       },
-      "logo": "img/logos/rodalies.webp",
+      "logo": "img/logos/rodalies_alacant.webp",
       "origen": [
         {
           "servei": "rodalies",
@@ -157,7 +160,7 @@
         "ca": "TRAM d’Alacant",
         "es": "TRAM d’Alacant"
       },
-      "logo": "img/logos/tram.webp",
+      "logo": "img/logos/tram_alacant.webp",
       "color": "#E07B00",
       "gruix": 4
     },
@@ -194,12 +197,87 @@
         "es": "Líneas interurbanas"
       },
       "detall": {
-        "ca": "Agrupades per concessió",
-        "es": "Agrupadas por concesión"
+        "ca": "Concessions de la Generalitat Valenciana",
+        "es": "Concesiones de la Generalitat Valenciana"
       },
-      "logo": "img/logos/gva.webp",
+      "logo": "img/logos/bus_interurba.webp",
       "color": "#2E7D32",
       "gruix": 2.2
+    },
+    "atmv": {
+      "nom": {
+        "ca": "Metrobús (ATMV)",
+        "es": "Metrobús (ATMV)"
+      },
+      "detall": {
+        "ca": "Concessions de l’àrea metropolitana de València",
+        "es": "Concesiones del área metropolitana de Valencia"
+      },
+      "color": "#E8870E",
+      "gruix": 2.2,
+      "logo": "img/logos/atmv.webp",
+      "logoFitxa": "img/logos/metrobus.webp",
+      "textLogoFitxa": {
+        "ca": "Metrobús",
+        "es": "Metrobús"
+      }
+    },
+    "estatals": {
+      "nom": {
+        "ca": "Línies estatals",
+        "es": "Líneas estatales"
+      },
+      "detall": {
+        "ca": "Nou mapa concessional del Ministeri, per corredors",
+        "es": "Nuevo mapa concesional del Ministerio, por corredores"
+      },
+      "logo": "img/logos/estatals.webp",
+      "logoFitxa": "img/logos/busES.webp",
+      "textLogoFitxa": {
+        "ca": "bus.es, Autobusos d’Espanya",
+        "es": "bus.es, Autobuses de España"
+      },
+      "textFitxa": {
+        "ca": "Corredor del nou mapa concessional d’autobusos de l’Estat. Fora de la Comunitat Valenciana els recorreguts es mostren difuminats.",
+        "es": "Corredor del nuevo mapa concesional de autobuses del Estado. Fuera de la Comunitat Valenciana los recorridos se muestran difuminados."
+      },
+      "origen": [
+        {
+          "servei": "estatals",
+          "prefix": "estatals:vam",
+          "color": "#E8412C"
+        },
+        {
+          "servei": "estatals",
+          "prefix": "estatals:tcb",
+          "color": "#E6A100"
+        },
+        {
+          "servei": "estatals",
+          "prefix": "estatals:smb",
+          "color": "#A3195B"
+        }
+      ],
+      "color": "#E8412C",
+      "gruix": 3,
+      "recompte": "corredors_n",
+      "textTipus": {
+        "ca": "Corredor estatal",
+        "es": "Corredor estatal"
+      },
+      "textLinies": {
+        "ca": "Rutes del corredor",
+        "es": "Rutas del corredor"
+      }
+    },
+    "tram_castello": {
+      "nom": {
+        "ca": "TRAM de Castelló",
+        "es": "TRAM de Castellón"
+      },
+      "logo": "img/logos/tram_castello.svg",
+      "color": "#008102",
+      "gruix": 4
     },
     "nodes_bus": {
       "nom": {
@@ -228,6 +306,9 @@
   },
   "fitxers": [
     "dades/bus_interurba.geojson",
+    "dades/atmv.geojson",
+    "dades/estatals.geojson",
+    "dades/tram_castello.geojson",
     "dades/metrovalencia.geojson",
     "dades/rodalies.geojson",
     "dades/tram_alacant.geojson",
@@ -242,10 +323,41 @@
   ],
   "etiquetesCamps": {
     "ca": {
-      "web": "Web"
+      "web": "Web",
+      "longitud": "Longitud del recorregut"
     },
     "es": {
-      "web": "Web"
+      "web": "Web",
+      "longitud": "Longitud del recorrido"
     }
-  }
+  },
+  "fonts": [
+    {
+      "nom": {
+        "ca": "Ministeri de Transports i Mobilitat Sostenible",
+        "es": "Ministerio de Transportes y Movilidad Sostenible"
+      },
+      "url": "https://www.transportes.gob.es"
+    },
+    {
+      "nom": {
+        "ca": "Generalitat Valenciana",
+        "es": "Generalitat Valenciana"
+      },
+      "url": "https://www.gva.es"
+    },
+    {
+      "nom": {
+        "ca": "Autoritat de Transport Metropolità de València",
+        "es": "Autoridad de Transporte Metropolitano de Valencia"
+      }
+    },
+    {
+      "nom": {
+        "ca": "Institut Cartogràfic Valencià",
+        "es": "Instituto Cartográfico Valenciano"
+      },
+      "url": "https://icv.gva.es"
+    }
+  ]
 }

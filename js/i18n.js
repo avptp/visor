@@ -1,3 +1,4 @@
+
 /* Textos de la interfície. Per a afegir-ne un, cal posar-lo en els dos idiomes. */
 window.VISOR_TEXTOS = {
   ca: {
@@ -10,6 +11,7 @@ window.VISOR_TEXTOS = {
     pendent: 'Pendent de dades',
     linies_n: ['{n} línia', '{n} línies'],
     concessions_n: ['{n} concessió', '{n} concessions'],
+    corredors_n: ['{n} corredor', '{n} corredors'],
     nodes_n: ['{n} estació', '{n} estacions'],
     parades_n: ['{n} parada', '{n} parades'],
     carregant: 'Carregant la xarxa…',
@@ -35,8 +37,13 @@ window.VISOR_TEXTOS = {
     identificador: 'Identificador per a documentacio.csv',
     copia: 'Copia',
     copiat: 'Copiat',
-    dades_actualitzades: 'Dades del NAP actualitzades el {data}.',
-    font_dades: 'Font: Punt d’Accés Nacional de Transport Multimodal (Ministeri de Transports i Mobilitat Sostenible).',
+    dades_actualitzades: 'Dades actualitzades el {data}.',
+    fonts: 'Fonts',
+    estat: 'Estat',
+    estat_servei: 'En servici',
+    estat_projecte: 'En projecte',
+    ramal: 'Ramal de {s}',
+    parades_fora: 'Les parades en gris són fora de la Comunitat Valenciana.',
     tanca_avis: 'Tanca l’avís',
     err_mapa_vectorial: 'Este navegador no pot mostrar el mapa vectorial. S’ha canviat a un altre mapa de fons.',
     err_fitxer: 'No s’ha pogut carregar {f} (error {e}). Revisa la llista «fitxers» de dades/config.json.',
@@ -56,6 +63,7 @@ window.VISOR_TEXTOS = {
     pendent: 'Pendiente de datos',
     linies_n: ['{n} línea', '{n} líneas'],
     concessions_n: ['{n} concesión', '{n} concesiones'],
+    corredors_n: ['{n} corredor', '{n} corredores'],
     nodes_n: ['{n} estación', '{n} estaciones'],
     parades_n: ['{n} parada', '{n} paradas'],
     carregant: 'Cargando la red…',
@@ -81,8 +89,13 @@ window.VISOR_TEXTOS = {
     identificador: 'Identificador para documentacio.csv',
     copia: 'Copiar',
     copiat: 'Copiado',
-    dades_actualitzades: 'Datos del NAP actualizados el {data}.',
-    font_dades: 'Fuente: Punto de Acceso Nacional de Transporte Multimodal (Ministerio de Transportes y Movilidad Sostenible).',
+    dades_actualitzades: 'Datos actualizados el {data}.',
+    fonts: 'Fuentes',
+    estat: 'Estado',
+    estat_servei: 'En servicio',
+    estat_projecte: 'En proyecto',
+    ramal: 'Ramal de {s}',
+    parades_fora: 'Las paradas en gris están fuera de la Comunitat Valenciana.',
     tanca_avis: 'Cerrar el aviso',
     err_mapa_vectorial: 'Este navegador no puede mostrar el mapa vectorial. Se ha cambiado a otro mapa de fondo.',
     err_fitxer: 'No se ha podido cargar {f} (error {e}). Revisa la lista «fitxers» de dades/config.json.',
@@ -93,3 +106,4 @@ window.VISOR_TEXTOS = {
     err_file: 'El visor no puede leer los datos abierto directamente desde el disco. Ábrelo desde un servidor web o, para probarlo, ejecuta «python3 -m http.server» dentro de la carpeta del visor y ve a http://localhost:8000.',
   },
 };
+

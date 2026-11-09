@@ -9,7 +9,7 @@ El visor és estàtic: no té base de dades ni processos automàtics. Les dades 
 Les carpetes segueixen l'estructura del repositori `avptp/face`, de manera que es poden copiar directament a l'arrel:
 
 ```
-public/visor/                 ← el visor (Next.js el servix tal qual)
+                 ← el visor (Next.js el servix tal qual)
   index.html
   css/visor.css               colors corporatius i aparença
   js/visor.js                 funcionament
@@ -19,8 +19,8 @@ public/visor/                 ← el visor (Next.js el servix tal qual)
   dades/*.geojson             capes generades (no s'editen a mà)
   dades/metadades.json        data i origen de les dades
   dades/documentacio.csv      documentació associada a cada element
-scripts/visor/                ← preparació de les dades (no es publica)
-  actualitza_dades.py         genera public/visor/dades a partir dels GTFS del NAP
+scripts/                ← preparació de les dades (no es publica)
+  actualitza_dades.py         genera dades a partir dels GTFS del NAP
   serveis.json                quines rutes s'agafen i com s'agrupen
   fonts/AVPTP_xarxa.gpkg      traçats propis de l'AVPTP
   limit_cv.geojson            límit de la Comunitat (per a retallar les línies que ixen)
@@ -90,13 +90,13 @@ i obriu `http://localhost:8000`. Obrir `index.html` amb doble clic no funciona p
 2. Instal·leu les dependències (només la primera vegada):
 
    ```
-   pip install -r scripts/visor/requirements.txt
+   pip install -r scripts/requirements.txt
    ```
 
 3. Executeu el procés indicant la carpeta de les descàrregues:
 
    ```
-   python3 scripts/visor/actualitza_dades.py --carpeta-gtfs ~/Baixades/nap
+   python3 scripts/actualitza_dades.py --carpeta-gtfs ~/Baixades/nap
    ```
 
    Per a cada font s'agafa el fitxer més recent de la carpeta. El nom del fitxer ha de coincidir amb el patró `fitxer` de `serveis.json`. Si algun no es troba, es pot indicar a mà:
@@ -105,7 +105,7 @@ i obriu `http://localhost:8000`. Obrir `index.html` amb doble clic no funciona p
    --local tram_alacant=~/Baixades/fitxer_del_tram.zip
    ```
 
-4. Reviseu el visor en local i pugeu els canvis de `public/visor/dades`.
+4. Reviseu el visor en local i pugeu els canvis de `dades`.
 
 Si falta el GTFS d'una font, el procés ho avisa. Els servicis que en depenen queden buits o es construeixen només amb els traçats propis.
 
@@ -131,17 +131,17 @@ Per a afegir o corregir traçats, n'hi ha prou amb editar el GeoPackage (per exe
 | TRAM de Castelló | `fonts/tram_castello.geojson` | línia actual (Universitat Jaume I – el Grau) |
 | Nodes | GTFS 1526 i Renfe | estacions d'autobusos i estacions principals d'Adif definides a `serveis.json` |
 
-Les regles (quines línies, quines parades identifiquen cada regional, quins nodes…) són a `scripts/visor/serveis.json`.
+Les regles (quines línies, quines parades identifiquen cada regional, quins nodes…) són a `scripts/serveis.json`.
 
 ### Capes i correccions que no venen del NAP
 
 Després de `actualitza_dades.py` s'ha d'executar sempre:
 
 ```
-python3 scripts/visor/completa_dades.py
+python3 scripts/completa_dades.py
 ```
 
-No necessita cap llibreria. Copia les capes estàtiques (`estatals`, `atmv`, `tram_castello`), posa el límit de la Comunitat i torna a aplicar les correccions de `scripts/visor/fonts/`:
+No necessita cap llibreria. Copia les capes estàtiques (`estatals`, `atmv`, `tram_castello`), posa el límit de la Comunitat i torna a aplicar les correccions de `scripts/fonts/`:
 
 | Fitxer | Què fa |
 |---|---|
@@ -157,11 +157,11 @@ Les línies retallades al límit de la Comunitat poden portar `complet` (el reco
 
 ### Visor autònom
 
-`python3 scripts/visor/fes_autonom.py` genera `visor-avptp-autonom.html`, un sol fitxer amb tot dins que es pot obrir sense servidor.
+`python3 scripts/fes_autonom.py` genera `visor-avptp-autonom.html`, un sol fitxer amb tot dins que es pot obrir sense servidor.
 
 ## Documentació
 
-`public/visor/dades/documentacio.csv` té una fila per document, amb separador `;` i codificació UTF-8. A Excel, cal guardar-lo amb *Desa com a → CSV UTF-8*.
+`dades/documentacio.csv` té una fila per document, amb separador `;` i codificació UTF-8. A Excel, cal guardar-lo amb *Desa com a → CSV UTF-8*.
 
 | Columna | Contingut |
 |---|---|
