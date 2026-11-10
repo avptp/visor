@@ -98,7 +98,7 @@
       },
       "serveis": [
         "tram_castello",
-        "emt_valencia",
+        "urbans",
         "atmv",
         "bus_interurba",
         "estatals"
@@ -205,17 +205,19 @@
       "color": "#2E7D32",
       "gruix": 2.2
     },
-    "emt_valencia": {
+    "urbans": {
       "nom": {
-        "ca": "Autobús urbà",
-        "es": "Autobús urbano"
+        "ca": "Línies urbanes",
+        "es": "Líneas urbanas"
       },
       "detall": {
-        "ca": "EMT València, totes les línies juntes",
-        "es": "EMT Valencia, todas las líneas juntas"
+        "ca": "Xarxes municipals agrupades",
+        "es": "Redes municipales agrupadas"
       },
+      "logo": "img/logos/urbans.svg",
       "color": "#D7141A",
       "gruix": 2,
+      "codiLlegenda": false,
       "textTipus": {
         "ca": "Xarxa urbana",
         "es": "Red urbana"
@@ -250,19 +252,10 @@
         "es": "Líneas estatales"
       },
       "detall": {
-        "ca": "Nou mapa concessional del Ministeri, per corredors",
-        "es": "Nuevo mapa concesional del Ministerio, por corredores"
+        "ca": "Nou mapa concessional",
+        "es": "Nuevo mapa concesional"
       },
       "logo": "img/logos/estatals.webp",
-      "logoFitxa": "img/logos/busES.webp",
-      "textLogoFitxa": {
-        "ca": "bus.es, Autobusos d’Espanya",
-        "es": "bus.es, Autobuses de España"
-      },
-      "textFitxa": {
-        "ca": "Corredor del nou mapa concessional d’autobusos de l’Estat. Fora de la Comunitat Valenciana els recorreguts es mostren difuminats.",
-        "es": "Corredor del nuevo mapa concesional de autobuses del Estado. Fuera de la Comunitat Valenciana los recorridos se muestran difuminados."
-      },
       "origen": [
         {
           "servei": "estatals",
@@ -290,7 +283,8 @@
       "textLinies": {
         "ca": "Rutes del corredor",
         "es": "Rutas del corredor"
-      }
+      },
+      "senseDades": true
     },
     "tram_castello": {
       "nom": {
@@ -317,7 +311,10 @@
     }
   },
   "_colors": "El color de cada línia ve de les dades (scripts/serveis.json → geometries_propies.linies). Per a provar-ne un sense regenerar-les, afegiu-lo a «colorsLinies», p. ex. {\"metrovalencia:2\": \"#E4007C\"}.",
-  "colorsLinies": {},
+  "colorsLinies": {
+    "emt_valencia": "#D7141A",
+    "urba_alacant": "#1F6FB5"
+  },
   "productesRenfe": {
     "REGIONAL": "Regional",
     "REG.EXP.": "Regional Exprés",
@@ -329,6 +326,7 @@
   "fitxers": [
     "dades/bus_interurba.geojson",
     "dades/emt_valencia.geojson",
+    "dades/urba_alacant.geojson",
     "dades/atmv.geojson",
     "dades/estatals.geojson",
     "dades/tram_castello.geojson",

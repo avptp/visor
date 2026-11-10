@@ -128,7 +128,7 @@ Per a afegir o corregir traçats, n'hi ha prou amb editar el GeoPackage (per exe
 | Línies interurbanes | GTFS 1526 + `codis_concessions.json` | una entrada per concessió, amb el codi de contracte de la Conselleria |
 | Metrobús (ATMV) | `fonts/atmv.geojson` | les sis concessions de l'àrea metropolitana de València (Met Go), amb les línies de cada una |
 | Línies estatals | `fonts/estatals.geojson` | una entrada per corredor del nou mapa concessional del Ministeri, amb les rutes que tenen alguna parada a la Comunitat. Estan **en projecte**. Les parades i el seu ordre són els de l'annex II (itinerari); el traçat va per carretera de parada a parada i s'ha comprovat amb les distàncies parcials de l'annex. El detall de cada ruta (traçat i parades) és a `fonts/estatals_rutes.geojson` |
-| Autobús urbà | `fonts/emt_valencia.geojson` | GTFS de l'EMT València: una sola entrada amb totes les línies (les al·legacions van en conjunt). Cada carrer es dibuixa una única vegada, encara que hi passen diverses línies, perquè la xarxa no quede massa densa |
+| Línies urbanes | `fonts/emt_valencia.geojson`, `fonts/urba_alacant.geojson` | GTFS de l'EMT València i de l'autobús urbà d'Alacant (Vectalia): una entrada per xarxa municipal, amb totes les seues línies (les al·legacions van en conjunt). Cada carrer es dibuixa una única vegada, encara que hi passen diverses línies, perquè la xarxa no quede massa densa |
 | TRAM de Castelló | `fonts/tram_castello.geojson` | línia actual (Universitat Jaume I – el Grau) |
 | Nodes | GTFS 1526 i Renfe | estacions d'autobusos i estacions principals d'Adif definides a `serveis.json` |
 
@@ -171,12 +171,15 @@ Les línies retallades al límit de la Comunitat poden portar `complet` (el reco
 | Columna | Contingut |
 |---|---|
 | `id` | Identificador de l'element. Si el document afecta diversos elements, es separen amb `\|`. |
-| `tipus` | `pdf`, `enllac`, `imatge` o `text` |
+| `tipus` | `pdf`, `enllac`, `imatge` o `text` per a documents; `premsa` per a les aparicions de l'associació als mitjans (notícies, entrevistes…) |
 | `titol_ca`, `titol_es` | Títol en cada idioma. Si en falta un, es mostra l'altre. |
 | `url` | Adreça del document (per exemple, `https://cdn.avptp.org/documents/…`) |
 | `idioma` | Idioma del document (`ca` o `es`). Quan no coincidix amb el de la interfície, es mostra l'avís «En castellà» o «En valencià». |
 | `data` | Data del document (AAAA-MM-DD), opcional |
 | `descripcio_ca`, `descripcio_es` | Text breu, opcional |
+| `mitja` | Només per a `premsa`: nom del mitjà (per exemple, *València Extra*) |
+
+Les files de tipus `premsa` es mostren a la fitxa en un apartat propi, «Als mitjans», de la més recent a la més antiga, amb el nom del mitjà i la data.
 
 L'identificador de cada element apareix al final de la seua fitxa, amb un botó per a copiar-lo.
 

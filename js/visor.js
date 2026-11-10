@@ -696,6 +696,7 @@
 
   function codiLlegenda(o) {
     const p = o.f.properties;
+    if (E.cfg.serveis[o.servei]?.codiLlegenda === false) return '';
     return o.tipus === 'concessio' && p.codi ? `[${p.codi}] ` : '';
   }
 
@@ -734,7 +735,7 @@
     if (o.tipus === 'concessio') cos += seccioConcessio(o);
     if (o.tipus === 'node') cos += seccioNode(o);
     cos += seccioDocumentacio(o);
-    cos += seccioDades(o);
+    if (!E.cfg.serveis[o.servei]?.senseDades) cos += seccioDades(o);
 
     fitxa.innerHTML = `
       <header class="fitxa-cap">
@@ -830,11 +831,21 @@
     return html;
   }
 
+  // Tipus de fila de documentacio.csv que són aparicions als mitjans de comunicació
+  const TIPUS_PREMSA = new Set(['premsa', 'prensa', 'mitjans', 'medios', 'noticia', 'notícia', 'entrevista', 'radio', 'ràdio', 'televisio', 'televisió', 'television', 'televisión']);
+  const esPremsa = (d) => TIPUS_PREMSA.has(norm(d.tipus));
+
   function seccioDocumentacio(o) {
     const p = o.f.properties;
-    const docs = [...(E.docs.get(o.id) || []), ...(p.id_avptp ? E.docs.get(String(p.id_avptp)) || [] : [])];
-    if (!docs.length) return `<section><h3>${esc(t('documentacio'))}</h3><p class="buit">${esc(t('sense_docs'))}</p></section>`;
-    return `<section><h3>${esc(t('documentacio'))}</h3><div class="docs">${docs.map(pintaDoc).join('')}</div></section>`;
+    const tots = [...(E.docs.get(o.id) || []), ...(p.id_avptp ? E.docs.get(String(p.id_avptp)) || [] : [])];
+    const docs = tots.filter((d) => !esPremsa(d));
+    // Als mitjans: de la més recent a la més antiga
+    const premsa = tots.filter(esPremsa).sort((a, b) => String(b.data || '').localeCompare(String(a.data || '')));
+    let html = docs.length
+      ? `<section><h3>${esc(t('documentacio'))}</h3><div class="docs">${docs.map(pintaDoc).join('')}</div></section>`
+      : `<section><h3>${esc(t('documentacio'))}</h3><p class="buit">${esc(t('sense_docs'))}</p></section>`;
+    if (premsa.length) html += `<section><h3>${esc(t('premsa'))} <span class="n">${premsa.length}</span></h3><div class="docs">${premsa.map(pintaDoc).join('')}</div></section>`;
+    return html;
   }
 
   function pintaDoc(d) {
@@ -848,6 +859,7 @@
       const m = String(d.data).match(/^(\d{4})-(\d{2})-(\d{2})/);
       meta.push(`<span>${esc(m ? `${m[3]}/${m[2]}/${m[1]}` : d.data)}</span>`);
     }
+    if (d.mitja) meta.unshift(`<span class="doc-mitja">${esc(d.mitja)}</span>`);
     if (idiomaDoc && idiomaDoc !== E.idioma) meta.push(`<span class="doc-idioma">${esc(TEXTOS[E.idioma].doc_en[idiomaDoc])}</span>`);
     const metaHtml = meta.length ? `<span class="doc-meta">${meta.join('')}</span>` : '';
     const url = urlSegura(d.url);
@@ -858,9 +870,10 @@
         ${titol ? `<figcaption>${esc(titol)}</figcaption>` : ''}</figure>`;
     }
     const esPdf = tipus === 'pdf' || /\.pdf($|[?#])/i.test(url);
-    const format = esPdf ? 'PDF' : 'Web';
+    const premsa = esPremsa(d);
+    const format = premsa ? t('format_premsa') : esPdf ? 'PDF' : 'Web';
     return `<a class="doc-enllac" href="${esc(url)}" target="_blank" rel="noopener">
-      <span class="doc-format ${esPdf ? 'pdf' : ''}" aria-hidden="true">${format}</span>
+      <span class="doc-format ${premsa ? 'premsa' : esPdf ? 'pdf' : ''}" aria-hidden="true">${esc(format)}</span>
       <span><strong>${esc(titol || url)}</strong>${metaHtml}${desc ? `<small>${esc(desc)}</small>` : ''}</span></a>`;
   }
 
@@ -991,7 +1004,7 @@
     const p = o.f.properties;
     const marca = o.tipus === 'node' ? distintiu(o) : o.tipus === 'concessio'
       ? `<span class="punt-linia" style="--c:${esc(colorObjecte(o))}" aria-hidden="true"></span>` : distintiu(o);
-    const proj = estatDe(o) === 'projecte' && !serveiEnProjecte(o.servei) ? ` <span class="estat estat-projecte petit">${esc(t('estat_projecte'))}</span>` : '';
+    const proj = '';
     return `<li><label><input type="checkbox" data-linia="${esc(o.id)}">${marca}<span class="nom-linia">${esc(codiLlegenda(o) + nomDe(p))}${proj}</span></label></li>`;
   }
 
@@ -1020,7 +1033,7 @@
       return `<li class="servei ${te ? '' : 'buida'}" data-servei="${esc(s)}">
         <div class="fila-servei">
           <label><input type="checkbox" data-servei="${esc(s)}" ${te ? '' : 'disabled'}>
-            ${iconaServei(s)}<span class="nom-servei">${esc(nomServei(s))}${serveiEnProjecte(s) ? ` <span class="estat estat-projecte petit">${esc(t('estat_projecte'))}</span>` : ''}${detall ? `<small>${esc(detall)}</small>` : ''}</span></label>
+            ${iconaServei(s)}<span class="nom-servei">${esc(nomServei(s))}${detall ? `<small>${esc(detall)}</small>` : ''}</span></label>
           ${te ? `<button type="button" class="desplega" data-desplega="${esc(s)}" aria-expanded="${obert}" aria-controls="linies-${esc(s)}"
               aria-label="${esc(t('mostra_linies', { s: nomServei(s) }))}"><span class="recompte">${esc(recompte(s))}</span>${SVG_FLETXA}</button>`
             : `<span class="recompte">${esc(recompte(s))}</span>`}

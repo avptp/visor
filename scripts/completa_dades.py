@@ -136,7 +136,7 @@ def main():
     metrovalencia(dades)
     renfe(dades)
     codis(dades)
-    for nom in ('estatals.geojson', 'atmv.geojson', 'tram_castello.geojson', 'emt_valencia.geojson'):
+    for nom in ('estatals.geojson', 'atmv.geojson', 'tram_castello.geojson', 'emt_valencia.geojson', 'urba_alacant.geojson'):
         copia(dades, nom)
     copia_limit = AQUI / 'limit_cv.geojson'
     if copia_limit.exists():
