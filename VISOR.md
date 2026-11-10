@@ -127,7 +127,8 @@ Per a afegir o corregir traçats, n'hi ha prou amb editar el GeoPackage (per exe
 | Regionals i Mitja distància | GTFS 1098 + xarxa ferroviària de l'ICV | les estacions i el recorregut venen del GTFS; el traçat, de la xarxa ferroviària d'interés general de l'ICV (el GTFS de Renfe no en porta) |
 | Línies interurbanes | GTFS 1526 + `codis_concessions.json` | una entrada per concessió, amb el codi de contracte de la Conselleria |
 | Metrobús (ATMV) | `fonts/atmv.geojson` | les sis concessions de l'àrea metropolitana de València (Met Go), amb les línies de cada una |
-| Línies estatals | `fonts/estatals.geojson` | una entrada per corredor del nou mapa concessional del Ministeri (annex III), amb les rutes que tenen alguna parada a la Comunitat. Estan **en projecte**. El detall de cada ruta (traçat i parades) és a `fonts/estatals_rutes.geojson` |
+| Línies estatals | `fonts/estatals.geojson` | una entrada per corredor del nou mapa concessional del Ministeri, amb les rutes que tenen alguna parada a la Comunitat. Estan **en projecte**. Les parades i el seu ordre són els de l'annex II (itinerari); el traçat va per carretera de parada a parada i s'ha comprovat amb les distàncies parcials de l'annex. El detall de cada ruta (traçat i parades) és a `fonts/estatals_rutes.geojson` |
+| Autobús urbà | `fonts/emt_valencia.geojson` | GTFS de l'EMT València: una sola entrada amb totes les línies (les al·legacions van en conjunt). Cada carrer es dibuixa una única vegada, encara que hi passen diverses línies, perquè la xarxa no quede massa densa |
 | TRAM de Castelló | `fonts/tram_castello.geojson` | línia actual (Universitat Jaume I – el Grau) |
 | Nodes | GTFS 1526 i Renfe | estacions d'autobusos i estacions principals d'Adif definides a `serveis.json` |
 
@@ -148,6 +149,10 @@ No necessita cap llibreria. Copia les capes estàtiques (`estatals`, `atmv`, `tr
 | `correccions_metrovalencia.json` | Traçat, parades i color de les línies 4 (amb el ramal de Fira València), 6, 8 (Marítim – Neptú, `#40B2CB`) i 9 (`#AD7D4F`). Els traçats són de la xarxa de ferrocarrils de la Generalitat de l'ICV. |
 | `tracats_renfe.json` | Traçat de les línies regionals i de mitja distància sobre la xarxa ferroviària de l'Estat de l'ICV. |
 | `codis_concessions.json` | Codi de contracte de cada concessió de la Generalitat (full «Datos_concesiones_2025»). Les concessions que encara no tenen codi segur hi apareixen anotades. A la llegenda es mostren com a «[CODI] Nom». |
+
+### Etiquetes de codi
+
+A partir del zoom `zoomEtiquetes` de `config.json` (13 per defecte), cada línia o concessió visible que té codi porta sobre el traçat uns requadres del seu color amb el codi (C3, L4, CE-920, CV-103…), repartits per la pantalla sense trepitjar-se. En fer-hi clic s'obri la fitxa.
 
 ### Estat de les línies
 

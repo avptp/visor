@@ -241,6 +241,11 @@
     try { desat = localStorage.getItem('visor-mapa'); } catch { /* res */ }
     posaMapaBase(E.cfg.mapesBase.some((x) => x.id === desat) ? desat : E.cfg.mapesBase[0].id);
     E.mapa.on('zoomend', ajustaRadis);
+    // Etiquetes amb el codi de cada línia o concessió sobre el traçat, a partir d'un cert zoom
+    const pe = E.mapa.createPane('etiquetesCodi');
+    pe.style.zIndex = 450;
+    E.etiquetes = L.layerGroup().addTo(E.mapa);
+    E.mapa.on('moveend', programaEtiquetes);
     E.mapa.on('click', () => { if (E.sel) tancaFitxa(); });
   }
 
@@ -380,6 +385,77 @@
     if (E.parades) { const c = colorObjecte(E.sel); E.parades.eachLayer((m) => m.setStyle(estilParada(c))); }
   }
 
+  /* ---------- Etiquetes de codi sobre els traçats ---------- */
+
+  let tempsEtiquetes = null;
+  function programaEtiquetes() {
+    clearTimeout(tempsEtiquetes);
+    tempsEtiquetes = setTimeout(actualitzaEtiquetes, 60);
+  }
+
+  // A partir de «zoomEtiquetes» (config.json), cada línia o concessió visible porta, cada cert tros,
+  // un requadre del seu color amb el codi. Es reparteixen per la pantalla sense trepitjar-se.
+  function actualitzaEtiquetes() {
+    if (!E.etiquetes) return;
+    E.etiquetes.clearLayers();
+    const zMin = Number(E.cfg.zoomEtiquetes) || 13;
+    if (E.mapa.getZoom() < zMin) return;
+    const vista = E.mapa.getBounds().pad(0.05);
+    const mida = E.mapa.getSize();
+    const PAS = 300; // píxels entre etiquetes d'un mateix traçat
+    const MAX = 4; // etiquetes per element i pantalla
+    const ocupat = new Set();
+    // Ni davall del panell de capes ni de la fitxa
+    const tapats = [$('.columna'), $('#fitxa.obert')].filter(Boolean).map((el) => el.getBoundingClientRect());
+    const mapaR = E.mapa.getContainer().getBoundingClientRect();
+    const tapat = (q) => tapats.some((r) => q.x + mapaR.left > r.left - 30 && q.x + mapaR.left < r.right + 30 && q.y + mapaR.top > r.top - 14 && q.y + mapaR.top < r.bottom + 14);
+    const lliure = (pt) => {
+      if (tapat(pt)) return false;
+      const cx = Math.floor(pt.x / 56), cy = Math.floor(pt.y / 26);
+      for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) if (ocupat.has(`${cx + dx},${cy + dy}`)) return false;
+      ocupat.add(`${cx},${cy}`);
+      return true;
+    };
+    const objs = [...E.objectes.values()].filter((o) => o.tipus !== 'node' && o.f.properties.codi && esVisible(o) && o.capa.getBounds().intersects(vista));
+    // Primer la selecció, després el ferrocarril i al final les concessions d'autobús
+    objs.sort((a, b) => (b === E.sel) - (a === E.sel) || (a.tipus === 'linia' ? 0 : 1) - (b.tipus === 'linia' ? 0 : 1));
+    for (const o of objs) {
+      const c = colorObjecte(o);
+      const html = `<span style="background:${c};color:${colorText(c)}">${esc(o.f.properties.codi)}</span>`;
+      let n = 0;
+      const parts = o.capa.getLatLngs();
+      for (const part of (Array.isArray(parts[0]) ? parts : [parts])) {
+        let acc = PAS / 2, prev = null;
+        for (const ll of part) {
+          const pt = E.mapa.latLngToContainerPoint(ll);
+          if (prev) {
+            const d = prev.distanceTo(pt);
+            let r = acc;
+            while (r <= d && n < MAX) {
+              const t = r / d;
+              const q = L.point(prev.x + (pt.x - prev.x) * t, prev.y + (pt.y - prev.y) * t);
+              if (q.x > 20 && q.y > 12 && q.x < mida.x - 20 && q.y < mida.y - 12 && lliure(q)) {
+                const m = L.marker(E.mapa.containerPointToLatLng(q), {
+                  icon: L.divIcon({ className: 'etiqueta-codi', html, iconSize: null }),
+                  pane: 'etiquetesCodi', keyboard: false, bubblingMouseEvents: false,
+                });
+                m.on('click', (e) => { L.DomEvent.stopPropagation(e); selecciona(o.id); });
+                m.bindTooltip(esc(nomDe(o.f.properties)), { direction: 'top', className: 'etiqueta', offset: [0, -10] });
+                E.etiquetes.addLayer(m);
+                n++;
+              }
+              r += PAS;
+            }
+            acc = r - d;
+          }
+          prev = pt;
+          if (n >= MAX) break;
+        }
+        if (n >= MAX) break;
+      }
+    }
+  }
+
   /* ---------- Càrrega de dades ---------- */
 
   // Regles «origen» de config.json: un servei del visor pot agafar les línies d'un altre
@@ -460,8 +536,8 @@
       ls.sort((a, b) => {
         const oa = origens.indexOf(a.origen?.servei), ob = origens.indexOf(b.origen?.servei);
         if (oa !== ob) return oa - ob;
-        if (a.tipus === 'linia') return ordre(a.f.properties.codi || '', b.f.properties.codi || '') || ordre(nomDe(a.f.properties), nomDe(b.f.properties));
-        return ordre(nomDe(a.f.properties), nomDe(b.f.properties));
+        // Línies i concessions per codi (les que encara no en tenen, al principi) i després pel nom
+        return ordre(a.f.properties.codi || '', b.f.properties.codi || '') || ordre(nomDe(a.f.properties), nomDe(b.f.properties));
       });
     }
   }
@@ -479,6 +555,7 @@
     }
     if (E.sel && !esVisible(E.sel)) tancaFitxa();
     if (afegit) reordena();
+    programaEtiquetes();
   }
 
   // Concessions d'autobús al fons, línies de ferrocarril al mig i la selecció a sobre

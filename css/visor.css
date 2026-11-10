@@ -386,3 +386,12 @@ button.bala:hover { box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--c);
 .recorregut li.fora-cv::after { border-color: color-mix(in srgb, var(--c) 40%, #fff); }
 .recorregut + h4 { margin-top: 14px; }
 .nota-fora { margin: 10px 0 0; font-size: .8rem; color: var(--text-suau); }
+
+/* ---------- Etiquetes de codi sobre els traçats (a partir d'un cert zoom) ---------- */
+.etiqueta-codi { background: none; border: 0; }
+.etiqueta-codi span {
+  display: inline-block; transform: translate(-50%, -50%);
+  padding: 1px 5px; border-radius: 4px; border: 1.5px solid #fff;
+  font: 700 11px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .35); cursor: pointer;
+}

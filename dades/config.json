@@ -98,6 +98,7 @@
       },
       "serveis": [
         "tram_castello",
+        "emt_valencia",
         "atmv",
         "bus_interurba",
         "estatals"
@@ -204,6 +205,27 @@
       "color": "#2E7D32",
       "gruix": 2.2
     },
+    "emt_valencia": {
+      "nom": {
+        "ca": "Autobús urbà",
+        "es": "Autobús urbano"
+      },
+      "detall": {
+        "ca": "EMT València, totes les línies juntes",
+        "es": "EMT Valencia, todas las líneas juntas"
+      },
+      "color": "#D7141A",
+      "gruix": 2,
+      "textTipus": {
+        "ca": "Xarxa urbana",
+        "es": "Red urbana"
+      },
+      "textLinies": {
+        "ca": "Línies de la xarxa",
+        "es": "Líneas de la red"
+      },
+      "recompte": "xarxes_n"
+    },
     "atmv": {
       "nom": {
         "ca": "Metrobús (ATMV)",
@@ -306,6 +328,7 @@
   },
   "fitxers": [
     "dades/bus_interurba.geojson",
+    "dades/emt_valencia.geojson",
     "dades/atmv.geojson",
     "dades/estatals.geojson",
     "dades/tram_castello.geojson",
@@ -359,5 +382,6 @@
       },
       "url": "https://icv.gva.es"
     }
-  ]
+  ],
+  "zoomEtiquetes": 13
 }
