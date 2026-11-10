@@ -3,7 +3,7 @@
 Visor interactiu de la xarxa de transport públic de la Comunitat Valenciana per a la web de l'AVPTP. Mostra:
 
 - els servicis ferroviaris (Metrovalència, Rodalies, TRAM d'Alacant, Regionals i Mitja distància);
-- els autobusos: TRAM de Castelló, línies urbanes, Metrobús (ATMV), línies interurbanes de la Generalitat i línies estatals;
+- els autobusos: TRAM de Castelló, BRT, línies urbanes, Metrobús (ATMV), línies interurbanes de la Generalitat i línies estatals;
 - els nodes de transport principals (estacions d'autobusos i d'Adif).
 
 Cada servici es pot mostrar o amagar sencer o element a element. En seleccionar una línia, una concessió, una xarxa urbana, un corredor o un node s'obri una fitxa amb el recorregut, la documentació de l'associació i les seues aparicions als mitjans.
@@ -44,6 +44,10 @@ scripts/                         preparació de les dades (no es publica)
     tracats_renfe.json           traçats de Regionals i Mitja distància
     correccions_metrovalencia.json
     codis_concessions.json       codis de contracte de les concessions de la Generalitat
+    bus_projectes.geojson        concessions interurbanes en projecte (CV-207, CV-210, CV-213, CV-303)
+    ferrocarril_fora_cv.json     parades i traçat de fora de la Comunitat de les línies de tren que en ixen
+    correccions_ferrocarril.json correccions de línies de Renfe (la C1 d'Alacant comença a Alacant Terminal)
+    brt_xirivella.geojson        BRT València – Xirivella – Aldaia/Alaquàs (en projecte)
 ```
 
 ## Publicació
@@ -113,10 +117,10 @@ Les capes s'organitzen en grups (`grups` de `config.json`) i, dins de cada grup,
 | Grup | Servicis |
 |---|---|
 | Ferrocarril | Metrovalència, Rodalies València, Rodalies Alacant-Murcia, TRAM d'Alacant, Regionals i Mitja distància |
-| Autobús | TRAM de Castelló, Línies urbanes, Metrobús (ATMV), Línies interurbanes, Línies estatals |
+| Autobús | TRAM de Castelló, BRT, Línies urbanes, Metrobús (ATMV), Línies interurbanes, Línies estatals |
 | Nodes de transport | Estacions d'autobusos, Estacions principals d'Adif |
 
-Cada servici té una casella per a mostrar-lo o amagar-lo sencer i un desplegable amb els seus elements. Si només se'n mostren alguns, la casella del servici queda a mitges. A la llegenda, els elements van ordenats pel codi (els que encara no en tenen, al principi) i després pel nom.
+Cada grup té també una casella per a mostrar-ne o amagar-ne tots els servicis d'una vegada (a mitges si només se'n mostra una part). Cada servici té una casella per a mostrar-lo o amagar-lo sencer i un desplegable amb els seus elements. Si només se'n mostren alguns, la casella del servici queda a mitges. A la llegenda, els elements van ordenats pel codi (els que encara no en tenen, al principi) i després pel nom.
 
 Hi ha dues menes d'element amb traçat:
 
@@ -131,7 +135,7 @@ Les estacions no són una capa: només apareixen en seleccionar una línia.
 |---|---|
 | `nom`, `detall` | Nom i subtítol a la llegenda (en `ca` i `es`) |
 | `logo` | Imatge de `img/logos/` (es mostra a 34 × 26 px). Sense logo, es mostra una mostra del color. |
-| `logoFitxa` | Logotip gran a la capçalera del cos de la fitxa (per exemple, Metrobús) |
+| `logoFitxa`, `textLogoFitxa` | Logotip gran (i text alternatiu) al principi del cos de la fitxa. Ara no l'usa cap servici. |
 | `color`, `gruix` | Color i gruix per defecte de les línies |
 | `origen` | Agafa les línies d'un altre servici de les dades, o només les que comencen per un `prefix`. Servix per a **dividir** un fitxer (Rodalies València i Rodalies Alacant-Murcia agafen `rodalies.geojson` per prefix) o **ajuntar-ne** diversos (Regionals i Mitja distància; els tres corredors estatals amb un color cadascun). Amb `etiqueta`, la llista es dividix en subapartats. |
 | `recompte` | Text del recompte a la dreta de la llegenda: `corredors_n`, `xarxes_n`… (per defecte, línies o concessions) |
@@ -149,7 +153,7 @@ Cada element pot portar el camp `estat`: `servei` (per defecte) o `projecte`. El
 
 ### Recorregut sencer i ramals
 
-- `complet`: recorregut sencer d'un element retallat al límit de la Comunitat. En seleccionar-lo, la part de fora es mostra difuminada (corredors estatals). Les parades de fora de la Comunitat porten `fora_cv: true` i surten en gris al recorregut.
+- `complet`: recorregut sencer d'un element retallat al límit de la Comunitat. En seleccionar-lo, la part de fora es mostra difuminada (corredors estatals i les línies de tren que ixen de la Comunitat: C1 de Rodalies Alacant-Murcia fins a Múrcia, Regional València – Vinaròs/Tortosa, Mitja distància a Albacete i a Terol – Saragossa). Les parades de fora de la Comunitat porten `fora_cv: true`: surten en gris al recorregut i més suaus al mapa, i també es poden triar per a centrar-s'hi.
 - `ramals`: llista de ramals d'una línia (`[{nom, parades}]`), que es mostren davall del recorregut. La L4 de Metrovalència té els de Lloma Llarga – Terramelar i Fira València.
 
 ### Etiquetes de codi
@@ -202,6 +206,10 @@ No necessita cap llibreria. `actualitza_dades.py` torna a generar els fitxers de
 - corregix Metrovalència (`correccions_metrovalencia.json`): traçats, parades i colors de les línies 4, 6, 8 i 9 i els ramals de la L4;
 - substituïx els traçats de Regionals i Mitja distància (`tracats_renfe.json`), perquè el GTFS de Renfe no en porta i, sense ells, les línies anirien en recte d'estació a estació;
 - posa el codi de contracte a les concessions de la Generalitat (`codis_concessions.json`);
+- afig a `bus_interurba.geojson` les concessions en projecte (`bus_projectes.geojson`);
+- corregix línies de Renfe que el GTFS no porta bé (`correccions_ferrocarril.json`): la C1 de Rodalies Alacant-Murcia es queda entre Alacant Terminal i Múrcia, sense Sant Vicent Centre, que és només de la C3;
+- copia el BRT (`brt_xirivella.geojson`);
+- allarga les línies de tren que ixen de la Comunitat (`ferrocarril_fora_cv.json`): hi afig les parades de fora i el recorregut sencer;
 - copia el límit de la Comunitat.
 
 Es pot executar tantes vegades com calga. Després, reviseu el visor en local i pugeu els canvis de `dades/`. En arribar a `main`, es publiquen sols.
@@ -229,14 +237,17 @@ La carpeta és el GTFS descomprimit. Per a afegir una altra ciutat: el mateix or
 | TRAM d'Alacant | GTFS 1167 + GeoPackage | totes les línies; el recorregut és la variant més llarga d'entre les que fan almenys el 10 % dels viatges |
 | Regionals | GTFS 1098 + xarxa ferroviària de l'ICV | trens Regional i Regional Exprés d'Alcoi, Alacant–València i València–Vinaròs/Tortosa, retallats al límit. El traçat és de la xarxa ferroviària d'interés general de l'ICV. |
 | Mitja distància | GTFS 1098 + xarxa ferroviària de l'ICV | trens cap a Albacete i Saragossa, retallats al límit |
+| Tram de fora de la Comunitat (tren) | GTFS de Renfe + BRouter (perfil ferroviari d'OpenStreetMap) | parades i traçat de fora per a la C1 fins a Múrcia, Vinaròs – Tortosa, Albacete i Terol – Saragossa (`ferrocarril_fora_cv.json`). Si Renfe canvia les parades d'eixos trens, cal actualitzar el fitxer. |
 | TRAM de Castelló | OpenStreetMap | línia actual (Universitat Jaume I – el Grau), sense les ampliacions en projecte |
+| BRT | Estudi informatiu de la plataforma reservada per al transport públic entre València i Xirivella (plànols de planta, juny 2024) | **en projecte**. Una línia Nou d'Octubre – Xirivella – Aldaia amb el ramal d'Alaquàs. El traçat s'ha digitalitzat sobre els plànols a escala 1:2.000 (amb la quadrícula UTM de cada full) i les parades són les «parada bus» dels plànols. El tros d'enllaç del ramal d'Alaquàs i l'avinguda de Blasco Ibáñez d'Alaquàs són d'OpenStreetMap. |
 | Línies urbanes | GTFS de cada operador | EMT València i autobús urbà d'Alacant (Vectalia), una entrada per xarxa |
 | Metrobús (ATMV) | Dades públiques del visor de Metrobús (Met Go) | les sis concessions de l'àrea metropolitana de València (CV-102, CV-103, CV-106, CV-107, CV-108 i CV-109), amb totes les línies de cada una |
 | Línies interurbanes | GTFS 1526 + `codis_concessions.json` | una entrada per concessió, amb el codi de contracte de la Conselleria («Datos_concesiones_2025») |
+| Línies interurbanes en projecte | Projectes de servici públic de la Conselleria | CV-207 Alacant Metropolità, CV-210 Vinalopó Alt i Mitjà, CV-213 Vega Baixa – Alacant i CV-303 Castelló – Vila-real – València, **en projecte**. Les línies i les parades són les de l'annex de parades de cada projecte. Els projectes no porten coordenades: les parades es van geocodificar amb OpenStreetMap (adreça i municipi) i el traçat va per carretera de parada a parada, de manera que és aproximat, sobretot dins de les ciutats. Cada carrer es dibuixa una sola vegada. |
 | Línies estatals | Nou mapa concessional del Ministeri | una entrada per corredor (València – Alacant – Múrcia; Terol – Castelló – Barcelona; Sevilla – Màlaga – Barcelona) amb les rutes que tenen alguna parada a la Comunitat. Estan **en projecte**. Les parades i el seu ordre són els de l'annex II (itinerari); el traçat va per carretera de parada a parada i s'ha comprovat amb les distàncies parcials de l'annex. |
 | Nodes | GTFS 1526 i Renfe | estacions d'autobusos i estacions principals d'Adif definides a `serveis.json` |
 
-Les capes de Metrobús, línies estatals i TRAM de Castelló no tenen un procés automàtic: es van preparar una vegada a partir de les fonts indicades. Si canvien, cal tornar a preparar el fitxer corresponent de `scripts/fonts/`.
+Les capes de Metrobús, línies estatals, concessions en projecte i TRAM de Castelló no tenen un procés automàtic: es van preparar una vegada a partir de les fonts indicades. Si canvien, cal tornar a preparar el fitxer corresponent de `scripts/fonts/`.
 
 Les regles dels servicis del NAP (quines línies, quines parades identifiquen cada regional, quins nodes…) són a `scripts/serveis.json`. Altres opcions útils: `noms_parades` (dins d'una font) corregix noms de parada del GTFS, `prefix_codi` afig un prefix al codi de línia (el TRAM numera «1», «2»… i així es manté `tram_alacant:L1`) i `quota_recorregut` evita que el recorregut agafe variants esporàdiques.
 
@@ -251,6 +262,10 @@ Les línies de `scripts/fonts/AVPTP_xarxa.gpkg` (capa `ferrocarril_linies`) tene
 L'identificador del GeoPackage (`id_element`, per exemple `FER_FGV_V01`) es guarda com a identificador AVPTP de la línia. Es pot fer servir igual que l'identificador del visor per a associar-hi documentació i per a enllaçar-la.
 
 Per a afegir o corregir traçats, n'hi ha prou amb editar el GeoPackage (per exemple, amb QGIS) i tornar a executar el procés.
+
+## Comentaris sobre el visor
+
+El botó «Comentaris» (a baix a la dreta) obri un menú amb tres opcions: **Millora**, **Error** i **Altres**. Cada una obri el programa de correu amb un missatge a l'adreça de `comentaris.correu` de `config.json` (`contacte@avptp.org`), amb l'assumpte «[Visor] Millora», «[Visor] Error»… i, al cos, l'adreça del visor en eixe moment (amb l'element seleccionat) i el navegador. El menú avisa que és només per al funcionament del visor, no per a propostes de transport públic. Si s'esborra `comentaris` de `config.json`, el botó no apareix.
 
 ## Documentació i mitjans
 
@@ -308,6 +323,8 @@ El peu del mapa i el panell de capes citen les administracions d'on venen les da
 - **Metrobús (ATMV):** dades públiques del visor de Metrobús (Met Go).
 - **Línies urbanes:** GTFS de l'EMT València i de Vectalia (autobús urbà d'Alacant).
 - **TRAM de Castelló:** traçat i parades d'OpenStreetMap (ODbL).
+- **Trams de tren de fora de la Comunitat:** parades del GTFS de Renfe; traçat calculat amb BRouter sobre dades © col·laboradors d'OpenStreetMap (ODbL).
+- **Concessions interurbanes en projecte:** projectes de servici públic de la Generalitat; parades geocodificades amb CartoCiudad (© IGN) i OpenStreetMap, i traçat per carretera amb OSRM.
 - **Límit de la Comunitat i xarxa ferroviària:** Institut Cartogràfic Valencià.
 - **Mapa de fons:** OpenFreeMap, © OpenMapTiles, © col·laboradors d'OpenStreetMap (ODbL); © IGN (CC BY 4.0, mapa base gris i PNOA). Llibreria MapLibre GL (BSD-3).
 - **Llibreria de mapes:** Leaflet 1.9.4 (BSD-2).

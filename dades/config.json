@@ -1,4 +1,5 @@
 {
+  "comentaris": { "correu": "contacte@avptp.org" },
   "titol": {
     "ca": "Visor de la xarxa de transport públic",
     "es": "Visor de la red de transporte público"
@@ -98,6 +99,7 @@
       },
       "serveis": [
         "tram_castello",
+        "brt",
         "urbans",
         "atmv",
         "bus_interurba",
@@ -239,12 +241,7 @@
       },
       "color": "#E8870E",
       "gruix": 2.2,
-      "logo": "img/logos/atmv.webp",
-      "logoFitxa": "img/logos/metrobus.webp",
-      "textLogoFitxa": {
-        "ca": "Metrobús",
-        "es": "Metrobús"
-      }
+      "logo": "img/logos/atmv.webp"
     },
     "estatals": {
       "nom": {
@@ -295,6 +292,18 @@
       "color": "#008102",
       "gruix": 4
     },
+    "brt": {
+      "nom": {
+        "ca": "BRT",
+        "es": "BRT"
+      },
+      "detall": {
+        "ca": "Autobús d’alta capacitat en plataforma reservada",
+        "es": "Autobús de alta capacidad en plataforma reservada"
+      },
+      "color": "#8E44AD",
+      "gruix": 4
+    },
     "nodes_bus": {
       "nom": {
         "ca": "Estacions d’autobusos",
@@ -330,6 +339,7 @@
     "dades/atmv.geojson",
     "dades/estatals.geojson",
     "dades/tram_castello.geojson",
+    "dades/brt_xirivella.geojson",
     "dades/metrovalencia.geojson",
     "dades/rodalies.geojson",
     "dades/tram_alacant.geojson",

@@ -94,6 +94,7 @@
     }
     document.querySelectorAll('.idiomes button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.idioma === idioma)));
     document.querySelectorAll('[data-t]').forEach((el) => { el.textContent = t(el.dataset.t); });
+    document.querySelectorAll('[data-t-aria]').forEach((el) => { el.setAttribute('aria-label', t(el.dataset.tAria)); el.title = t(el.dataset.tAria); });
     const titol = tx(E.cfg?.titol) || 'Visor';
     $('#titol').textContent = titol;
     document.title = `${titol} · AVPTP`;
@@ -224,6 +225,60 @@
 
   /* ---------- Mapa ---------- */
 
+  /* ---------- Comentaris sobre el visor (correu a l'associació) ---------- */
+
+  function controlComentaris(correu) {
+    const TIPUS = ['millora', 'error', 'altres'];
+    const C = L.Control.extend({
+      options: { position: 'bottomright' },
+      onAdd() {
+        const div = L.DomUtil.create('div', 'comentaris');
+        div.innerHTML = `
+          <button type="button" class="comentaris-boto" aria-expanded="false" aria-controls="comentaris-panell" data-t-aria="comentaris_obri">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.2 3.6c-.5.4-1.3.1-1.3-.6V16A2.5 2.5 0 0 1 4 13.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 8h8M8 11.5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span data-t="comentaris"></span>
+          </button>
+          <div class="comentaris-panell" id="comentaris-panell" role="dialog" aria-labelledby="comentaris-titol" hidden>
+            <p class="comentaris-titol" id="comentaris-titol" data-t="comentaris_titol"></p>
+            <p class="comentaris-avis" data-t="comentaris_avis"></p>
+            <div class="comentaris-opcions">
+              ${TIPUS.map((k) => `<a class="comentaris-opcio" data-tipus="${k}" href="#"><strong data-t="comentaris_${k}"></strong><span data-t="comentaris_${k}_detall"></span></a>`).join('')}
+            </div>
+            <p class="comentaris-peu"><span data-t="comentaris_peu"></span> <a href="mailto:${esc(correu)}">${esc(correu)}</a></p>
+          </div>`;
+        L.DomEvent.disableClickPropagation(div);
+        L.DomEvent.disableScrollPropagation(div);
+        const boto = div.querySelector('.comentaris-boto');
+        const panell = div.querySelector('.comentaris-panell');
+        const obri = (v) => {
+          panell.hidden = !v;
+          boto.setAttribute('aria-expanded', String(v));
+          if (v) panell.querySelector('.comentaris-opcio')?.focus();
+        };
+        boto.addEventListener('click', () => obri(panell.hidden));
+        div.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && !panell.hidden) { e.stopPropagation(); obri(false); boto.focus(); }
+        });
+        document.addEventListener('click', (e) => { if (!panell.hidden && !div.contains(e.target)) obri(false); });
+        // L'enllaç es genera en el moment del clic: inclou l'idioma i l'adreça actual del visor
+        div.querySelectorAll('.comentaris-opcio').forEach((a) => {
+          a.addEventListener('click', () => {
+            const k = a.dataset.tipus;
+            const assumpte = `[${t('comentaris_assumpte')}] ${t('comentaris_' + k)}`;
+            const cos = t('comentaris_cos', { url: location.href, nav: navigator.userAgent });
+            a.href = `mailto:${correu}?subject=${encodeURIComponent(assumpte)}&body=${encodeURIComponent(cos)}`;
+            setTimeout(() => obri(false), 0);
+          });
+        });
+        div.querySelectorAll('[data-t]').forEach((el) => { el.textContent = t(el.dataset.t); });
+        boto.setAttribute('aria-label', t('comentaris_obri'));
+        boto.title = t('comentaris_obri');
+        return div;
+      },
+    });
+    return new C();
+  }
+
   function creaMapa() {
     E.mapa = L.map('mapa', { zoomControl: false, minZoom: 6, maxZoom: 19 });
     // Ordre de dibuix: teselles (200) < etiquetes del mapa base < vel fora de la Comunitat < xarxa (400)
@@ -234,6 +289,7 @@
     const m = marges();
     E.mapa.fitBounds(E.cfg.limits, { paddingTopLeft: m.tl, paddingBottomRight: m.br });
     L.control.zoom({ position: 'bottomright', zoomInTitle: '+', zoomOutTitle: '−' }).addTo(E.mapa);
+    if (E.cfg.comentaris?.correu) controlComentaris(E.cfg.comentaris.correu).addTo(E.mapa);
     E.mapa.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
     if (E.cfg.atribucioDades) E.mapa.attributionControl.addAttribution(E.cfg.atribucioDades);
     E.renderer = L.canvas({ padding: 0.5, tolerance: 6 });
@@ -374,15 +430,16 @@
     };
   }
 
-  function estilParada(color) {
-    return { radius: E.radi, color, weight: E.radi < 4 ? 2 : 2.5, fillColor: '#ffffff', fillOpacity: 1, opacity: 1 };
+  // Les parades de fora de la Comunitat es mostren més suaus, com el tros de recorregut que hi va
+  function estilParada(color, fora = false) {
+    return { radius: E.radi, color, weight: E.radi < 4 ? 2 : 2.5, fillColor: '#ffffff', fillOpacity: fora ? 0.8 : 1, opacity: fora ? 0.5 : 1 };
   }
 
   function ajustaRadis() {
     const r = radiActual();
     if (r === E.radi) return;
     E.radi = r;
-    if (E.parades) { const c = colorObjecte(E.sel); E.parades.eachLayer((m) => m.setStyle(estilParada(c))); }
+    if (E.parades) { const c = colorObjecte(E.sel); E.parades.eachLayer((m) => m.setStyle(estilParada(c, m.fora))); }
   }
 
   /* ---------- Etiquetes de codi sobre els traçats ---------- */
@@ -582,7 +639,9 @@
     for (const id of o.f.properties.parades || []) {
       const e = E.estacions.get(id);
       if (!e) continue;
-      const c = L.circleMarker(e.latlng, { renderer: E.renderer, bubblingMouseEvents: false, ...estilParada(color) });
+      const fora = !!e.f.properties.fora_cv;
+      const c = L.circleMarker(e.latlng, { renderer: E.renderer, bubblingMouseEvents: false, ...estilParada(color, fora) });
+      c.fora = fora;
       c.on('click', (ev) => { L.DomEvent.stopPropagation(ev); c.openTooltip(); });
       c.bindTooltip(esc(nomDe(e.f.properties)), { direction: 'top', className: 'etiqueta', offset: [0, -6] });
       c.estacio = id;
@@ -1026,7 +1085,8 @@
   }
 
   function pintaCapes() {
-    const grups = E.cfg.grups.map((g) => `<section class="grup"><h3>${esc(tx(g.nom))}</h3><ul class="serveis">${g.serveis.map((s) => {
+    const grups = E.cfg.grups.map((g, gi) => `<section class="grup"><h3><label class="casella-grup"><input type="checkbox" data-grup="${gi}"
+      aria-label="${esc(t('mostra_grup', { g: tx(g.nom) }))}">${esc(tx(g.nom))}</label></h3><ul class="serveis">${g.serveis.map((s) => {
       const te = (E.perServei.get(s) || []).length > 0;
       const detall = tx(E.cfg.serveis[s]?.detall);
       const obert = E.desplegats.has(s);
@@ -1076,6 +1136,20 @@
         if (c) c.checked = actiu && !E.ocults.has(o.id);
       }
     }
+    // Casella del grup: marcada si se'n mostra alguna cosa, a mitges si no es mostra tot
+    E.cfg.grups.forEach((g, gi) => {
+      const chk = cos.querySelector(`input[data-grup="${gi}"]`);
+      if (!chk) return;
+      let total = 0, vis = 0;
+      for (const s of g.serveis) {
+        const ls = E.perServei.get(s) || [];
+        total += ls.length;
+        if (E.actius.has(s)) vis += ls.filter((o) => !E.ocults.has(o.id)).length;
+      }
+      chk.disabled = total === 0;
+      chk.checked = vis > 0;
+      chk.indeterminate = vis > 0 && vis < total;
+    });
   }
 
   function canviaServei(s, mostra) {
@@ -1103,6 +1177,7 @@
     cos.addEventListener('change', (e) => {
       const el = e.target;
       if (el.dataset.estat) { if (el.checked) E.estatsOcults.delete(el.dataset.estat); else E.estatsOcults.add(el.dataset.estat); }
+      else if (el.dataset.grup) E.cfg.grups[+el.dataset.grup].serveis.forEach((s) => { if ((E.perServei.get(s) || []).length) canviaServei(s, el.checked); });
       else if (el.dataset.servei) canviaServei(el.dataset.servei, el.checked);
       else if (el.dataset.linia) canviaLinia(el.dataset.linia, el.checked);
       else if (el.name === 'mapa-base') { posaMapaBase(el.value); return; }

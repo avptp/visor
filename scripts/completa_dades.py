@@ -15,6 +15,12 @@ No necessita cap llibreria externa. Tot el que aplica és a scripts/fonts/:
   tracats_renfe.json               Traçats de Regionals i Mitja distància sobre la xarxa ferroviària de l'ICV.
   correccions_metrovalencia.json   Traçats, parades i colors de les línies 4, 6, 8 i 9 de Metrovalència.
   codis_concessions.json           Codi de contracte de les concessions d'autobús de la Generalitat.
+  correccions_ferrocarril.json     Correccions de línies de Renfe (la C1 d'Alacant comença a Alacant Terminal).
+  brt_xirivella.geojson            BRT València – Xirivella – Aldaia/Alaquàs (en projecte), dels plànols de l'estudi informatiu.
+  ferrocarril_fora_cv.json         Parades i traçat de fora de la Comunitat de les línies de ferrocarril que en
+                                   ixen (C1 fins a Múrcia, Vinaròs–Tortosa, Albacete, Terol–Saragossa).
+  bus_projectes.geojson            Concessions interurbanes en projecte (CV-207, CV-210, CV-213, CV-303),
+                                   modelades a partir dels annexos de parades dels projectes de servici.
 
 Les capes estàtiques es copien tal qual; les correccions es tornen a aplicar damunt dels fitxers
 que genera actualitza_dades.py, així que es pot executar tantes vegades com calga.
@@ -121,6 +127,113 @@ def codis(dades):
     desa(dades / 'bus_interurba.geojson', gj)
 
 
+def correccions_ferrocarril(dades):
+    cfg = FONTS / 'correccions_ferrocarril.json'
+    if not cfg.exists():
+        return
+    import math
+    c = llig(cfg)['linies']
+    est = per_id(llig(dades / 'estacions.geojson'))
+    km = lambda a, b: math.hypot((a[0] - b[0]) * 86.0, (a[1] - b[1]) * 111.0)
+    canvis_est = False
+    for fitxer in ('rodalies', 'regionals', 'md'):
+        gj = llig(dades / f'{fitxer}.geojson')
+        linies = per_id(gj)
+        canvi = False
+        for lid, d in c.items():
+            f = linies.get(lid)
+            if not f:
+                continue
+            p = f['properties']
+            if d.get('nom'):
+                p['nom'] = d['nom']
+            treu = set(d.get('treu_parades', []))
+            p['parades'] = [i for i in p.get('parades', []) if i not in treu]
+            for i in treu:
+                if i in est and lid in est[i]['properties'].get('linies', []):
+                    est[i]['properties']['linies'].remove(lid)
+                    canvis_est = True
+            altra = linies.get(d.get('treu_tram_de'))
+            if altra:
+                ref = [q for t in altra['geometry']['coordinates'] for q in t]
+                centre = est.get(d.get('conserva_prop_de'), {}).get('geometry', {}).get('coordinates')
+                nous = []
+                for tram in f['geometry']['coordinates']:
+                    cur = []
+                    for q in tram:
+                        sobra = min(km(q, r) for r in ref) < 0.04 and not (centre and km(q, centre) < 0.4)
+                        if sobra:
+                            if len(cur) >= 2:
+                                nous.append(cur)
+                            cur = []
+                        else:
+                            cur.append(q)
+                    if len(cur) >= 2:
+                        nous.append(cur)
+                f['geometry']['coordinates'] = nous
+            canvi = True
+        if canvi:
+            desa(dades / f'{fitxer}.geojson', gj)
+    if canvis_est:
+        e = llig(dades / 'estacions.geojson')
+        e['features'] = list(est.values())
+        desa(dades / 'estacions.geojson', e)
+
+
+def fora_cv(dades):
+    """Línies de ferrocarril que ixen de la Comunitat: el traçat es queda retallat, però s'hi afig el
+    recorregut sencer (`complet`, que el visor dibuixa difuminat) i les parades de fora (`fora_cv`)."""
+    cfg = FONTS / 'ferrocarril_fora_cv.json'
+    if not cfg.exists():
+        return
+    c = llig(cfg)
+    est = llig(dades / 'estacions.geojson')
+    estacions = per_id(est)
+    for fitxer in ('rodalies', 'regionals', 'md'):
+        gj = llig(dades / f'{fitxer}.geojson')
+        canvi = False
+        for f in gj['features']:
+            p = f['properties']
+            d = c['linies'].get(p['id'])
+            if not d:
+                continue
+            fora = set(d['abans']) | set(d['despres'])
+            dins = [i for i in p.get('parades', []) if i not in fora]
+            p['parades'] = d['abans'] + dins + d['despres']
+            g = f['geometry']
+            trams = g['coordinates'] if g['type'] == 'MultiLineString' else [g['coordinates']]
+            p['complet'] = {'type': 'MultiLineString', 'coordinates': trams + [d['tracat_fora']]}
+            for i in d['abans'] + d['despres']:
+                e = estacions.get(i)
+                if not e:
+                    info = c['estacions'][i]
+                    e = estacions[i] = {'type': 'Feature', 'properties': {'id': i, 'tipus': 'estacio', 'nom': info['nom'],
+                                                                         'serveis': [], 'linies': [], 'fora_cv': True},
+                                        'geometry': {'type': 'Point', 'coordinates': info['coord']}}
+                ep = e['properties']
+                if d['servei'] not in ep['serveis']:
+                    ep['serveis'].append(d['servei'])
+                if p['id'] not in ep['linies']:
+                    ep['linies'].append(p['id'])
+            canvi = True
+        if canvi:
+            desa(dades / f'{fitxer}.geojson', gj)
+    est['features'] = list(estacions.values())
+    desa(dades / 'estacions.geojson', est)
+
+
+def projectes(dades):
+    """Afig a bus_interurba.geojson les concessions en projecte (substituint les que ja hi haguera)."""
+    cfg = FONTS / 'bus_projectes.geojson'
+    if not cfg.exists():
+        return
+    nous = llig(cfg)['features']
+    ids = {f['properties']['id'] for f in nous}
+    gj = llig(dades / 'bus_interurba.geojson')
+    gj['features'] = [f for f in gj['features'] if f['properties']['id'] not in ids] + nous
+    desa(dades / 'bus_interurba.geojson', gj)
+
+
 def copia(dades, nom):
     origen = FONTS / nom
     if origen.exists():
@@ -135,8 +248,11 @@ def main():
     print('Completant les dades:')
     metrovalencia(dades)
     renfe(dades)
+    correccions_ferrocarril(dades)
+    fora_cv(dades)
     codis(dades)
-    for nom in ('estatals.geojson', 'atmv.geojson', 'tram_castello.geojson', 'emt_valencia.geojson', 'urba_alacant.geojson'):
+    projectes(dades)
+    for nom in ('estatals.geojson', 'atmv.geojson', 'tram_castello.geojson', 'emt_valencia.geojson', 'urba_alacant.geojson', 'brt_xirivella.geojson'):
         copia(dades, nom)
     copia_limit = AQUI / 'limit_cv.geojson'
     if copia_limit.exists():

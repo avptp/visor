@@ -1,0 +1,11 @@
+{
+ "_comentari": "Correccions de línies de Renfe que el GTFS no porta bé. «treu_parades»: parades que no són de la línia; «treu_tram_de»: s'esborra el traçat que coincidix amb el d'una altra línia (excepte prop de l'estació de «conserva_prop_de»).",
+ "linies": {
+  "rodalies:alacant-murcia:C1": {
+   "nom": "Alacant Terminal – Murcia del Carmen",
+   "treu_parades": ["adif:60913"],
+   "treu_tram_de": "rodalies:alacant-murcia:C3",
+   "conserva_prop_de": "adif:60911"
+  }
+ }
+}

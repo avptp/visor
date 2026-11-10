@@ -123,6 +123,8 @@ button, input { font: inherit; color: inherit; }
   margin: 10px 0 6px; font-size: .8rem; font-weight: 700; color: var(--turquesa-fosc);
   letter-spacing: .02em;
 }
+.grup h3 .casella-grup { display: inline-flex; gap: 8px; }
+.grup h3 .casella-grup input { width: 15px; height: 15px; }
 .grup ul { list-style: none; margin: 0; padding: 0; }
 .grup label, .bloc label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
 .grup input, .bloc input { accent-color: var(--turquesa-fosc); width: 17px; height: 17px; margin: 0; flex: none; }
@@ -338,6 +340,39 @@ button.bala:hover { box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--c);
   box-shadow: var(--ombra); font: inherit; font-size: .84rem; padding: 3px 8px;
 }
 .leaflet-tooltip-top.etiqueta::before { border-top-color: var(--superficie); }
+
+/* ---------- Comentaris sobre el visor ---------- */
+.comentaris { position: relative; }
+.comentaris-boto {
+  display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px 0 11px;
+  border: 0; border-radius: 999px; background: var(--mari); color: #fff; box-shadow: var(--ombra);
+  font: inherit; font-size: .86rem; font-weight: 600; cursor: pointer;
+}
+.comentaris-boto svg { width: 19px; height: 19px; flex: none; }
+.comentaris-boto:hover { background: #3d4560; }
+.comentaris-boto[aria-expanded="true"] { background: var(--turquesa-fosc); }
+.comentaris-panell {
+  position: absolute; right: 0; bottom: calc(100% + 10px); width: min(320px, calc(100vw - 28px));
+  padding: 14px; border-radius: 12px; background: var(--superficie); box-shadow: var(--ombra);
+  color: var(--text); font-size: .86rem; line-height: 1.4;
+}
+.comentaris-panell[hidden] { display: none; }
+.comentaris-titol { margin: 0 0 4px; font-weight: 700; font-size: .95rem; }
+.comentaris-avis { margin: 0 0 10px; color: var(--text-suau); }
+.comentaris-opcions { display: grid; gap: 6px; }
+.comentaris-opcio {
+  display: block; padding: 8px 10px; border: 1px solid var(--vora); border-radius: 8px;
+  color: inherit !important; text-decoration: none;
+}
+.comentaris-opcio:hover, .comentaris-opcio:focus-visible { border-color: var(--turquesa-fosc); background: var(--fons); }
+.comentaris-opcio strong { display: block; }
+.comentaris-opcio span { display: block; color: var(--text-suau); font-size: .8rem; }
+.comentaris-peu { margin: 10px 0 0; font-size: .78rem; color: var(--text-suau); }
+.comentaris-peu a { color: var(--turquesa-fosc); }
+@media (max-width: 700px) {
+  .comentaris-boto { width: 36px; padding: 0; justify-content: center; }
+  .comentaris-boto span { display: none; }
+}
 
 /* ---------- Mòbil ---------- */
 @media (max-width: 700px) {
