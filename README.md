@@ -1,6 +1,12 @@
 # Visor de la xarxa de transport públic
 
-Visor interactiu de la xarxa de transport públic de la Comunitat Valenciana per a la web de l'AVPTP. Mostra els servicis ferroviaris, les concessions d'autobús interurbà i els nodes de transport principals. Cada servici es pot mostrar o amagar sencer o línia a línia. En seleccionar una línia, una concessió o un node s'obri una fitxa amb el recorregut (les parades), les dades i la documentació associada.
+Visor interactiu de la xarxa de transport públic de la Comunitat Valenciana per a la web de l'AVPTP. Mostra:
+
+- els servicis ferroviaris (Metrovalència, Rodalies, TRAM d'Alacant, Regionals i Mitja distància);
+- els autobusos: TRAM de Castelló, línies urbanes, Metrobús (ATMV), línies interurbanes de la Generalitat i línies estatals;
+- els nodes de transport principals (estacions d'autobusos i d'Adif).
+
+Cada servici es pot mostrar o amagar sencer o element a element. En seleccionar una línia, una concessió, una xarxa urbana, un corredor o un node s'obri una fitxa amb el recorregut, la documentació de l'associació i les seues aparicions als mitjans.
 
 El visor és estàtic: no té base de dades ni processos automàtics. Les dades s'actualitzen a mà quan es vulga (vegeu «Actualitzar les dades»).
 
@@ -8,28 +14,41 @@ El visor és estàtic: no té base de dades ni processos automàtics. Les dades 
 
 ```
 index.html
-css/visor.css               colors corporatius i aparença
-js/visor.js                 funcionament
-js/i18n.js                  textos en valencià i castellà
-img/                        logotip i isotip de l'AVPTP
-img/logos/                  logotips dels servicis (Metrovalència, Rodalies, TRAM, Renfe, GVA)
-dades/config.json           servicis, logotips, colors, mapes de fons i fonts de documentació
-dades/*.geojson             capes generades (no s'editen a mà)
-dades/limit_cv.geojson      límit de la Comunitat (delimitació i vel del mapa)
-dades/metadades.json        data i origen de les dades
-dades/documentacio.csv      documentació associada a cada element
-scripts/                    preparació de les dades (no es publica)
-  actualitza_dades.py       genera dades/ a partir dels GTFS del NAP
-  genera_autonom.py         crea visor-avptp-autonom.html per a revisar-lo en local
-  serveis.json              quines rutes s'agafen i com s'agrupen
-  fonts/AVPTP_xarxa.gpkg    traçats propis de l'AVPTP
-  limit_cv.geojson          límit de la Comunitat (per a retallar les línies que ixen)
+css/visor.css                    colors corporatius i aparença
+js/visor.js                      funcionament
+js/i18n.js                       textos en valencià i castellà
+img/                             logotip i isotip de l'AVPTP
+img/logos/                       logotips dels servicis
+dades/config.json                grups, servicis, logotips, colors, mapes de fons i fonts de documentació
+dades/*.geojson                  capes del mapa (no s'editen a mà)
+dades/limit_cv.geojson           límit de la Comunitat (delimitació i vel del mapa)
+dades/metadades.json             data i origen de les dades
+dades/documentacio.csv           documentació i aparicions als mitjans de cada element
+scripts/                         preparació de les dades (no es publica)
+  actualitza_dades.py            genera dades/ a partir dels GTFS del NAP
+  completa_dades.py              afig les capes i correccions que no venen del NAP
+  xarxa_urbana.py                prepara una xarxa d'autobús urbà a partir del seu GTFS
+  genera_autonom.py              crea visor-avptp-autonom.html per a revisar-lo en local
+  fes_autonom.py                 àlies de genera_autonom.py
+  serveis.json                   quines rutes s'agafen i com s'agrupen
+  limit_cv.geojson               límit de la Comunitat (ICV)
   requirements.txt
+  fonts/
+    AVPTP_xarxa.gpkg             traçats propis de l'AVPTP
+    estatals.geojson             línies estatals, per corredor
+    estatals_rutes.geojson       línies estatals, ruta a ruta (traçat i parades)
+    atmv.geojson                 concessions de l'ATMV (Metrobús)
+    emt_valencia.geojson         EMT València
+    urba_alacant.geojson         autobús urbà d'Alacant
+    tram_castello.geojson        TRAM de Castelló
+    tracats_renfe.json           traçats de Regionals i Mitja distància
+    correccions_metrovalencia.json
+    codis_concessions.json       codis de contracte de les concessions de la Generalitat
 ```
 
 ## Publicació
 
-Cada canvi a la branca `master` es publica automàticament a GitHub Pages (`.github/workflows/publica.yml`). Només es publiquen `index.html`, `css/`, `js/`, `img/` i `dades/`; els scripts es queden al repositori.
+Cada canvi a la branca `main` es publica automàticament a GitHub Pages (`.github/workflows/publica.yml`). Només es publiquen `index.html`, `css/`, `js/`, `img/` i `dades/`; els scripts es queden al repositori. Abans de publicar, l'acció comprova que tots els fitxers de `dades/` són JSON vàlid.
 
 El visor queda a `https://visor.avptp.org` (o, mentre no hi haja subdomini, a `https://avptp.github.io/visor/`).
 
@@ -37,6 +56,10 @@ Configuració, una sola vegada:
 
 1. *Settings → Pages → Build and deployment → Source:* **GitHub Actions**.
 2. Subdomini: al DNS d'avptp.org, un registre `CNAME` de `visor` a `avptp.github.io`. Després, a *Settings → Pages → Custom domain*, `visor.avptp.org` i activeu *Enforce HTTPS*.
+
+### Pujar canvis des de la web de GitHub
+
+*Add file → Upload files* a l'arrel del repositori i arrossegueu-hi el **contingut** de la carpeta (`index.html`, `css`, `js`, `img`, `dades`, `scripts`…), no la carpeta en si. Els fitxers amb el mateix nom se sobreescriuen. Per a esborrar una carpeta, el més còmode és l'editor web: amb el repositori obert, premeu `.`, feu clic dret sobre la carpeta → *Delete Permanently* i, al panell de control de codi font, *Commit & Push*.
 
 ### Enllaçar-lo i incrustar-lo des de la web
 
@@ -51,8 +74,8 @@ La web principal ([avptp/face](https://github.com/avptp/face)) l'enllaça des de
 
 - `?sense-titol` amaga el títol, si la pàgina ja en té un.
 - `?hl=ca` o `?hl=es` fixa l'idioma. Com que el visor està en un altre domini que la web, és la manera de mantindre'ls en el mateix idioma.
-- `?editor` mostra a cada fitxa l'identificador per a lligar-hi documentació (vegeu «Documentació»). El públic no el veu.
-- `#identificador` obri directament la fitxa d'una línia, concessió o node, per exemple `#rodalies:valencia:C1`. La barra d'adreces s'actualitza en seleccionar elements, així que es poden copiar i compartir enllaços.
+- `?editor` mostra a cada fitxa l'identificador per a lligar-hi documentació (vegeu «Documentació i mitjans»). El públic no el veu.
+- `#identificador` obri directament la fitxa d'un element, per exemple `#rodalies:valencia:C1` o `#emt_valencia`. La barra d'adreces s'actualitza en seleccionar elements, així que es poden copiar i compartir enllaços.
 
 ### Idioma
 
@@ -85,20 +108,57 @@ i obrir `http://localhost:8000`. Obrir `index.html` amb doble clic no funciona p
 
 ## Capes del mapa
 
-Les capes s'organitzen en grups (`grups` de `config.json`) i, dins de cada grup, en servicis. Cada servici té una casella per a mostrar-lo o amagar-lo sencer i un desplegable amb cadascuna de les seues línies (o concessions, o estacions principals). Si només se'n mostren algunes, la casella del servici queda a mitges.
+Les capes s'organitzen en grups (`grups` de `config.json`) i, dins de cada grup, en servicis:
 
-Un servici del visor no ha de coincidir necessàriament amb un fitxer de dades. Amb `origen` es pot:
+| Grup | Servicis |
+|---|---|
+| Ferrocarril | Metrovalència, Rodalies València, Rodalies Alacant-Murcia, TRAM d'Alacant, Regionals i Mitja distància |
+| Autobús | TRAM de Castelló, Línies urbanes, Metrobús (ATMV), Línies interurbanes, Línies estatals |
+| Nodes de transport | Estacions d'autobusos, Estacions principals d'Adif |
 
-- **Dividir** un fitxer: Rodalies València i Rodalies Alacant-Murcia agafen les línies de `rodalies.geojson` segons el prefix de l'identificador (`rodalies:valencia:`, `rodalies:alacant-murcia:`).
-- **Ajuntar** fitxers: «Regionals i Mitja distància» agafa `regionals.geojson` i `md.geojson`. Cada `origen` porta una `etiqueta` (el subapartat de la llista) i un `color` per a les línies que no en tenen.
+Cada servici té una casella per a mostrar-lo o amagar-lo sencer i un desplegable amb els seus elements. Si només se'n mostren alguns, la casella del servici queda a mitges. A la llegenda, els elements van ordenats pel codi (els que encara no en tenen, al principi) i després pel nom.
 
-El `logo` de cada servici és una imatge de `img/logos/` (es mostra a 34 × 26 px). Les estacions no són una capa: només apareixen en seleccionar una línia, al mapa i a l'apartat «Recorregut». En triar-ne una del recorregut, el mapa s'hi centra.
+Hi ha dues menes d'element amb traçat:
 
-### Colors de les línies
+- **Línia** (`tipus: linia`): un servici amb recorregut i parades (ferrocarril, TRAM de Castelló). La fitxa mostra el recorregut, i en triar-ne una parada el mapa s'hi centra.
+- **Agrupació** (`tipus: concessio`): un conjunt de línies que es tracten juntes, perquè les al·legacions van en grup. És el cas de les concessions interurbanes i de l'ATMV, de les xarxes urbanes i dels corredors estatals. La fitxa mostra la llista de línies o rutes.
 
-El color de cada línia ve de les dades. Per a Metrovalència i el TRAM es fixa a `scripts/serveis.json`, dins de `geometries_propies.linies` (per identificador AVPTP, per exemple `FER_FGV_V04`), i té prioritat sobre el color del GTFS, que no sempre és el del plànol oficial. Per a provar un color sense regenerar les dades, es pot posar a `colorsLinies` de `config.json` (per exemple `{ "metrovalencia:2": "#E4007C" }`).
+Les estacions no són una capa: només apareixen en seleccionar una línia.
+
+### Opcions de cada servici (`serveis` de `config.json`)
+
+| Camp | Per a què serveix |
+|---|---|
+| `nom`, `detall` | Nom i subtítol a la llegenda (en `ca` i `es`) |
+| `logo` | Imatge de `img/logos/` (es mostra a 34 × 26 px). Sense logo, es mostra una mostra del color. |
+| `logoFitxa` | Logotip gran a la capçalera del cos de la fitxa (per exemple, Metrobús) |
+| `color`, `gruix` | Color i gruix per defecte de les línies |
+| `origen` | Agafa les línies d'un altre servici de les dades, o només les que comencen per un `prefix`. Servix per a **dividir** un fitxer (Rodalies València i Rodalies Alacant-Murcia agafen `rodalies.geojson` per prefix) o **ajuntar-ne** diversos (Regionals i Mitja distància; els tres corredors estatals amb un color cadascun). Amb `etiqueta`, la llista es dividix en subapartats. |
+| `recompte` | Text del recompte a la dreta de la llegenda: `corredors_n`, `xarxes_n`… (per defecte, línies o concessions) |
+| `textTipus`, `textLinies` | Textos propis de la fitxa: el tipus d'element («Corredor estatal», «Xarxa urbana») i el títol de la llista («Rutes del corredor») |
+| `codiLlegenda` | `false` perquè la llegenda no mostre el codi entre claudàtors (xarxes urbanes) |
+| `senseDades` | `true` per a amagar l'apartat «Dades» de la fitxa (corredors estatals) |
+
+### Colors
+
+El color de cada línia ve de les dades. Per a Metrovalència i el TRAM d'Alacant es fixa a `scripts/serveis.json`, dins de `geometries_propies.linies` (per identificador AVPTP, per exemple `FER_FGV_V04`), i té prioritat sobre el color del GTFS. Les línies 4, 6, 8 i 9 de Metrovalència es corregixen a `correccions_metrovalencia.json`. Per a fixar el color de qualsevol element sense regenerar les dades, es pot posar a `colorsLinies` de `config.json`, per exemple `{ "metrovalencia:2": "#E4007C", "urba_alacant": "#1F6FB5" }`.
+
+### Estat: en servici o en projecte
+
+Cada element pot portar el camp `estat`: `servei` (per defecte) o `projecte`. Els elements en projecte es dibuixen amb línia discontínua i porten l'etiqueta «En projecte» a la capçalera de la fitxa. A la llegenda, el bloc «Estat» permet mostrar o amagar cada estat. Per a una ampliació en projecte d'una línia en servici, s'ha d'afegir com a element separat amb `estat: projecte`, de manera que la línia actual continue sencera «En servici».
+
+### Recorregut sencer i ramals
+
+- `complet`: recorregut sencer d'un element retallat al límit de la Comunitat. En seleccionar-lo, la part de fora es mostra difuminada (corredors estatals). Les parades de fora de la Comunitat porten `fora_cv: true` i surten en gris al recorregut.
+- `ramals`: llista de ramals d'una línia (`[{nom, parades}]`), que es mostren davall del recorregut. La L4 de Metrovalència té els de Lloma Llarga – Terramelar i Fira València.
+
+### Etiquetes de codi
+
+A partir del zoom `zoomEtiquetes` de `config.json` (13), cada element visible que té codi porta sobre el traçat uns requadres del seu color amb el codi (L4, C6, CE-920, CV-103, EMT…). Es reparteixen per la pantalla sense trepitjar-se ni quedar davall dels panells. En fer-hi clic s'obri la fitxa.
 
 ## Actualitzar les dades
+
+### 1. Dades del NAP
 
 1. Entreu al NAP (https://nap.transportes.gob.es) amb el compte de l'associació i descarregueu, sense canviar-los el nom, els GTFS d'estos fitxers:
 
@@ -128,49 +188,90 @@ El color de cada línia ve de les dades. Per a Metrovalència i el TRAM es fixa 
    --local tram_alacant=~/Baixades/fitxer_del_tram.zip
    ```
 
-4. Reviseu el visor en local i pugeu els canvis de `dades/`. En arribar a `master`, es publiquen sols.
-
 Si falta el GTFS d'una font, el procés ho avisa. Els servicis que en depenen queden buits o es construeixen només amb els traçats propis.
 
-### Traçats propis (GeoPackage)
+### 2. Capes i correccions pròpies (sempre després del pas 1)
 
-Les línies de `fonts/AVPTP_xarxa.gpkg` (capa `ferrocarril_linies`) tenen prioritat sobre el traçat dels GTFS. El GTFS continua aportant les estacions, el recorregut i el color. Cada línia del GeoPackage es relaciona amb la del GTFS pel camp `xarxa` (segons la taula `geometries_propies.xarxes` de `serveis.json`) i pel codi (`nom`: «L1», «C3»…).
+```
+python3 scripts/completa_dades.py
+```
 
-L'identificador del GeoPackage (`id_element`, per exemple `FER_FGV_V01`) es guarda com a identificador AVPTP de la línia. Es pot fer servir igual que l'identificador del visor per a associar-hi documentació i per a enllaçar-la.
+No necessita cap llibreria. `actualitza_dades.py` torna a generar els fitxers del NAP des de zero, i este pas hi torna a aplicar tot el que no ve del NAP:
 
-Per a afegir o corregir traçats, n'hi ha prou amb editar el GeoPackage (per exemple, amb QGIS) i tornar a executar el procés.
+- copia a `dades/` les capes de `scripts/fonts/`: línies estatals, ATMV, xarxes urbanes i TRAM de Castelló;
+- corregix Metrovalència (`correccions_metrovalencia.json`): traçats, parades i colors de les línies 4, 6, 8 i 9 i els ramals de la L4;
+- substituïx els traçats de Regionals i Mitja distància (`tracats_renfe.json`), perquè el GTFS de Renfe no en porta i, sense ells, les línies anirien en recte d'estació a estació;
+- posa el codi de contracte a les concessions de la Generalitat (`codis_concessions.json`);
+- copia el límit de la Comunitat.
+
+Es pot executar tantes vegades com calga. Després, reviseu el visor en local i pugeu els canvis de `dades/`. En arribar a `main`, es publiquen sols.
+
+### 3. Xarxes d'autobús urbà
+
+Cada xarxa urbana és una sola entrada del visor amb totes les seues línies, perquè les al·legacions van en conjunt. Perquè la xarxa no quede massa densa, cada carrer es dibuixa una única vegada encara que hi passen diverses línies. Quan l'operador publique un GTFS nou:
+
+```
+python3 scripts/xarxa_urbana.py ~/Baixades/emt scripts/fonts/emt_valencia.geojson
+python3 scripts/xarxa_urbana.py ~/Baixades/vectalia scripts/fonts/urba_alacant.geojson \
+    --id urba_alacant --codi Urbà --nom "Autobús urbà d'Alacant" \
+    --nom-es "Autobús urbano de Alicante" --web https://alicante.vectalia.es/ --articles-majuscula
+python3 scripts/completa_dades.py
+```
+
+La carpeta és el GTFS descomprimit. Per a afegir una altra ciutat: el mateix ordre amb un `--id` nou, afegir el fitxer a `fitxers` de `config.json` i a la llista de `completa_dades.py`, i posar-li un color a `colorsLinies`.
 
 ### Com es construeix cada servici
 
 | Servici | Font | Criteri |
 |---|---|---|
-| Metrovalència | GTFS 1168 + GeoPackage | totes les línies de metro i tramvia |
+| Metrovalència | GTFS 1168 + GeoPackage + correccions | totes les línies de metro i tramvia |
 | Rodalies | GTFS 1130 | núcleu de València (excepte C4) i núcleu d'Alacant-Murcia, retallat al límit de la Comunitat |
-| TRAM d'Alacant | GTFS 1167 + GeoPackage | totes les línies; el recorregut és la variant més llarga d'entre les que fan almenys el 10% dels viatges |
-| Regionals | GTFS 1098 | trens Regional i Regional Exprés d'Alcoi, Alacant–València i València–Vinaròs/Tortosa, retallats al límit |
-| Mitja distància | GTFS 1098 | trens cap a Albacete i Saragossa, retallats al límit |
-| Línies interurbanes | GTFS 1526 | una entrada per concessió (agrupades per operador del GTFS) |
+| TRAM d'Alacant | GTFS 1167 + GeoPackage | totes les línies; el recorregut és la variant més llarga d'entre les que fan almenys el 10 % dels viatges |
+| Regionals | GTFS 1098 + xarxa ferroviària de l'ICV | trens Regional i Regional Exprés d'Alcoi, Alacant–València i València–Vinaròs/Tortosa, retallats al límit. El traçat és de la xarxa ferroviària d'interés general de l'ICV. |
+| Mitja distància | GTFS 1098 + xarxa ferroviària de l'ICV | trens cap a Albacete i Saragossa, retallats al límit |
+| TRAM de Castelló | OpenStreetMap | línia actual (Universitat Jaume I – el Grau), sense les ampliacions en projecte |
+| Línies urbanes | GTFS de cada operador | EMT València i autobús urbà d'Alacant (Vectalia), una entrada per xarxa |
+| Metrobús (ATMV) | Dades públiques del visor de Metrobús (Met Go) | les sis concessions de l'àrea metropolitana de València (CV-102, CV-103, CV-106, CV-107, CV-108 i CV-109), amb totes les línies de cada una |
+| Línies interurbanes | GTFS 1526 + `codis_concessions.json` | una entrada per concessió, amb el codi de contracte de la Conselleria («Datos_concesiones_2025») |
+| Línies estatals | Nou mapa concessional del Ministeri | una entrada per corredor (València – Alacant – Múrcia; Terol – Castelló – Barcelona; Sevilla – Màlaga – Barcelona) amb les rutes que tenen alguna parada a la Comunitat. Estan **en projecte**. Les parades i el seu ordre són els de l'annex II (itinerari); el traçat va per carretera de parada a parada i s'ha comprovat amb les distàncies parcials de l'annex. |
 | Nodes | GTFS 1526 i Renfe | estacions d'autobusos i estacions principals d'Adif definides a `serveis.json` |
 
-Les regles (quines línies, quines parades identifiquen cada regional, quins nodes…) són a `scripts/serveis.json`. Altres opcions útils: `noms_parades` (dins d'una font) corregix noms de parada del GTFS, `prefix_codi` afig un prefix al codi de línia (el TRAM numera «1», «2»… i així es manté `tram_alacant:L1`) i `quota_recorregut` evita que el recorregut agafe variants esporàdiques. El GTFS de la Generalitat no inclou el codi de contracte de cada concessió. Es pot afegir a mà a `codis`, dins del servei `bus_interurba`, per exemple `{ "5102": "CV-303" }`; el codi apareixerà al distintiu de la concessió.
+Les capes de Metrobús, línies estatals i TRAM de Castelló no tenen un procés automàtic: es van preparar una vegada a partir de les fonts indicades. Si canvien, cal tornar a preparar el fitxer corresponent de `scripts/fonts/`.
 
-## Documentació
+Les regles dels servicis del NAP (quines línies, quines parades identifiquen cada regional, quins nodes…) són a `scripts/serveis.json`. Altres opcions útils: `noms_parades` (dins d'una font) corregix noms de parada del GTFS, `prefix_codi` afig un prefix al codi de línia (el TRAM numera «1», «2»… i així es manté `tram_alacant:L1`) i `quota_recorregut` evita que el recorregut agafe variants esporàdiques.
 
-`dades/documentacio.csv` té una fila per document, amb separador `;` i codificació UTF-8. A Excel, cal guardar-lo amb *Desa com a → CSV UTF-8*.
+### Codis de les concessions
+
+El GTFS de la Generalitat no inclou el codi de contracte de cada concessió. Es posa a `scripts/fonts/codis_concessions.json`, per identificador de concessió del visor, i apareix al distintiu de la fitxa, a les etiquetes del mapa i a la llegenda, en la forma «[CE-920] Alberic – Alzira – València». CE vol dir contracte d'emergència. Les concessions que encara no tenen codi segur hi estan anotades.
+
+### Traçats propis (GeoPackage)
+
+Les línies de `scripts/fonts/AVPTP_xarxa.gpkg` (capa `ferrocarril_linies`) tenen prioritat sobre el traçat dels GTFS. El GTFS continua aportant les estacions, el recorregut i el color. Cada línia del GeoPackage es relaciona amb la del GTFS pel camp `xarxa` (segons la taula `geometries_propies.xarxes` de `serveis.json`) i pel codi (`nom`: «L1», «C3»…).
+
+L'identificador del GeoPackage (`id_element`, per exemple `FER_FGV_V01`) es guarda com a identificador AVPTP de la línia. Es pot fer servir igual que l'identificador del visor per a associar-hi documentació i per a enllaçar-la.
+
+Per a afegir o corregir traçats, n'hi ha prou amb editar el GeoPackage (per exemple, amb QGIS) i tornar a executar el procés.
+
+## Documentació i mitjans
+
+`dades/documentacio.csv` té una fila per document o aparició als mitjans, amb separador `;` i codificació UTF-8. A Excel, cal guardar-lo amb *Desa com a → CSV UTF-8*.
 
 | Columna | Contingut |
 |---|---|
-| `id` | Identificador de l'element. Si el document afecta diversos elements, es separen amb `\|`. |
-| `tipus` | `pdf`, `enllac`, `imatge` o `text` |
+| `id` | Identificador de l'element. Si afecta diversos elements, es separen amb `\|`. |
+| `tipus` | `pdf`, `enllac`, `imatge` o `text` per a documents de l'associació; `premsa` per a aparicions als mitjans (notícies, entrevistes…) |
 | `titol_ca`, `titol_es` | Títol en cada idioma. Si en falta un, es mostra l'altre. |
-| `url` | Adreça del document (per exemple, `https://cdn.avptp.org/documents/…`) |
+| `url` | Adreça del document o de la notícia |
 | `idioma` | Idioma del document (`ca` o `es`). Quan no coincidix amb el de la interfície, es mostra l'avís «En castellà» o «En valencià». |
-| `data` | Data del document (AAAA-MM-DD), opcional |
+| `data` | Data (AAAA-MM-DD), opcional |
 | `descripcio_ca`, `descripcio_es` | Text breu, opcional |
+| `mitja` | Només per a `premsa`: nom del mitjà (per exemple, *València Extra*) |
 
-La columna `id` diu a quina línia, concessió o node es mostra el document. És el mateix identificador que apareix a l'adreça en seleccionar l'element (`…#metrovalencia:1`) i, en mode d'edició (`index.html?editor`), al final de la fitxa amb un botó per a copiar-lo. Per a les línies amb traçat propi també val l'identificador AVPTP del GeoPackage (`FER_FGV_V01`), que no canvia encara que canvie el GTFS.
+Les files de tipus `premsa` es mostren a la fitxa en un apartat propi, «Als mitjans», de la més recent a la més antiga, amb el nom del mitjà i la data. La resta van a «Documentació».
 
-Els documents no s'importen: el visor enllaça directament a on estiguen (el servidor de l'associació, GitHub…). A `config.json`, `documentacio` és una llista de fonts. S'hi poden afegir més fulls CSV o fitxers JSON amb les mateixes columnes, locals o remots. Un full remot, d'un altre domini, ha de permetre CORS. Els fitxers de `raw.githubusercontent.com` ja el permeten.
+La columna `id` diu a quin element es mostra. És el mateix identificador que apareix a l'adreça en seleccionar l'element (`…#metrovalencia:10`) i, en mode d'edició (`index.html?editor`), al final de la fitxa amb un botó per a copiar-lo. Per a les línies amb traçat propi també val l'identificador AVPTP del GeoPackage (`FER_FGV_V01`), que no canvia encara que canvie el GTFS.
+
+Els documents no s'importen: el visor enllaça directament a on estiguen (el servidor de l'associació, el mitjà…). A `config.json`, `documentacio` és una llista de fonts. S'hi poden afegir més fulls CSV o fitxers JSON amb les mateixes columnes, locals o remots. Un full remot, d'un altre domini, ha de permetre CORS. Els fitxers de `raw.githubusercontent.com` ja el permeten.
 
 ## Mapa de fons
 
@@ -196,13 +297,19 @@ Si algun nom ix malament, la correcció de fons és editar-lo a OpenStreetMap: O
 
 ### Delimitació de la Comunitat
 
-`limit` de `config.json` dibuixa el contorn de la Comunitat Valenciana i cobrix la resta del mapa amb un vel blanc semitransparent. `opacitatFora` regula el vel (0 el lleva, 1 amaga del tot l'exterior) i `vora`, `gruixVora` i `opacitatVora`, la línia del contorn. El fitxer `dades/limit_cv.geojson` el copia `actualitza_dades.py` des de `scripts/limit_cv.geojson`.
+`limit` de `config.json` dibuixa el contorn de la Comunitat Valenciana i cobrix la resta del mapa amb un vel blanc semitransparent. `opacitatFora` regula el vel (0 el lleva, 1 amaga del tot l'exterior) i `vora`, `gruixVora` i `opacitatVora`, la línia del contorn. El límit és el oficial de l'Institut Cartogràfic Valencià, simplificat a uns 10 m, i també servix per a retallar les línies que ixen de la Comunitat. El fitxer `dades/limit_cv.geojson` es copia des de `scripts/limit_cv.geojson`.
 
 ## Llicències i atribucions
 
-- **Dades de transport:** NAP del Ministeri de Transports i Mobilitat Sostenible. La llicència obliga a citar «Powered by MITRAMS» amb un enllaç a https://www.transportes.gob.es. El visor ho mostra en l'atribució del mapa.
+El peu del mapa i el panell de capes citen les administracions d'on venen les dades: Ministeri de Transports i Mobilitat Sostenible, Generalitat Valenciana, Autoritat de Transport Metropolità de València i Institut Cartogràfic Valencià (camps `atribucioDades` i `fonts` de `config.json`).
+
+- **Dades de transport del NAP:** la llicència obliga a citar «Powered by MITRAMS» amb un enllaç a https://www.transportes.gob.es. Es manté al peu del mapa.
+- **Línies estatals:** annexos II i III del nou mapa concessional del Ministeri. Els traçats s'han calculat per carretera (OSRM, dades © col·laboradors d'OpenStreetMap) entre les parades de l'itinerari.
+- **Metrobús (ATMV):** dades públiques del visor de Metrobús (Met Go).
+- **Línies urbanes:** GTFS de l'EMT València i de Vectalia (autobús urbà d'Alacant).
+- **TRAM de Castelló:** traçat i parades d'OpenStreetMap (ODbL).
+- **Límit de la Comunitat i xarxa ferroviària:** Institut Cartogràfic Valencià.
 - **Mapa de fons:** OpenFreeMap, © OpenMapTiles, © col·laboradors d'OpenStreetMap (ODbL); © IGN (CC BY 4.0, mapa base gris i PNOA). Llibreria MapLibre GL (BSD-3).
-- **Límit de la Comunitat:** IGN, Equipamiento Geográfico de Referencia Nacional, simplificat (paquet es-atlas).
 - **Llibreria de mapes:** Leaflet 1.9.4 (BSD-2).
 - **Codi:** llicència MIT (vegeu `LICENSE`). Les dades i els logotips tenen les llicències indicades ací damunt.
-- **Logotips:** el de l'AVPTP és propietat de l'associació; els dels servicis, de FGV, Renfe i la Generalitat Valenciana, i s'usen només per a identificar cada servici.
+- **Logotips:** el de l'AVPTP és propietat de l'associació; els dels servicis, dels seus titulars (FGV, Renfe, Generalitat Valenciana, Ministeri de Transports, Metrobús, TRAM de Castelló), i s'usen només per a identificar cada servici.
