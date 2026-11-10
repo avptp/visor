@@ -342,6 +342,11 @@ button.bala:hover { box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--c);
 .leaflet-tooltip-top.etiqueta::before { border-top-color: var(--superficie); }
 
 /* ---------- Comentaris sobre el visor ---------- */
+/* Amb la fitxa oberta, els controls de baix a la dreta (zoom, comentaris) es desplacen a l'esquerra de la fitxa */
+.leaflet-bottom.leaflet-right { transition: right .28s cubic-bezier(.2, .8, .2, 1); }
+@media (min-width: 701px) {
+  body:has(#fitxa.obert) .leaflet-bottom.leaflet-right { right: calc(min(410px, 100vw - 28px) + 14px); }
+}
 .comentaris { position: relative; }
 .comentaris-boto {
   display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px 0 11px;
