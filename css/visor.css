@@ -341,6 +341,18 @@ button.bala:hover { box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--c);
 }
 .leaflet-tooltip-top.etiqueta::before { border-top-color: var(--superficie); }
 
+/* ---------- Informe en PDF ---------- */
+.boto-informe {
+  display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px; text-align: left;
+  border: 1px solid var(--vora); border-radius: 8px; background: var(--superficie); color: var(--text);
+  font: inherit; font-size: .84rem; cursor: pointer;
+}
+.boto-informe svg { width: 20px; height: 20px; flex: none; color: var(--turquesa-fosc); }
+.boto-informe:hover { border-color: var(--turquesa-fosc); background: var(--fons); }
+.boto-informe[aria-busy="true"] { opacity: .65; cursor: progress; }
+.informe-estat { margin: 6px 0 0; font-size: .78rem; color: var(--text-suau); }
+.informe-estat:empty { display: none; }
+
 /* ---------- Comentaris sobre el visor ---------- */
 /* Amb la fitxa oberta, els controls de baix a la dreta (zoom, comentaris) es desplacen a l'esquerra de la fitxa */
 .leaflet-bottom.leaflet-right { transition: right .28s cubic-bezier(.2, .8, .2, 1); }

@@ -5,6 +5,7 @@
     "es": "Visor de la red de transporte público"
   },
   "web": "https://avptp.org",
+  "urlVisor": "https://visor.avptp.org",
   "limits": [
     [
       37.84,
@@ -169,8 +170,8 @@
     },
     "renfe": {
       "nom": {
-        "ca": "Regionals i Mitja distància",
-        "es": "Regionales y Media distancia"
+        "ca": "Regionals, MD i AVANT",
+        "es": "Regionales, MD y AVANT"
       },
       "logo": "img/logos/renfe.webp",
       "origen": [
@@ -189,6 +190,14 @@
             "es": "Media distancia"
           },
           "color": "#55606E"
+        },
+        {
+          "servei": "avant",
+          "etiqueta": {
+            "ca": "AVANT",
+            "es": "AVANT"
+          },
+          "color": "#000000"
         }
       ],
       "color": "#8A2B5E",
@@ -345,10 +354,12 @@
     "dades/tram_alacant.geojson",
     "dades/regionals.geojson",
     "dades/md.geojson",
+    "dades/avant.geojson",
     "dades/estacions.geojson",
     "dades/nodes.geojson"
   ],
   "metadades": "dades/metadades.json",
+  "resums": "dades/resums.json",
   "documentacio": [
     "dades/documentacio.csv"
   ],

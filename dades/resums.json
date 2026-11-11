@@ -1,0 +1,336 @@
+{
+ "https://cdn.avptp.org/documents/1keg6EtE.pdf": {
+  "context": "Informació pública anunciada al DOGV del 13 de maig de 2025 (20 dies hàbils).",
+  "objecte": "El projecte planteja una única línia Castelló – València amb parada a Vila-real (i a l’UJI en dies lectius), amb 6 expedicions per sentit entre setmana i 4 el cap de setmana.",
+  "punts": [
+   [
+    "Redundància amb Rodalies",
+    "El servici duplica la C6, que és fins a un 45 % més ràpida. La demanda prevista (6,29 viatgers per expedició) contrasta amb els 2,64 que tenia la línia actual el 2023."
+   ],
+   [
+    "Traçat alternatiu per la CV-10",
+    "Donar servici a Betxí i la Vall d’Uixó en lloc de Vila-real: connexió directa amb l’UJI, recuperació del Betxí – València (antiga CVCS-107) i reforç de la Vall – València, ara saturada en hora punta (Metrobús 113)."
+   ],
+   [
+    "Servici nocturn complementari al tren",
+    "Línia nocturna divendres i dissabtes, amb els recursos del cap de setmana, parant a Sagunt, la Vall d’Uixó, Borriana i Vila-real. L’últim C6 ix a les 22.15–22.20."
+   ],
+   [
+    "Sublínies coherents",
+    "La L1a i la L1b fan recorreguts i parades diferents a Castelló i a València per la mateixa ruta. Es demana homogeneïtzar-les."
+   ],
+   [
+    "Parada de l’UJI",
+    "Traslladar-la de l’avinguda de Sos Baynat, fora del campus, a l’Àgora."
+   ],
+   [
+    "Errors del projecte",
+    "La L1b no arriba a La Fe, tot i que l’annex 4 ho diu, i hi ha errades en noms de parades de l’annex 5."
+   ]
+  ],
+  "conclusio": "L’AVPTP rebutja el disseny tal com està, perquè el considera poc competitiu i redundant amb Rodalies, i en demana la reconsideració."
+ },
+ "https://cdn.avptp.org/documents/wRxQP4Y0.pdf": {
+  "context": "Projecte que unifica les concessions CV-207 i CV-208 en una sola per a l’àrea metropolitana d’Alacant.",
+  "objecte": "21 al·legacions sobre planificació, horaris, flota, recorreguts, informació a l’usuari i personal.",
+  "punts": [
+   [
+    "Autoritat metropolitana",
+    "Crear una Autoritat de Transport Metropolità Alacant-Elx amb marca i títols integrats (tipus SUMA), ampliar el TAM i incloure-hi el TRAM, l’aeroport, Xixona i la Torre de les Maçanes."
+   ],
+   [
+    "Flota i capacitat",
+    "No reduir la flota actual. Vehicles de 18 m a les línies 3 i 4, tres portes en vehicles de 12 m o més, híbrids a les línies 2, 13 i 14 i més places per a persones amb mobilitat reduïda."
+   ],
+   [
+    "Horaris i Fogueres",
+    "Començar les línies 3 i 4 a les 5.30 i acabar el servici a les 23.30 a l’hivern i a la 1.00 a l’estiu. Servici reforçat i nocturn durant les Fogueres, també la nit de la cremà."
+   ],
+   [
+    "Línies 3 i 4",
+    "Mantindre els 15 i 17 vehicles actuals i intervals de 6–7 minuts; unificar la 4A i la 4B en una línia que pare a totes les parades; validadores posteriors i estudiar plataforma reservada (BRT)."
+   ],
+   [
+    "Línia 14 (aeroport)",
+    "El projecte empitjora el servici actual (14 min en lloc de 12 de dia, nocturns irregulars, 4 vehicles en lloc de 6). Es demana mantindre 12 i 30 minuts i fer-la directa Luceros – aeroport."
+   ],
+   [
+    "Nocturns i parades violeta",
+    "Integrar les 2N, 3N i 4N en les diürnes, estendre la 2 tota la nit i mantindre les parades a demanda per a la seguretat de les dones."
+   ],
+   [
+    "Recorreguts",
+    "Ajustos a les línies 2, 9, 12 i 13 per a complementar el TRAM i servir zones més poblades; supressió de la 8 allargant la urbana 14 fins a Sant Gabriel."
+   ],
+   [
+    "Informació, personal i numeració",
+    "Aplicació en temps real, pantalles i avisos acústics bilingües, de 8 a 15 inspectors, i una numeració per a l’usuari que no es confonga amb les urbanes."
+   ]
+  ],
+  "conclusio": "El projecte no justifica diverses reduccions de servici i de flota. L’AVPTP proposa un sistema metropolità integrat i més capacitat a les línies amb més demanda."
+ },
+ "https://cdn.avptp.org/documents/mWwtM4iY.pdf": {
+  "context": "Informació pública anunciada al DOGV del 20 d’abril de 2026 (30 dies hàbils).",
+  "objecte": "Al·legacions al projecte de servici públic de transport per carretera «La Vega Baja – Alicante».",
+  "punts": [
+   [
+    "Informació del projecte",
+    "Incloure els horaris de pas per cada parada i els temps entre parades, no només l’hora d’inici."
+   ],
+   [
+    "Atenció a l’usuari i dades obertes",
+    "Aplicació mòbil, pantalles interiors, canals per WhatsApp i Telegram, atenció en valencià, castellà i anglés, i publicació de dades en GTFS i temps real."
+   ],
+   [
+    "Nou corredor Oriola – Múrcia",
+    "Línia per la N-340 fins a l’estació d’autobusos de Múrcia, amb un mínim de 4 expedicions per sentit en feiners i servici en caps de setmana."
+   ],
+   [
+    "Línia 1 Oriola – Alacant",
+    "Parada a l’aeroport a totes les expedicions directes i recuperar les 8 expedicions diàries del projecte de 2018 (ara 7)."
+   ],
+   [
+    "Línia 6 San Miguel de Salinas – Alacant",
+    "Passa de 2.325 a 1.204 expedicions anuals. Es demana recuperar els festius i una expedició més en feiners."
+   ],
+   [
+    "Línies 10 i 16B",
+    "Recuperar 4 expedicions diàries per sentit a la línia 10 i eliminar l’horari diferent dels dimarts a la 16B (3 expedicions diàries per sentit)."
+   ],
+   [
+    "Festes de Moros i Cristians d’Oriola",
+    "Reforçar les línies 4, 5, 7, 10, 11A i 13 durant la segona quinzena de juliol."
+   ]
+  ],
+  "conclusio": "L’AVPTP demana recuperar el servici retallat respecte al projecte de 2018, millorar la informació i obrir el nou corredor cap a Múrcia."
+ },
+ "https://cdn.avptp.org/documents/B033HFuL.pdf": {
+  "context": "Observacions al Pla Director de l’EMT València 2025-2030.",
+  "objecte": "Propostes sobre la xarxa de línies, els carrils bus, les interseccions, les freqüències, la informació i la tarifa.",
+  "punts": [
+   [
+    "Abast del Pla",
+    "Incloure-hi la informació i la tarifa: integració dels títols propis en el sistema de l’ATMV, transbordaments il·limitats, pujada per la porta central, més prioritat semafòrica i supressió de parades a menys de 300 m."
+   ],
+   [
+    "Justificació de la reordenació",
+    "Els canvis de línies ocupen només 11 pàgines i sense justificar. Es demana explicar cada actuació, la millora per a l’usuari i les alternatives."
+   ],
+   [
+    "Renumeració",
+    "Els canvis de número afecten l’11,6 % de la demanda anual. Es proposa mantindre la numeració actual o aplicar un criteri global."
+   ],
+   [
+    "Freqüències",
+    "Suport a les millores previstes en les línies 4, 16, 24, 31, 32, 6/56 i C2, i a un nocturn a la 31."
+   ],
+   [
+    "Carrils bus",
+    "Tornar a segregar Colón, segregar-ne un a Antonio Ferrandis, mantindre un carril exclusiu a Sant Vicent i suport a la segregació completa de Blasco Ibáñez."
+   ],
+   [
+    "Interseccions i tramvia",
+    "Coordinar les propostes amb les reurbanitzacions en curs i amb la futura línia 11 de tramvia."
+   ],
+   [
+    "Noves línies",
+    "Línia 42 exprés pel recorregut de la L10 de Metrovalència; no crear la 43 i reforçar la 58; pas sobre les vies i menys parades per a la C23."
+   ],
+   [
+    "Altres recorreguts",
+    "Ajustos a les línies 8/58, 11/51, 16, 35, 44, 63, 65 i 95, com ara portar la 16 fins a Alfara o la 44 fins a Safranar o el Doctor Peset."
+   ]
+  ],
+  "conclusio": "L’AVPTP demana justificar millor la reordenació, revisar la renumeració, segregar més carrils bus i coordinar el Pla amb el tramvia i les obres en curs."
+ },
+ "https://cdn.avptp.org/documents/fk0Z9ARo.pdf": {
+  "context": "Informació pública anunciada al DOGV del 22 d’abril de 2026 (30 dies hàbils).",
+  "objecte": "Al·legacions a l’estudi informatiu i d’integració paisatgística de la plataforma reservada per al transport públic entre València i Xirivella.",
+  "punts": [
+   [
+    "Connexió ciclopeatonal",
+    "L’alternativa 6 fa un recorregut en U de 1.500 m al costat de la C3. Es proposa un pont directe de 450 m (Miquel Sorribes – av. de la Llum o av. de la Constitució – Tres Forques) i desvincular-lo de la plataforma de bus."
+   ],
+   [
+    "Amplada del carril bici",
+    "Aplicar els 3 m que recomana la guia del Ministeri (2024) en lloc dels 2,5 m del projecte, amb bandes per a vianants i ciclistes separades."
+   ],
+   [
+    "Alternativa 4 per Tres Forques",
+    "Compensar l’afecció al parc Pablo Iglesias ampliant-lo cap al sud, soterrar o eliminar el pas elevat de la V-30 i estendre el traçat fins a Nou d’Octubre."
+   ],
+   [
+    "Prioritat semafòrica",
+    "Equips de prioritat per als autobusos als encreuaments, especialment a València, i un semàfor a Tres Forques – Creu Roja si es tria l’alternativa 6."
+   ]
+  ],
+  "conclusio": "L’estudi valora la reducció del temps de viatge, però no analitza prou bé la connexió per a vianants i bicicletes."
+ },
+ "https://cdn.avptp.org/documents/dpjgaECt.pdf": {
+  "context": "Informació pública anunciada al BOE del 5 de maig de 2023, ampliada el 15 de juny de 2023.",
+  "objecte": "Al·legacions a l’estudi informatiu complementari de la remodelació de la xarxa arterial ferroviària d’Alacant (variant de Torrellano). Afecta les línies C1 i C3.",
+  "punts": [
+   [
+    "Visió de conjunt",
+    "L’estudi no té en compte actuacions futures com el Tren de la Costa, que augmentaria el trànsit entre Alacant i Sant Vicent per una línia ja saturada."
+   ],
+   [
+    "Ramal cap a la L330 en doble via",
+    "Construir la plataforma per a doble via, encara que s’hi munte una via, per a permetre trens directes des d’Elx o l’aeroport cap a la Universitat o Benidorm sense invertir la marxa a Alacant Terminal."
+   ],
+   [
+    "Doble via La Encina – Alacant Terminal",
+    "Aprofitar la reposició per a eliminar els 4 km de via única fins a la Universitat, que arriben al 100 % de saturació en algunes franges, i permetre allargar Rodalies fins a Villena."
+   ]
+  ],
+  "conclusio": "Cal preparar les infraestructures per a doble via ara, per a evitar inversions addicionals i facilitar la integració amb el Tren de la Costa."
+ },
+ "https://www.valenciaextra.com/es/sociedad/linea-10-metrovalencia-anden-estacion-xativa-prolongacion_531276_102.html": {
+  "resum": "La Generalitat substituirà el tram per a vianants previst a la línia 10 per una andana provisional al costat del vestíbul de Xàtiva, on arribaran els tramvies des d’Alacant. Segons el Govern, no canvien els terminis ni el finançament europeu.",
+  "posicio": "El portaveu de l’AVPTP, Martín Montón, en fa una valoració positiva: l’obra serà directament la prolongació de la línia. Admet que una sola via amb andana no és l’ideal, però la veu una solució provisional necessària per a connectar-la en poc de temps."
+ },
+ "https://cdn.avptp.org/documents/0J7dasQR.pdf": {
+  "context": "Informació pública anunciada al DOGV de l’1 de juliol de 2026 (30 dies hàbils).",
+  "objecte": "9 al·legacions: 3 de generals (informació a l’usuari, dades obertes i denominació «metro») i 6 sobre línies concretes del projecte.",
+  "punts": [
+   [
+    "Informació a l’usuari",
+    "Un portal web únic del transport públic de la Generalitat, aplicació mòbil, pantalles a bord, xarxes socials d’incidències i atenció per WhatsApp i Telegram, en valencià, castellà i anglès."
+   ],
+   [
+    "Dades obertes",
+    "Publicar de franc rutes, parades, horaris en temps real, calendari, incidències i tarifes en GTFS, a datos.gob.es i amb una API REST pública."
+   ],
+   [
+    "Denominació «metro»",
+    "Canviar els noms Metro 1 i Metro 2 per Línia 11 i Línia 12: són autobusos i el terme confon."
+   ],
+   [
+    "Línies 1 i 2",
+    "La 1 duplica el tren Villena – Alacant els caps de setmana: reajustar horaris, quatre expedicions per sentit i primer servici abans de les 8.22. La 2 hauria d’arribar a l’Hospital d’Elda."
+   ],
+   [
+    "Línia 7",
+    "Evitar que la 7a i la 7b coincidisquen a Petrer, garantir tres expedicions diàries, horari estable tota la setmana i coordinació amb la línia 1."
+   ],
+   [
+    "Línies 5 i 8",
+    "Entre la Romana i Elda l’itinerari no competix amb el cotxe: modificar-lo o crear una línia per Novelda des de l’Alguenya, i tres expedicions diàries a la 8 entre l’Alguenya i el Pinós."
+   ],
+   [
+    "Metro 1 i Metro 2 d’Elda-Petrer",
+    "Interval màxim de 30 minuts tots els dies, horari de 6 a 23 h a la Metro 1, vehicles de classe I i servici de la Metro 2 abans de les 11 h els diumenges i festius."
+   ]
+  ],
+  "conclusio": "El projecte necessita més informació a l’usuari i dades obertes, i ajustar horaris i recorreguts perquè les línies siguen útils i coordinades amb el tren."
+ },
+ "https://cdn.avptp.org/documents/86zqdZYe.pdf": {
+  "context": "Informació pública de l’avantprojecte estatal anunciada al BOE del 16 de juny de 2026 (30 dies hàbils).",
+  "objecte": "3 al·legacions generals i 16 sobre rutes concretes del corredor Sevilla – Màlaga – Barcelona: criteris de rutes, tràfics interns de cada comunitat i sistemes intel·ligents de transport.",
+  "punts": [
+   [
+    "Criteris de rutes",
+    "Llevar les parades fixes en municipis que no són capital de comarca en els trajectes llargs i combinar rutes per a compartir parades en els trams comuns (art. 72.1 de la LOTT)."
+   ],
+   [
+    "Tràfics interns",
+    "Que les comunitats autònomes puguen fixar els títols integrats i els validadors dels autobusos per als tràfics interns, amb compensació a l’operador si cal."
+   ],
+   [
+    "Sistemes intel·ligents i dades obertes",
+    "Requisits mínims de SAE, SVV i SIV al plec i publicació de les dades en GTFS, amb API REST i a datos.gob.es."
+   ],
+   [
+    "Informació al viatger",
+    "Aplicació mòbil, canal estatal de venda unificat, atenció per WhatsApp i Telegram i pantalles a bord, en castellà, valencià i anglès."
+   ],
+   [
+    "Interior valencià",
+    "Suprimir les parades de l’Alcúdia de Crespins, la Llosa de Ranes, l’Alcúdia i Alginet i fer de Xàtiva un node intermodal (rutes 1, 3, 5 i 13); la ruta 2 començaria a Gandia."
+   ],
+   [
+    "Costa i nodes de València i Alacant",
+    "Suprimir moltes parades entre Sueca i Orihuela (rutes 6, 9 i altres), deixar els tràfics interns a les línies autonòmiques i usar València i Alacant com a nodes."
+   ],
+   [
+    "Expedicions",
+    "Tres expedicions setmanals per sentit a la ruta 4, mínim de nou diàries a la 12 (tres fins a Girona) i exprés sense parades els divendres i diumenges a les rutes 14 i 15."
+   ],
+   [
+    "Àrea de Barcelona",
+    "Que la ruta 13 passe per Vilafranca del Penedès, Terrassa i Sabadell, i que la 16 deixe Tarragona i pare a Terrassa i Sabadell."
+   ]
+  ],
+  "conclusio": "Rutes més directes, menys solapaments amb els servicis autonòmics i més informació i dades obertes per al viatger."
+ },
+ "https://cdn.avptp.org/documents/xoK9ozL7.pdf": {
+  "context": "Informació pública de l’avantprojecte estatal anunciada al BOE del 16 de juny de 2026 (30 dies hàbils).",
+  "objecte": "Al·legacions generals i per ruta al corredor València – Alacant – Múrcia: denominació de la Vega Baixa, parades i rutes, tràfics interns, sistemes intel·ligents i expedicions.",
+  "punts": [
+   [
+    "Denominació de la Vega Baixa",
+    "Corregir la comarca, que és valenciana, i usar la doble denominació «la Vega Baja / el Baix Segura»."
+   ],
+   [
+    "Parades i rutes",
+    "Llevar les parades fixes en municipis que no són capital de comarca, combinar rutes en els trams comuns i guanyar velocitat comercial davant del cotxe."
+   ],
+   [
+    "Tràfics interns",
+    "Que la Generalitat i la Regió de Múrcia puguen fixar els títols integrats i els validadors per als tràfics interns autoritzats, amb compensació a l’operador si cal."
+   ],
+   [
+    "Sistemes intel·ligents i informació",
+    "Requisits mínims de SAE, SVV i SIV, dades obertes en GTFS, aplicació mòbil, canal de venda unificat, pantalles a bord i atenció en castellà, valencià i anglès."
+   ],
+   [
+    "Rutes 1 i 2",
+    "Xàtiva i Orihuela com a parades fixes, suprimir parades intermèdies i les d’Albatera i Crevillent (duplicades amb la CV-213) i tres expedicions per sentit."
+   ],
+   [
+    "Rutes 3, 4, 7 i 8",
+    "Un semidirecte València – Elx – Múrcia, la ruta 4 limitada a Múrcia – Elx – Alacant amb compensació a la Generalitat, i unir la 7 i la 8 en Cartagena – Torrevella – l’Altet – Alacant amb més expedicions."
+   ],
+   [
+    "Rutes 6, 9 i 14",
+    "Passar la ruta 6 (Sant Fulgenci – Múrcia) a la CV-213 amb dotació, suprimir la 9 per duplicada i quatre expedicions diàries a la Múrcia – Torrevella directa."
+   ]
+  ],
+  "conclusio": "Cal coordinar millor el corredor amb les concessions autonòmiques CV-213 i CV-214 i fer rutes més directes entre les ciutats grans."
+ },
+ "https://cdn.avptp.org/documents/z0wRGyfv.pdf": {
+  "context": "Informació pública de l’avantprojecte estatal anunciada al BOE del 16 de juny de 2026 (30 dies hàbils).",
+  "objecte": "Al·legacions generals al corredor Terol – Castelló – Barcelona (rutes, tràfics interns i sistemes intel·ligents) i propostes per a les rutes 3, 5, 6, 7, 10, 11, 12 i 13.",
+  "punts": [
+   [
+    "Castelló – Saragossa per Morella",
+    "Recuperar la ruta per la N-232, prevista en projectes anteriors, i autoritzar el tràfic directe Castelló – Morella, compatible amb la línia 1 de la CV-001."
+   ],
+   [
+    "Parades i coordinació",
+    "Llevar les parades fixes en municipis que no són capital de comarca en els trajectes llargs, combinar rutes i coordinar-se amb els servicis autonòmics."
+   ],
+   [
+    "Tràfics interns",
+    "Que les comunitats autònomes puguen fixar els títols integrats i els validadors per als tràfics interns, amb compensació a l’operador si cal."
+   ],
+   [
+    "Sistemes intel·ligents i informació",
+    "Requisits mínims de SAE, SVV i SIV, dades en GTFS, aplicació mòbil, canal de venda unificat, pantalles amb les pròximes parades i atenció per WhatsApp i Telegram."
+   ],
+   [
+    "Ruta 3 Conca – Barcelona",
+    "Suprimir Arroyo Cerezo, Los Santos i Mas de Jacinto, canviar Torreblanca per l’aeroport de Castelló, dotació a la Generalitat per a transport a demanda i dues expedicions diàries per sentit."
+   ],
+   [
+    "Rutes 5, 6, 7 i 10",
+    "Menys parades a la Comunitat i al Camp de Tarragona per a guanyar temps cap a Saragossa i Lleida; tres expedicions diàries a la 5 i ampliar la 10 de 10 a 12 expedicions feineres, des de Peníscola i Benicarló."
+   ],
+   [
+    "Rutes 11, 12 i 13",
+    "Autoritzar les rutes de la CV-001 amb poca demanda, transferir línies a la Generalitat amb dotació, afegir Alcanar entre Ulldecona i Vinaròs i començar la 13 a Ademús."
+   ]
+  ],
+  "conclusio": "Recuperar la connexió per Morella i fer rutes més ràpides, coordinades amb la concessió autonòmica CV-001."
+ }
+}

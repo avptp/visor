@@ -49,7 +49,7 @@ def main():
     cfg = json.loads((VISOR / "dades" / "config.json").read_text(encoding="utf-8"))
     rutes = ["dades/config.json", *cfg.get("fitxers", []), cfg.get("metadades"),
              *[d for d in cfg.get("documentacio", []) if not re.match(r"https?://", d)],
-             (cfg.get("limit") or {}).get("fitxer")]
+             (cfg.get("limit") or {}).get("fitxer"), cfg.get("resums")]
     fitxers = {}
     for r in filter(None, rutes):
         cami = VISOR / r
@@ -66,7 +66,7 @@ def main():
     html = html.replace('<link rel="stylesheet" href="css/visor.css">', f"<style>\n{css}\n</style>")
     html = imatges_a_data(html)
     dades = "window.VISOR_FITXERS = " + json.dumps(fitxers, ensure_ascii=False) + ";\n" + SHIM
-    for js in ("i18n", "visor"):
+    for js in ("i18n", "informe", "visor"):
         codi = (VISOR / "js" / f"{js}.js").read_text(encoding="utf-8")
         bloc = f"<script>\n{segur_script(codi)}\n</script>"
         if js == "i18n":

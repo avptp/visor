@@ -43,6 +43,7 @@
   const SVG_TANCA = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
   const SVG_FLETXA = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const SVG_BUS = '<svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M5 2.5h10a2 2 0 0 1 2 2V14a1.5 1.5 0 0 1-1 1.4V17a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1.5H7V17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1.6A1.5 1.5 0 0 1 3 14V4.5a2 2 0 0 1 2-2Zm0 3v4.5h10V5.5H5Zm1 6.6a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2Zm8 0a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2Z"/></svg>';
+  const SVG_PDF = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2.5h6.5L16 7v9.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-13a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M11.5 2.5V7H16M10 9.5v5m0 0-2.2-2.2M10 14.5l2.2-2.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const SVG_NODE = {
     ferrocarril: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#fff" stroke="#30364b" stroke-width="4"/><circle cx="12" cy="12" r="3" fill="#5fc1c8"/></svg>',
     bus: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" fill="#30364b" stroke="#fff" stroke-width="1.5"/><g transform="translate(4.4 4.2) scale(.76)" color="#fff">' +
@@ -403,6 +404,7 @@
         const g = f.geometry;
         const pols = g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : [];
         for (const pol of pols) anells.push(pol[0].map(([x, y]) => [y, x]));
+      E.limitLL = anells.map((a) => a.map(([y, x]) => [x, y]));
       }
       if (!anells.length) return;
       const mon = [[-89.9, -179.9], [89.9, -179.9], [89.9, 179.9], [-89.9, 179.9]];
@@ -1116,6 +1118,9 @@
     $('#capes-cos').innerHTML = `${grups}
       <div class="bloc"><h3>${esc(t('estat'))}</h3><div class="estats">${estats}</div></div>
       <div class="bloc"><h3>${esc(t('mapa_fons'))}</h3><div class="mapes-base" role="radiogroup" aria-label="${esc(t('mapa_fons'))}">${mapes}</div></div>
+      ${window.VisorInforme ? `<div class="bloc informe"><h3>${esc(t('inf_bloc'))}</h3>
+        <button type="button" class="boto-informe" data-informe>${SVG_PDF}<span>${esc(t('inf_boto'))}</span></button>
+        <p class="informe-estat" aria-live="polite"></p></div>` : ''}
       <div class="credits">${credits}</div>`;
     actualitzaChecks();
   }
@@ -1186,6 +1191,8 @@
       actualitzaChecks();
     });
     cos.addEventListener('click', (e) => {
+      const inf = e.target.closest('[data-informe]');
+      if (inf) { descarregaInforme(inf); return; }
       const b = e.target.closest('[data-desplega]');
       if (!b) return;
       const s = b.dataset.desplega;
@@ -1194,6 +1201,143 @@
       $(`#linies-${CSS.escape(s)}`).hidden = !obert;
       if (obert) E.desplegats.add(s); else E.desplegats.delete(s);
     });
+  }
+
+  /* ---------- Fitxes d'al·legacions i mitjans (PDF) ---------- */
+
+  const MESOS = {
+    ca: ['gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre'],
+    es: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'],
+  };
+  function dataLlarga(s) {
+    const m = String(s || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return '';
+    const mes = MESOS[E.idioma][+m[2] - 1];
+    const de = E.idioma === 'ca' && /^[aeiou]/.test(mes) ? 'd’' : 'de ';
+    return `${+m[3]} ${de}${mes} de ${m[1]}`;
+  }
+
+  // Una fitxa per element; els elements de ferrocarril s'agrupen per servici
+  function fitxesInforme(resums) {
+    const ferro = new Set(E.cfg.grups.find((g) => g.id === 'ferrocarril')?.serveis || []);
+    const ordreServei = E.cfg.grups.flatMap((g) => g.serveis);
+    const coords = (g) => {
+      if (!g) return [];
+      if (g.type === 'LineString') return [g.coordinates];
+      if (g.type === 'MultiLineString' || g.type === 'Polygon') return g.coordinates;
+      if (g.type === 'MultiPolygon') return g.coordinates.flat();
+      return [];
+    };
+    const nomEst = (i) => { const e = E.estacions.get(i); return e ? nomDe(e.f.properties) : i; };
+    const coordEst = (i) => E.estacions.get(i)?.f.geometry.coordinates;
+    const codiDe = (o) => String(o.f.properties.codi || '');
+    const grupDe = (s) => tx(E.cfg.grups.find((g) => g.serveis.includes(s))?.nom);
+    const logoDe = (s) => { const l = E.cfg.serveis[s]?.logo; return l ? new URL(l, location.href).href : ''; };
+
+    const fitxes = new Map();
+    for (const [id, docs] of E.docs) {
+      const o = resol(id);
+      if (!o) continue;
+      const esFerro = ferro.has(o.servei);
+      const clau = esFerro ? `servei:${o.servei}` : o.id;
+      if (!fitxes.has(clau)) fitxes.set(clau, { clau, ferro: esFerro, servei: o.servei, o, ids: [], docsCsv: [] });
+      const fx = fitxes.get(clau);
+      if (!fx.ids.includes(o.id)) fx.ids.push(o.id);
+      for (const d of docs) if (!fx.docsCsv.includes(d)) fx.docsCsv.push(d);
+    }
+
+    const resultat = [];
+    for (const fx of fitxes.values()) {
+      const s = fx.servei;
+      const scfg = E.cfg.serveis[s] || {};
+      const doc = (d) => {
+        const altre = E.idioma === 'es' ? 'ca' : 'es';
+        const idi = normIdioma(d.idioma);
+        const afectats = String(d.id || d.ids || '').split(/[|\s]+/).filter(Boolean).map(resol).filter((x) => x && x.servei === s);
+        const url = urlSegura(d.url) || '';
+        return {
+          premsa: esPremsa(d), url, titol: d[`titol_${E.idioma}`] || d.titol || d[`titol_${altre}`] || url,
+          desc: d[`descripcio_${E.idioma}`] || d.descripcio || d[`descripcio_${altre}`] || '',
+          tipus: norm(d.tipus) === 'pdf' || /\.pdf($|[?#])/i.test(url) ? 'PDF' : 'Web',
+          data: dataLlarga(d.data), dataIso: d.data || '', mitja: d.mitja || '',
+          idioma: idi ? (TEXTOS[E.idioma].doc_en[idi] || '') : '',
+          afecta: fx.ferro ? afectats.map(codiDe).filter(Boolean).join(', ') : '',
+          resum: resums[d.url] || resums[url] || null,
+        };
+      };
+      const docs = fx.docsCsv.map(doc);
+      const premsa = docs.filter((d) => d.premsa).sort((a, b) => b.dataIso.localeCompare(a.dataIso));
+      const base = {
+        ids: fx.ids, docs: [...docs.filter((d) => !d.premsa), ...premsa], grup: grupDe(s), logo: logoDe(s),
+        _o: ordreServei.indexOf(s),
+      };
+      if (fx.ferro) {
+        const membres = (E.perServei.get(s) || []).filter((o) => o.tipus === 'linia').slice()
+          .sort((a, b) => ordre(codiDe(a), codiDe(b)) || ordre(nomDe(a.f.properties), nomDe(b.f.properties)));
+        const doc_ = (o) => fx.ids.includes(o.id);
+        resultat.push({
+          ...base, ferro: true, titol: nomServei(s), sub: '', codi: '', estat: '', color: scfg.color || '#30364B',
+          membres: membres.map((o) => ({ codi: codiDe(o), nom: nomDe(o.f.properties), color: colorObjecte(o), doc: doc_(o) })),
+          capes: [
+            { linies: membres.filter((o) => !doc_(o)).flatMap((o) => coords(o.f.geometry)), color: '#98a3a9', gruix: 2.4 },
+            ...membres.filter(doc_).map((o) => ({ linies: coords(o.f.geometry), color: colorObjecte(o), gruix: 4.5 })),
+          ],
+          punts: [], _c: '',
+        });
+      } else {
+        const o = fx.o, p = o.f.properties;
+        const color = colorObjecte(o);
+        const projecte = estatDe(o) === 'projecte';
+        const linies = (E.idioma === 'es' && p.linies_bus_es) || p.linies_bus || [];
+        const totes = [...(p.parades || []), ...(p.ramals || []).flatMap((r) => r.parades || [])];
+        const capes = [];
+        if (p.complet) capes.push({ linies: coords(p.complet), color, gruix: 2, alpha: 0.35, guions: [10, 8], fora: true });
+        capes.push({ linies: coords(o.f.geometry), color, gruix: 3, guions: projecte ? [14, 9] : null });
+        resultat.push({
+          ...base, ferro: false, titol: nomDe(p), sub: tx(scfg.detall), color,
+          codi: scfg.codiLlegenda === false ? '' : codiDe(o),
+          estat: p.estat ? t(`estat_${projecte ? 'projecte' : 'servei'}`) : '',
+          linies: Array.isArray(linies) ? linies : [], nParades: p.n_parades || new Set(totes).size, longitud: p.longitud || '',
+          parades: (p.parades || []).map(nomEst),
+          ramals: (p.ramals || []).map((r) => ({ nom: r.nom, parades: (r.parades || []).filter((x) => !(p.parades || []).includes(x)).map(nomEst) })),
+          capes, punts: totes.length && totes.length <= 80 ? totes.map(coordEst).filter(Boolean) : [], _c: codiDe(o),
+        });
+      }
+    }
+    resultat.sort((a, b) => (a._o - b._o) || ordre(a._c, b._c) || ordre(a.titol, b.titol));
+    return resultat;
+  }
+
+  async function descarregaInforme(boto) {
+    if (boto.disabled) return;
+    const estat = boto.parentElement.querySelector('.informe-estat');
+    const posa = (s) => { if (estat) estat.textContent = s; };
+    // La finestra s'obri ara, dins del clic, perquè el navegador no la bloquege
+    const fin = window.open('', '_blank');
+    boto.disabled = true;
+    boto.setAttribute('aria-busy', 'true');
+    posa(t('inf_preparant'));
+    try {
+      let resums = {};
+      if (E.cfg.resums) {
+        try { const r = await fetch(E.cfg.resums, { cache: 'no-cache' }); if (r.ok) resums = await r.json(); } catch (e) { /* sense resums */ }
+      }
+      const avui = new Date();
+      const iso = `${avui.getFullYear()}-${String(avui.getMonth() + 1).padStart(2, '0')}-${String(avui.getDate()).padStart(2, '0')}`;
+      const gris = E.cfg.mapesBase.find((m) => m.id === 'gris') || E.cfg.mapesBase.find((m) => m.tipus === 'vectorial');
+      await window.VisorInforme.genera({
+        idioma: E.idioma, fitxes: fitxesInforme(resums), limit: E.limitLL || [], mapaGris: gris, carregaMaplibre,
+        logo: new URL($('.logo img')?.getAttribute('src') || 'img/avptp-blanc.svg', location.href).href,
+        avui: dataLlarga(iso), generat: dataLlarga(E.meta?.generat || iso),
+        urlVisor: E.cfg.urlVisor || location.href.split('#')[0],
+      }, fin, (i, n) => posa(t('inf_progres', { i, n })));
+      posa(fin ? '' : t('inf_bloquejada'));
+    } catch (e) {
+      posa(t('inf_error', { e: e.message }));
+    } finally {
+      boto.disabled = false;
+      boto.removeAttribute('aria-busy');
+    }
   }
 
   /* ---------- Inici ---------- */

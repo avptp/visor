@@ -17,6 +17,7 @@ No necessita cap llibreria externa. Tot el que aplica és a scripts/fonts/:
   codis_concessions.json           Codi de contracte de les concessions d'autobús de la Generalitat.
   correccions_ferrocarril.json     Correccions de línies de Renfe (la C1 d'Alacant comença a Alacant Terminal).
   brt_xirivella.geojson            BRT València – Xirivella – Aldaia/Alaquàs (en projecte), dels plànols de l'estudi informatiu.
+  avant.geojson                    Servicis AVANT de Renfe per la LAV (Múrcia – Alacant i València – Requena-Utiel), amb les parades.
   ferrocarril_fora_cv.json         Parades i traçat de fora de la Comunitat de les línies de ferrocarril que en
                                    ixen (C1 fins a Múrcia, Vinaròs–Tortosa, Albacete, Terol–Saragossa).
   bus_projectes.geojson            Concessions interurbanes en projecte (CV-207, CV-210, CV-213, CV-303),
@@ -132,10 +133,17 @@ def correccions_ferrocarril(dades):
     if not cfg.exists():
         return
     import math
-    c = llig(cfg)['linies']
+    cfg = llig(cfg)
+    c = cfg['linies']
+    trams = cfg.get('trams', {})
     est = per_id(llig(dades / 'estacions.geojson'))
+    for i, info in cfg.get('estacions', {}).items():
+        if i not in est:
+            est[i] = {'type': 'Feature', 'properties': {'id': i, 'tipus': 'estacio', 'nom': info['nom'], 'serveis': [], 'linies': []},
+                      'geometry': {'type': 'Point', 'coordinates': info['coord']}}
+        est[i]['geometry']['coordinates'] = info['coord']
+    canvis_est = bool(cfg.get('estacions'))
     km = lambda a, b: math.hypot((a[0] - b[0]) * 86.0, (a[1] - b[1]) * 111.0)
-    canvis_est = False
     for fitxer in ('rodalies', 'regionals', 'md'):
         gj = llig(dades / f'{fitxer}.geojson')
         linies = per_id(gj)
@@ -153,6 +161,34 @@ def correccions_ferrocarril(dades):
                 if i in est and lid in est[i]['properties'].get('linies', []):
                     est[i]['properties']['linies'].remove(lid)
                     canvis_est = True
+            noves = d.get('afegeix_parades_inici', []) + d.get('afegeix_parades_final', [])
+            if noves:
+                resta = [i for i in p['parades'] if i not in noves]
+                p['parades'] = d.get('afegeix_parades_inici', []) + resta + d.get('afegeix_parades_final', [])
+                servei = lid.split(':')[0]
+                for i in noves:
+                    ep = est[i]['properties']
+                    if servei not in ep['serveis']:
+                        ep['serveis'].append(servei)
+                    if lid not in ep['linies']:
+                        ep['linies'].append(lid)
+                canvis_est = True
+            tram = trams.get(d.get('substitueix_tram'))
+            if tram:
+                g = f['geometry']
+                parts = g['coordinates'] if g['type'] == 'MultiLineString' else [g['coordinates']]
+                for k, part in enumerate(parts):
+                    ia = min(range(len(part)), key=lambda n: km(part[n], tram[0]))
+                    ib = min(range(len(part)), key=lambda n: km(part[n], tram[-1]))
+                    if km(part[ia], tram[0]) > 2 or km(part[ib], tram[-1]) > 2 or ia == ib:
+                        continue
+                    t = tram if ia < ib else tram[::-1]
+                    a, b = sorted((ia, ib))
+                    parts[k] = part[:a] + t + part[b + 1:]
+                if g['type'] == 'MultiLineString':
+                    g['coordinates'] = parts
+                else:
+                    g['coordinates'] = parts[0]
             altra = linies.get(d.get('treu_tram_de'))
             if altra:
                 ref = [q for t in altra['geometry']['coordinates'] for q in t]
@@ -178,6 +214,33 @@ def correccions_ferrocarril(dades):
         e = llig(dades / 'estacions.geojson')
         e['features'] = list(est.values())
         desa(dades / 'estacions.geojson', e)
+
+
+def avant(dades):
+    """Copia les línies AVANT a dades/avant.geojson i n'afig les parades a estacions.geojson."""
+    cfg = FONTS / 'avant.geojson'
+    if not cfg.exists():
+        return
+    gj = llig(cfg)
+    linies = [f for f in gj['features'] if f['properties']['tipus'] != 'estacio']
+    desa(dades / 'avant.geojson', {'type': 'FeatureCollection', 'features': linies})
+    e = llig(dades / 'estacions.geojson')
+    est = per_id(e)
+    for f in gj['features']:
+        p = f['properties']
+        if p['tipus'] != 'estacio':
+            continue
+        if p['id'] not in est:
+            est[p['id']] = f
+            continue
+        ep = est[p['id']]['properties']
+        for k in ('serveis', 'linies'):
+            ep.setdefault(k, [])
+            for v in p[k]:
+                if v not in ep[k]:
+                    ep[k].append(v)
+    e['features'] = list(est.values())
+    desa(dades / 'estacions.geojson', e)
 
 
 def fora_cv(dades):
@@ -250,6 +313,7 @@ def main():
     renfe(dades)
     correccions_ferrocarril(dades)
     fora_cv(dades)
+    avant(dades)
     codis(dades)
     projectes(dades)
     for nom in ('estatals.geojson', 'atmv.geojson', 'tram_castello.geojson', 'emt_valencia.geojson', 'urba_alacant.geojson', 'brt_xirivella.geojson'):
