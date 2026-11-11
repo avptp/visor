@@ -189,6 +189,23 @@ def correccions_ferrocarril(dades):
                     g['coordinates'] = parts
                 else:
                     g['coordinates'] = parts[0]
+            ramal = d.get('afegeix_ramal')
+            if ramal:
+                p['ramals'] = [r for r in p.get('ramals', []) if r['nom'] != ramal['nom']]
+                p['ramals'].append({'nom': ramal['nom'], 'parades': ramal['parades']})
+                g = f['geometry']
+                if g['type'] == 'LineString':
+                    g['type'], g['coordinates'] = 'MultiLineString', [g['coordinates']]
+                t = trams[ramal['tram']]
+                g['coordinates'] = [part for part in g['coordinates'] if part != t] + [t]
+                servei = lid.split(':')[0]
+                for i in ramal['parades']:
+                    ep = est[i]['properties']
+                    if servei not in ep['serveis']:
+                        ep['serveis'].append(servei)
+                    if lid not in ep['linies']:
+                        ep['linies'].append(lid)
+                canvis_est = True
             altra = linies.get(d.get('treu_tram_de'))
             if altra:
                 ref = [q for t in altra['geometry']['coordinates'] for q in t]
@@ -241,6 +258,22 @@ def avant(dades):
                     ep[k].append(v)
     e['features'] = list(est.values())
     desa(dades / 'estacions.geojson', e)
+    # Les estacions AVANT s'associen a l'estació principal (node) on són, perquè la fitxa en mostre les línies
+    nodes = llig(dades / 'nodes.geojson')
+    canvi = False
+    for f in gj['features']:
+        if f['properties']['tipus'] != 'estacio':
+            continue
+        x, y = f['geometry']['coordinates']
+        for n in nodes['features']:
+            nx, ny = n['geometry']['coordinates']
+            if n['properties'].get('subtipus') == 'ferrocarril' and abs(nx - x) * 86 < 0.3 and abs(ny - y) * 111 < 0.3:
+                ests = n['properties'].setdefault('estacions', [])
+                if f['properties']['id'] not in ests:
+                    ests.append(f['properties']['id'])
+                    canvi = True
+    if canvi:
+        desa(dades / 'nodes.geojson', nodes)
 
 
 def fora_cv(dades):

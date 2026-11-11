@@ -874,10 +874,6 @@
   function seccioNode(o) {
     const p = o.f.properties;
     let html = '';
-    if (p.productes?.length) {
-      const noms = E.cfg.productesRenfe || {};
-      html += `<section><h3>${esc(t('productes_renfe'))}</h3><div class="chips">${p.productes.map((x) => `<span class="etiqueta-producte">${esc(noms[x] || x)}</span>`).join('')}</div></section>`;
-    }
     const ids = new Set();
     for (const e of p.estacions || []) for (const l of E.estacions.get(e)?.f.properties.linies || []) ids.add(l);
     const linies = liniesAgrupades([...ids]);

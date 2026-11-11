@@ -1,5 +1,5 @@
 {
- "_comentari": "Correccions de línies de Renfe que el GTFS o la xarxa de l'ICV no porten bé. «treu_parades»: parades que no són de la línia; «treu_tram_de»: s'esborra el traçat que coincidix amb el d'una altra línia (excepte prop de l'estació de «conserva_prop_de»); «substitueix_tram»: el tros de traçat entre els extrems del tram indicat se substituïx pel tram de «trams»; «afegeix_parades_inici»/«afegeix_parades_final»: parades que falten al GTFS (p. ex. tancades per obres).",
+ "_comentari": "Correccions de línies de Renfe que el GTFS o la xarxa de l'ICV no porten bé. «treu_parades»: parades que no són de la línia; «treu_tram_de»: s'esborra el traçat que coincidix amb el d'una altra línia (excepte prop de l'estació de «conserva_prop_de»); «substitueix_tram»: el tros de traçat entre els extrems del tram indicat se substituïx pel tram de «trams»; «afegeix_parades_inici»/«afegeix_parades_final»: parades que falten al GTFS (p. ex. tancades per obres). «afegeix_ramal»: ramal amb parades pròpies i el traçat del tram indicat.",
  "linies": {
   "rodalies:alacant-murcia:C1": {
    "nom": "Alacant Terminal – Murcia del Carmen",
@@ -22,6 +22,16 @@
   },
   "regionals:alacant-valencia": {
    "substitueix_tram": "xativa-encina"
+  },
+  "rodalies:valencia:C1": {
+   "afegeix_ramal": {
+    "nom": "Platja i Grau de Gandia",
+    "parades": [
+     "adif:69107",
+     "adif:69111"
+    ],
+    "tram": "gandia-platja"
+   }
   }
  },
  "trams": {
@@ -1493,6 +1503,80 @@
     -0.75285,
     38.88056
    ]
+  ],
+  "gandia-platja": [
+   [
+    -0.17995,
+    38.98055
+   ],
+   [
+    -0.17964,
+    38.98006
+   ],
+   [
+    -0.17923,
+    38.97961
+   ],
+   [
+    -0.17874,
+    38.97922
+   ],
+   [
+    -0.17813,
+    38.97888
+   ],
+   [
+    -0.1774,
+    38.97861
+   ],
+   [
+    -0.17657,
+    38.97843
+   ],
+   [
+    -0.17573,
+    38.97837
+   ],
+   [
+    -0.175,
+    38.97841
+   ],
+   [
+    -0.17428,
+    38.97857
+   ],
+   [
+    -0.17345,
+    38.9789
+   ],
+   [
+    -0.17286,
+    38.97925
+   ],
+   [
+    -0.17235,
+    38.97964
+   ],
+   [
+    -0.17191,
+    38.98008
+   ],
+   [
+    -0.16339,
+    38.98942
+   ],
+   [
+    -0.16293,
+    38.98984
+   ],
+   [
+    -0.1624,
+    38.99021
+   ],
+   [
+    -0.162434,
+    38.990244
+   ]
   ]
  },
  "estacions": {
@@ -1519,6 +1603,13 @@
     38.942939
    ],
    "nota": "Sense servici de tren per obres (servici per carretera)."
+  },
+  "adif:69111": {
+   "nom": "Platja i Grau de Gandia",
+   "coord": [
+    -0.162434,
+    38.990244
+   ]
   }
  }
 }
