@@ -67,7 +67,13 @@ Configuració, una sola vegada:
 
 ### Enllaçar-lo i incrustar-lo des de la web
 
-La web principal ([avptp/face](https://github.com/avptp/face)) l'enllaça des del menú i té la pàgina `avptp.org/visor`, que l'incrusta a pantalla completa. Per a incrustar-lo en una altra pàgina:
+La web principal ([avptp/face](https://github.com/avptp/face)) té un botó que obri el visor en la mateixa finestra, directament a `visor.avptp.org`. El logotip de la capçalera del visor torna a `avptp.org`. Perquè el visor s'obriga en el mateix idioma que la web, l'enllaç porta `?hl=ca` o `?hl=es`:
+
+```html
+<a href="https://visor.avptp.org/?hl=ca">Visor de la xarxa</a>   <!-- versió en castellà: ?hl=es -->
+```
+
+Per a incrustar-lo en una altra pàgina:
 
 ```html
 <iframe src="https://visor.avptp.org/?sense-titol&hl=ca"
