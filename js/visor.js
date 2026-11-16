@@ -41,6 +41,8 @@
   const ordre = (a, b) => String(a).localeCompare(String(b), 'ca', { numeric: true });
 
   const SVG_TANCA = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+  const SVG_MINIMITZA = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const SVG_AILLAR = '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3" fill="currentColor"/><path d="M3 7V4.5A1.5 1.5 0 0 1 4.5 3H7M13 3h2.5A1.5 1.5 0 0 1 17 4.5V7M17 13v2.5a1.5 1.5 0 0 1-1.5 1.5H13M7 17H4.5A1.5 1.5 0 0 1 3 15.5V13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
   const SVG_FLETXA = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const SVG_BUS = '<svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M5 2.5h10a2 2 0 0 1 2 2V14a1.5 1.5 0 0 1-1 1.4V17a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1.5H7V17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1.6A1.5 1.5 0 0 1 3 14V4.5a2 2 0 0 1 2-2Zm0 3v4.5h10V5.5H5Zm1 6.6a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2Zm8 0a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2Z"/></svg>';
   const SVG_PDF = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2.5h6.5L16 7v9.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-13a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M11.5 2.5V7H16M10 9.5v5m0 0-2.2-2.2M10 14.5l2.2-2.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -303,7 +305,8 @@
     pe.style.zIndex = 450;
     E.etiquetes = L.layerGroup().addTo(E.mapa);
     E.mapa.on('moveend', programaEtiquetes);
-    E.mapa.on('click', () => { if (E.sel) tancaFitxa(); });
+    // Amb un element aïllat, tocar el mapa no tanca la fitxa (s'ix amb el botó d'aïllar o la creu)
+    E.mapa.on('click', () => { if (E.sel && !E.aillat) tancaFitxa(); });
   }
 
   // Carrega MapLibre i el connector per a Leaflet només la primera vegada que cal un mapa vectorial
@@ -603,7 +606,9 @@
 
   /* ---------- Visibilitat i ordre ---------- */
 
-  const esVisible = (o) => E.actius.has(o.servei) && !E.ocults.has(o.id) && (o.tipus === 'node' || !E.estatsOcults.has(estatDe(o)));
+  const esVisibleCapes = (o) => E.actius.has(o.servei) && !E.ocults.has(o.id) && (o.tipus === 'node' || !E.estatsOcults.has(estatDe(o)));
+  // Amb un element aïllat, només es veu eixe element
+  const esVisible = (o) => (E.aillat ? o === E.aillat : esVisibleCapes(o));
 
   function aplicaVisibilitat() {
     let afegit = false;
@@ -690,8 +695,9 @@
       if (opcions.desDeEnllac) avis(t('err_enllac', { id }));
       return;
     }
+    if (E.aillat) E.aillat = o;
     // Si l'element estava ocult a les capes, es torna a mostrar
-    if (!esVisible(o)) {
+    if (!esVisibleCapes(o)) {
       if (!E.actius.has(o.servei)) {
         E.actius.add(o.servei);
         for (const x of E.perServei.get(o.servei) || []) if (x !== o) E.ocults.add(x.id);
@@ -710,6 +716,7 @@
     mostraParades(o);
     dibuixaHalo(o);
     pintaFitxa(o);
+    if (E.aillat) aplicaVisibilitat();
     if (opcions.enfoca) enfoca(o);
     const hash = '#' + encodeURIComponent(o.id);
     if (location.hash !== hash) history.replaceState(null, '', location.pathname + location.search + hash);
@@ -718,22 +725,60 @@
 
   function tancaFitxa() {
     const fitxa = $('#fitxa');
-    fitxa.classList.remove('obert');
+    fitxa.classList.remove('obert', 'minimitzat');
     fitxa.setAttribute('aria-hidden', 'true');
     if (E.halo) { E.halo.remove(); E.halo = null; }
     if (E.parades) { E.parades.remove(); E.parades = null; }
     if (E.complet) { E.complet.remove(); E.complet = null; }
     document.querySelectorAll('.node-marca.seleccionat').forEach((el) => el.classList.remove('seleccionat'));
     E.sel = null;
+    if (E.aillat) { E.aillat = null; aplicaVisibilitat(); }
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  }
+
+  // Minimitza la fitxa (només en queda la capçalera) sense perdre la selecció, per a vore millor el mapa
+  function minimitzaFitxa(min) {
+    const fitxa = $('#fitxa');
+    const abans = fitxa.classList.contains('minimitzat');
+    if (min === undefined) min = !abans;
+    if (min === abans) return;
+    fitxa.classList.toggle('minimitzat', min);
+    const b = $('.minimitza', fitxa);
+    if (b) {
+      b.setAttribute('aria-expanded', String(!min));
+      const txt = t(min ? 'maximitza' : 'minimitza');
+      b.setAttribute('aria-label', txt);
+      b.title = txt;
+    }
+  }
+
+  // Aïlla l'element seleccionat: s'oculta la resta d'elements del mapa fins que es desactive o es tanque la fitxa
+  function aillaElement(actiu) {
+    if (!E.sel) return;
+    if (actiu === undefined) actiu = !E.aillat;
+    E.aillat = actiu ? E.sel : null;
+    aplicaVisibilitat();
+    estatBotoAillar();
+    if (actiu) enfoca(E.sel);
+  }
+
+  function estatBotoAillar() {
+    const b = $('#fitxa .aillar');
+    if (!b) return;
+    const actiu = !!E.aillat;
+    const txt = t(actiu ? 'mostra_tot' : 'aillar');
+    b.setAttribute('aria-pressed', String(actiu));
+    b.setAttribute('aria-label', txt);
+    b.title = txt;
   }
 
   function marges() {
     const fitxa = $('#fitxa').getBoundingClientRect();
     const col = $('.columna').getBoundingClientRect();
     const obert = $('#fitxa').classList.contains('obert');
+    const min = $('#fitxa').classList.contains('minimitzat');
     if (esMobil()) return { tl: [16, col.bottom + 12], br: [16, (obert ? fitxa.height : 0) + 16] };
-    return { tl: [col.right + 16, 24], br: [(obert ? fitxa.width + 14 : 0) + 24, 24] };
+    return { tl: [col.right + 16, 24], br: [(obert && !min ? fitxa.width + 14 : 0) + 24, 24] };
   }
 
   function centra(latlng, zMin) {
@@ -807,10 +852,16 @@
             <h2 id="fitxa-titol" tabindex="-1">${esc(nomDe(p))}</h2>
           </div>
         </div>
-        <button type="button" class="tanca" aria-label="${esc(t('tanca'))}">${SVG_TANCA}</button>
+        <div class="fitxa-botons">
+          <button type="button" class="aillar" aria-pressed="false" aria-label="${esc(t('aillar'))}" title="${esc(t('aillar'))}">${SVG_AILLAR}</button>
+          <button type="button" class="minimitza" aria-expanded="true" aria-controls="fitxa-cos" aria-label="${esc(t('minimitza'))}" title="${esc(t('minimitza'))}">${SVG_MINIMITZA}</button>
+          <button type="button" class="tanca" aria-label="${esc(t('tanca'))}" title="${esc(t('tanca'))}">${SVG_TANCA}</button>
+        </div>
       </header>
-      <div class="fitxa-cos">${cos}</div>`;
+      <div class="fitxa-cos" id="fitxa-cos">${cos}</div>`;
+    fitxa.classList.remove('minimitzat');
     fitxa.classList.add('obert');
+    estatBotoAillar();
     fitxa.setAttribute('aria-hidden', 'false');
     $('.fitxa-cos', fitxa).scrollTop = 0;
   }
@@ -1183,6 +1234,8 @@
       else if (el.dataset.linia) canviaLinia(el.dataset.linia, el.checked);
       else if (el.name === 'mapa-base') { posaMapaBase(el.value); return; }
       else return;
+      // Tocar les capes desfà l'aïllament
+      if (E.aillat) { E.aillat = null; estatBotoAillar(); }
       aplicaVisibilitat();
       actualitzaChecks();
     });
@@ -1382,6 +1435,10 @@
     document.querySelectorAll('.idiomes button').forEach((b) => b.addEventListener('click', () => posaIdioma(b.dataset.idioma, true)));
     $('#fitxa').addEventListener('click', (e) => {
       if (e.target.closest('.tanca')) { tancaFitxa(); return; }
+      if (e.target.closest('.minimitza')) { minimitzaFitxa(); return; }
+      if (e.target.closest('.aillar')) { aillaElement(); return; }
+      // Amb la fitxa minimitzada, tocar la capçalera la torna a obrir
+      if (e.target.closest('.fitxa-cap') && $('#fitxa').classList.contains('minimitzat')) { minimitzaFitxa(false); return; }
       const copia = e.target.closest('[data-copia]');
       if (copia) {
         navigator.clipboard?.writeText(copia.dataset.copia).then(() => {

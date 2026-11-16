@@ -1,5 +1,5 @@
 {
- "_comentari": "Correccions de línies de Renfe que el GTFS o la xarxa de l'ICV no porten bé. «treu_parades»: parades que no són de la línia; «treu_tram_de»: s'esborra el traçat que coincidix amb el d'una altra línia (excepte prop de l'estació de «conserva_prop_de»); «substitueix_tram»: el tros de traçat entre els extrems del tram indicat se substituïx pel tram de «trams»; «afegeix_parades_inici»/«afegeix_parades_final»: parades que falten al GTFS (p. ex. tancades per obres). «afegeix_ramal»: ramal amb parades pròpies i el traçat del tram indicat.",
+ "_comentari": "Correccions de línies de Renfe que el GTFS o la xarxa de l'ICV no porten bé. «treu_parades»: parades que no són de la línia; «treu_tram_de»: s'esborra el traçat que coincidix amb el d'una altra línia (excepte prop de l'estació de «conserva_prop_de»); «substitueix_tram»: el tros de traçat entre els extrems del tram indicat se substituïx pel tram de «trams»; «afegeix_parades_inici»/«afegeix_parades_final»: parades que falten al GTFS (p. ex. tancades per obres). «afegeix_ramal»: ramal amb parades pròpies i el traçat del tram indicat. «substitueix_tram» pot ser una llista de trams, que s'apliquen per orde. «inverteix»: gira l'orde de les parades i del traçat (p. ex. perquè comence a València Nord).",
  "linies": {
   "rodalies:alacant-murcia:C1": {
    "nom": "Alacant Terminal – Murcia del Carmen",
@@ -15,13 +15,21 @@
     "adif:64003",
     "adif:64004",
     "adif:64005"
-   ]
+   ],
+   "nom": "València Nord – Moixent",
+   "inverteix": true
   },
   "md:albacete": {
-   "substitueix_tram": "xativa-encina"
+   "substitueix_tram": [
+    "xativa-encina",
+    "encina-sud"
+   ]
   },
   "regionals:alacant-valencia": {
-   "substitueix_tram": "xativa-encina"
+   "substitueix_tram": [
+    "xativa-encina",
+    "encina-directe"
+   ]
   },
   "rodalies:valencia:C1": {
    "afegeix_ramal": {
@@ -31,7 +39,8 @@
      "adif:69111"
     ],
     "tram": "gandia-platja"
-   }
+   },
+   "nom": "València Nord – Gandia"
   }
  },
  "trams": {
@@ -1480,28 +1489,12 @@
     38.88262
    ],
    [
-    -0.74631,
-    38.88151
+    -0.74488,
+    38.88224
    ],
    [
-    -0.74787,
-    38.88083
-   ],
-   [
-    -0.74912,
-    38.88049
-   ],
-   [
-    -0.75035,
-    38.88035
-   ],
-   [
-    -0.75162,
-    38.88037
-   ],
-   [
-    -0.75285,
-    38.88056
+    -0.7542,
+    38.87772
    ]
   ],
   "gandia-platja": [
@@ -1577,14 +1570,219 @@
     -0.162434,
     38.990244
    ]
+  ],
+  "encina-directe": [
+   [
+    -0.89322,
+    38.78858
+   ],
+   [
+    -0.92242,
+    38.76217
+   ],
+   [
+    -0.92338,
+    38.76133
+   ],
+   [
+    -0.92454,
+    38.76046
+   ],
+   [
+    -0.926,
+    38.75949
+   ],
+   [
+    -0.92796,
+    38.75826
+   ],
+   [
+    -0.92832,
+    38.7579
+   ],
+   [
+    -0.93153,
+    38.75549
+   ],
+   [
+    -0.93217,
+    38.75498
+   ],
+   [
+    -0.93283,
+    38.75439
+   ],
+   [
+    -0.93356,
+    38.75364
+   ],
+   [
+    -0.9342,
+    38.75289
+   ],
+   [
+    -0.9347,
+    38.7522
+   ],
+   [
+    -0.93515,
+    38.75146
+   ],
+   [
+    -0.93565,
+    38.75047
+   ],
+   [
+    -0.93664,
+    38.74797
+   ],
+   [
+    -0.93691,
+    38.74738
+   ],
+   [
+    -0.93741,
+    38.74647
+   ],
+   [
+    -0.93795,
+    38.74566
+   ],
+   [
+    -0.93846,
+    38.745
+   ],
+   [
+    -0.93935,
+    38.74403
+   ],
+   [
+    -0.9401,
+    38.74334
+   ],
+   [
+    -0.94281,
+    38.74099
+   ]
+  ],
+  "_font_encina": "Traçats de la xarxa de l'ICV («Red Convencional – En uso»): «encina-directe», l'enllaç que fan els regionals València – Alacant sense passar per La Encina; «encina-sud», la corba per on els MD de València entren a La Encina per baix.",
+  "encina-sud": [
+   [
+    -0.89322,
+    38.78858
+   ],
+   [
+    -0.92242,
+    38.76217
+   ],
+   [
+    -0.92338,
+    38.76133
+   ],
+   [
+    -0.92454,
+    38.76046
+   ],
+   [
+    -0.926,
+    38.75949
+   ],
+   [
+    -0.92796,
+    38.75826
+   ],
+   [
+    -0.92921,
+    38.75756
+   ],
+   [
+    -0.9305,
+    38.75697
+   ],
+   [
+    -0.93125,
+    38.75668
+   ],
+   [
+    -0.93277,
+    38.75622
+   ],
+   [
+    -0.93448,
+    38.75586
+   ],
+   [
+    -0.93558,
+    38.75571
+   ],
+   [
+    -0.93629,
+    38.75565
+   ],
+   [
+    -0.93815,
+    38.7556
+   ],
+   [
+    -0.93965,
+    38.7557
+   ],
+   [
+    -0.94128,
+    38.75593
+   ],
+   [
+    -0.94225,
+    38.75614
+   ],
+   [
+    -0.94314,
+    38.75637
+   ],
+   [
+    -0.94469,
+    38.75691
+   ],
+   [
+    -0.94587,
+    38.75743
+   ],
+   [
+    -0.9468,
+    38.75793
+   ],
+   [
+    -0.94743,
+    38.7583
+   ],
+   [
+    -0.94851,
+    38.75905
+   ],
+   [
+    -0.94944,
+    38.75983
+   ],
+   [
+    -0.95012,
+    38.76049
+   ],
+   [
+    -0.95061,
+    38.76103
+   ],
+   [
+    -0.95415,
+    38.76541
+   ]
   ]
  },
  "estacions": {
   "adif:64003": {
    "nom": "Moixent",
    "coord": [
-    -0.752852,
-    38.88056
+    -0.7542,
+    38.87772
    ],
    "nota": "Sense servici de tren per obres (servici per carretera)."
   },

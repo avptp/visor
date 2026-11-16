@@ -68,6 +68,18 @@ def metrovalencia(dades):
             estacions[i] = {'type': 'Feature', 'properties': {'id': i, 'tipus': 'estacio', 'nom': d['nom'],
                                                                 'serveis': ['metrovalencia'], 'linies': []},
                             'geometry': {'type': 'Point', 'coordinates': d['coord']}}
+        estacions[i]['properties']['nom'] = d['nom']
+        estacions[i]['geometry']['coordinates'] = d['coord']
+    # Línies en projecte (L11, L12...): es creen o es reemplacen senceres
+    for lid, d in c.get('linies_noves', {}).items():
+        props = {'tipus': 'linia', 'servei': 'metrovalencia', 'id': lid}
+        props.update({k: v for k, v in d.items() if k != 'geom'})
+        f = {'type': 'Feature', 'properties': props, 'geometry': {'type': 'MultiLineString', 'coordinates': d['geom']}}
+        if lid in linies:
+            mv['features'][mv['features'].index(linies[lid])] = f
+        else:
+            mv['features'].append(f)
+        linies[lid] = f
     for lid, d in c['linies'].items():
         f = linies.get(lid)
         if not f:
@@ -173,8 +185,8 @@ def correccions_ferrocarril(dades):
                     if lid not in ep['linies']:
                         ep['linies'].append(lid)
                 canvis_est = True
-            tram = trams.get(d.get('substitueix_tram'))
-            if tram:
+            noms = d.get('substitueix_tram') or []
+            for tram in [trams[n] for n in ([noms] if isinstance(noms, str) else noms) if n in trams]:
                 g = f['geometry']
                 parts = g['coordinates'] if g['type'] == 'MultiLineString' else [g['coordinates']]
                 for k, part in enumerate(parts):
@@ -189,6 +201,13 @@ def correccions_ferrocarril(dades):
                     g['coordinates'] = parts
                 else:
                     g['coordinates'] = parts[0]
+            if d.get('inverteix'):
+                p['parades'] = p['parades'][::-1]
+                g = f['geometry']
+                if g['type'] == 'MultiLineString':
+                    g['coordinates'] = [part[::-1] for part in g['coordinates'][::-1]]
+                else:
+                    g['coordinates'] = g['coordinates'][::-1]
             ramal = d.get('afegeix_ramal')
             if ramal:
                 p['ramals'] = [r for r in p.get('ramals', []) if r['nom'] != ramal['nom']]
@@ -349,7 +368,7 @@ def main():
     avant(dades)
     codis(dades)
     projectes(dades)
-    for nom in ('estatals.geojson', 'atmv.geojson', 'tram_castello.geojson', 'emt_valencia.geojson', 'urba_alacant.geojson', 'brt_xirivella.geojson'):
+    for nom in ('estatals.geojson', 'atmv.geojson', 'tram_castello.geojson', 'emt_valencia.geojson', 'urba_alacant.geojson', 'urba_castello.geojson', 'brt_xirivella.geojson'):
         copia(dades, nom)
     copia_limit = AQUI / 'limit_cv.geojson'
     if copia_limit.exists():

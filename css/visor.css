@@ -214,7 +214,7 @@ button.bala:hover { box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--c);
 
 .fitxa-cap {
   position: relative; flex: none;
-  padding: 20px 56px 18px 18px;
+  padding: 20px 128px 18px 18px;
   background: var(--c); color: var(--ct);
 }
 .fitxa-cap-fila { display: flex; align-items: center; gap: 14px; }
@@ -230,13 +230,21 @@ button.bala:hover { box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--c);
 .fitxa-sistema { padding: 1px 8px; border-radius: 999px; border: 1.5px solid currentColor; font-size: .78rem; }
 #fitxa-titol { margin: 0; font-size: 1.3rem; line-height: 1.2; text-wrap: balance; }
 #fitxa-titol:focus { outline: none; }
-.tanca {
-  position: absolute; top: 12px; right: 12px; width: 36px; height: 36px;
+.fitxa-botons { position: absolute; top: 12px; right: 10px; display: flex; gap: 2px; }
+.tanca, .minimitza, .aillar {
+  width: 36px; height: 36px;
   border: 0; border-radius: 50%; background: transparent; color: inherit; cursor: pointer;
   display: grid; place-items: center;
 }
-.tanca:hover { background: rgba(127, 127, 127, .22); }
-.tanca svg { width: 18px; height: 18px; }
+.tanca:hover, .minimitza:hover, .aillar:hover { background: rgba(127, 127, 127, .22); }
+.aillar[aria-pressed="true"] { background: var(--ct); color: var(--c); }
+.tanca svg, .minimitza svg, .aillar svg { width: 18px; height: 18px; }
+.minimitza svg { transition: transform .2s; }
+/* Fitxa minimitzada: només la capçalera, i el mapa queda lliure */
+@media (min-width: 701px) { #fitxa.minimitzat { bottom: auto; } }
+#fitxa.minimitzat .fitxa-cos { display: none; }
+#fitxa.minimitzat .fitxa-cap { cursor: pointer; }
+#fitxa.minimitzat .minimitza svg { transform: rotate(180deg); }
 
 .fitxa-cos { flex: 1; overflow-y: auto; padding: 0 18px 22px; overscroll-behavior: contain; }
 .fitxa-cos section { padding: 16px 0; border-top: 1px solid var(--vora); }
@@ -357,7 +365,7 @@ button.bala:hover { box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--c);
 /* Amb la fitxa oberta, els controls de baix a la dreta (zoom, comentaris) es desplacen a l'esquerra de la fitxa */
 .leaflet-bottom.leaflet-right { transition: right .28s cubic-bezier(.2, .8, .2, 1); }
 @media (min-width: 701px) {
-  body:has(#fitxa.obert) .leaflet-bottom.leaflet-right { right: calc(min(410px, 100vw - 28px) + 14px); }
+  body:has(#fitxa.obert:not(.minimitzat)) .leaflet-bottom.leaflet-right { right: calc(min(410px, 100vw - 28px) + 14px); }
 }
 .comentaris { position: relative; }
 .comentaris-boto {
@@ -404,7 +412,8 @@ button.bala:hover { box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--c);
     transform: translateY(100%);
   }
   #fitxa.obert { transform: none; }
-  .fitxa-cap { padding: 16px 52px 14px 16px; }
+  .fitxa-cap { padding: 16px 124px 14px 16px; }
+  #fitxa.minimitzat .fitxa-cap { padding-top: 12px; padding-bottom: 10px; }
   #fitxa-titol { font-size: 1.15rem; }
   .fitxa-cos { padding: 0 16px 18px; }
   #avisos { left: 8px; right: 8px; }

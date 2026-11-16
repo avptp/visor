@@ -40,6 +40,7 @@ scripts/                         preparació de les dades (no es publica)
     atmv.geojson                 concessions de l'ATMV (Metrobús)
     emt_valencia.geojson         EMT València
     urba_alacant.geojson         autobús urbà d'Alacant
+    urba_castello.geojson        autobús urbà de Castelló de la Plana (TUCS)
     tram_castello.geojson        TRAM de Castelló
     tracats_renfe.json           traçats de Regionals i Mitja distància
     correccions_metrovalencia.json

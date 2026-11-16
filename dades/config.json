@@ -331,7 +331,8 @@
   "_colors": "El color de cada línia ve de les dades (scripts/serveis.json → geometries_propies.linies). Per a provar-ne un sense regenerar-les, afegiu-lo a «colorsLinies», p. ex. {\"metrovalencia:2\": \"#E4007C\"}.",
   "colorsLinies": {
     "emt_valencia": "#D7141A",
-    "urba_alacant": "#1F6FB5"
+    "urba_alacant": "#1F6FB5",
+    "urba_castello": "#0E7C86"
   },
   "productesRenfe": {
     "REGIONAL": "Regional",
@@ -345,6 +346,7 @@
     "dades/bus_interurba.geojson",
     "dades/emt_valencia.geojson",
     "dades/urba_alacant.geojson",
+    "dades/urba_castello.geojson",
     "dades/atmv.geojson",
     "dades/estatals.geojson",
     "dades/tram_castello.geojson",
