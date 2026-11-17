@@ -49,7 +49,8 @@ def main():
     cfg = json.loads((VISOR / "dades" / "config.json").read_text(encoding="utf-8"))
     rutes = ["dades/config.json", *cfg.get("fitxers", []), cfg.get("metadades"),
              *[d for d in cfg.get("documentacio", []) if not re.match(r"https?://", d)],
-             (cfg.get("limit") or {}).get("fitxer"), cfg.get("resums")]
+             (cfg.get("limit") or {}).get("fitxer"), cfg.get("resums"),
+             *[v.get("dades") for v in (cfg.get("vistes") or {}).values()]]
     fitxers = {}
     for r in filter(None, rutes):
         cami = VISOR / r
@@ -72,6 +73,12 @@ def main():
         if js == "i18n":
             bloc = f"<script>\n{segur_script(dades)}\n</script>\n  " + bloc
         html = html.replace(f'<script src="js/{js}.js"></script>', bloc)
+
+    # Els mòduls de les vistes (?vista=…) van inclosos després del visor
+    vistes = "".join(f"\n  <script>\n{segur_script((VISOR / v['script']).read_text(encoding='utf-8'))}\n</script>"
+                     for v in (cfg.get("vistes") or {}).values() if v.get("script") and (VISOR / v["script"]).exists())
+    i = html.rindex("</body>")
+    html = html[:i] + vistes + "\n" + html[i:]
 
     sortida = Path(args.sortida).expanduser()
     sortida.write_text(html, encoding="utf-8")

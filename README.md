@@ -352,3 +352,11 @@ El peu del mapa i el panell de capes citen les administracions d'on venen les da
 - **Llibreria de mapes:** Leaflet 1.9.4 (BSD-2).
 - **Codi:** llicència MIT (vegeu `LICENSE`). Les dades i els logotips tenen les llicències indicades ací damunt.
 - **Logotips:** el de l'AVPTP és propietat de l'associació; els dels servicis, dels seus titulars (FGV, Renfe, Generalitat Valenciana, Ministeri de Transports, Metrobús, TRAM de Castelló), i s'usen només per a identificar cada servici.
+
+## Vistes específiques (en proves)
+
+El visor pot obrir vistes temàtiques amb el paràmetre `?vista=…`, sense canviar el visor general:
+
+- `?vista=mapa-concessional`: grau d'implantació del nou mapa concessional de la Generalitat. Mostra només les concessions del nou mapa, pintades segons l'estat, amb el percentatge en servici, les fites i la llista de concessions. Les dades són a `dades/mapa_concessional.json` i el codi a `js/vistes/mapa-concessional.js`.
+
+Per a afegir-ne una altra: crea `js/vistes/<nom>.js` (registra `window.VISOR_VISTES['<nom>'] = { crea }`), el seu fitxer de dades i l'entrada corresponent a `vistes` de `dades/config.json`.
