@@ -1,5 +1,5 @@
 {
- "_comentari": "Correccions de línies de Renfe que el GTFS o la xarxa de l'ICV no porten bé. «treu_parades»: parades que no són de la línia; «treu_tram_de»: s'esborra el traçat que coincidix amb el d'una altra línia (excepte prop de l'estació de «conserva_prop_de»); «substitueix_tram»: el tros de traçat entre els extrems del tram indicat se substituïx pel tram de «trams»; «afegeix_parades_inici»/«afegeix_parades_final»: parades que falten al GTFS (p. ex. tancades per obres). «afegeix_ramal»: ramal amb parades pròpies i el traçat del tram indicat. «substitueix_tram» pot ser una llista de trams, que s'apliquen per orde. «inverteix»: gira l'orde de les parades i del traçat (p. ex. perquè comence a València Nord).",
+ "_comentari": "Correccions de línies de Renfe que el GTFS o la xarxa de l'ICV no porten bé. «treu_parades»: parades que no són de la línia; «treu_tram_de»: s'esborra el traçat que coincidix amb el d'una altra línia (excepte prop de l'estació de «conserva_prop_de»); «substitueix_tram»: el tros de traçat entre els extrems del tram indicat se substituïx pel tram de «trams»; «afegeix_parades_inici»/«afegeix_parades_final»: parades que falten al GTFS (p. ex. tancades per obres). «afegeix_ramal»: ramal amb parades pròpies i el traçat del tram indicat. «substitueix_tram» pot ser una llista de trams, que s'apliquen per orde. «inverteix»: id de l'estació per on ha de començar la línia (p. ex. València Nord); si ara hi acaba, se'n giren les parades i el traçat.",
  "linies": {
   "rodalies:alacant-murcia:C1": {
    "nom": "Alacant Terminal – Murcia del Carmen",
@@ -17,7 +17,7 @@
     "adif:64005"
    ],
    "nom": "València Nord – Moixent",
-   "inverteix": true
+   "inverteix": "adif:65000"
   },
   "md:albacete": {
    "substitueix_tram": [

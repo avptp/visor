@@ -20,6 +20,7 @@
       amaga: 'Amaga «{e}» al mapa', mostra: 'Mostra «{e}» al mapa',
       arees: 'Per àrees', concessions: 'Concessions',
       data_inici: 'Entrada en servici: {d}',
+      data_aprovacio: 'Aprovació definitiva: {d}',
       sense_tracat: 'Encara sense traçat al visor',
       font: 'font',
       nota: 'Vista en proves. L’estat de cada concessió és el de les dades que té el visor; les que hi apareixen «sense informació» encara no s’han revisat.',
@@ -37,6 +38,7 @@
       amaga: 'Ocultar «{e}» en el mapa', mostra: 'Mostrar «{e}» en el mapa',
       arees: 'Por áreas', concessions: 'Concesiones',
       data_inici: 'Entrada en servicio: {d}',
+      data_aprovacio: 'Aprobación definitiva: {d}',
       sense_tracat: 'Aún sin trazado en el visor',
       font: 'fuente',
       nota: 'Vista en pruebas. El estado de cada concesión es el de los datos que tiene el visor; las que aparecen «sin información» aún no se han revisado.',
@@ -76,7 +78,8 @@
       }).join('')}</div>`;
     }
 
-    const dataInici = (c) => c.dates?.inici || '';
+    // Data que acompanya el nom: l'entrada en servici o, si encara no hi està, l'aprovació definitiva
+    const dataConc = (c) => (c.dates?.inici ? ['inici', c.dates.inici] : c.dates?.aprovacio ? ['aprovacio', c.dates.aprovacio] : null);
 
     function pinta(cont) {
       if (cont) el = cont;
@@ -101,12 +104,13 @@
         const ll = concs.filter((c) => c.codi.startsWith(a.prefix));
         if (!ll.length) return '';
         return `<li class="vc-subgrup">${esc(tx(a))}</li>${ll.map((c) => {
-          const d = dataInici(c);
+          const dc = dataConc(c);
+          const d = dc && dc[1];
           const llarg = TXT.ca[`${c.estat}_llarg`] ? tt(`${c.estat}_llarg`) : tt(c.estat);
           const detall = [llarg, !c.obj && c.estat !== 'pendent' ? tt('sense_tracat') : ''].filter(Boolean).join(' · ');
           const cos = `<span class="vc-codi" style="--c:${COLORS[c.estat]}">${esc(c.codi)}</span>
             <span class="vc-nom">${esc(nom(c))}<small>${esc(detall)}</small></span>
-            ${d ? `<time class="vc-data" datetime="${esc(d)}" title="${esc(tt('data_inici', { d: data(d) }))}">${esc(data(d))}</time>` : ''}`;
+            ${d ? `<time class="vc-data" datetime="${esc(d)}" title="${esc(tt(`data_${dc[0]}`, { d: data(d) }))}">${esc(data(d))}</time>` : ''}`;
           return `<li>${c.obj ? `<button type="button" class="vc-conc" data-vc-id="${esc(c.obj.id)}">${cos}</button>`
             : `<div class="vc-conc sense">${cos}</div>`}</li>`;
         }).join('')}`;

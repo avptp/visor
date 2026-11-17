@@ -165,6 +165,12 @@ def correccions_ferrocarril(dades):
             if not f:
                 continue
             p = f['properties']
+            # Si una execució anterior ja l'havia girat («inverteix»), es torna a l'orientació original
+            # abans d'aplicar les correccions, perquè el resultat no depenga de quantes vegades s'execute
+            if d.get('inverteix') and p['parades'] and p['parades'][0] == d['inverteix'] and p['parades'][-1] != d['inverteix']:
+                p['parades'] = p['parades'][::-1]
+                g = f['geometry']
+                g['coordinates'] = [part[::-1] for part in g['coordinates'][::-1]] if g['type'] == 'MultiLineString' else g['coordinates'][::-1]
             if d.get('nom'):
                 p['nom'] = d['nom']
             treu = set(d.get('treu_parades', []))
@@ -201,7 +207,10 @@ def correccions_ferrocarril(dades):
                     g['coordinates'] = parts
                 else:
                     g['coordinates'] = parts[0]
-            if d.get('inverteix'):
+            # «inverteix»: id de l'estació per on ha de començar la línia; només es gira si ara hi acaba
+            # (així el resultat és el mateix encara que l'script s'execute més d'una vegada)
+            inici = d.get('inverteix')
+            if inici and p['parades'] and p['parades'][0] != inici and (inici is True or p['parades'][-1] == inici):
                 p['parades'] = p['parades'][::-1]
                 g = f['geometry']
                 if g['type'] == 'MultiLineString':

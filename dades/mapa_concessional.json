@@ -1,5 +1,5 @@
 {
- "_comentari": "Dades de la vista «Nou mapa concessional GVA» (en proves). Estat de cada concessió: «servei» (en servici), «aprovada» (projecte aprovat definitivament, sense licitar), «projecte» (aprovat inicialment) o «pendent» (sense informació). Si no s'indica «estat», es pren de l'element del visor («element»): en servici o en projecte. «dates.inici» és l'entrada en servici (AAAA-MM-DD) i «font», on es pot comprovar.",
+ "_comentari": "Dades de la vista «Nou mapa concessional GVA» (en proves). Estat de cada concessió: «servei» (en servici), «aprovada» (projecte aprovat definitivament, sense licitar), «projecte» (aprovat inicialment) o «pendent» (sense informació). Si no s'indica «estat», es pren de l'element del visor («element»): en servici o en projecte. «dates.inici» és l'entrada en servici i «dates.aprovacio», l'aprovació definitiva del projecte (AAAA-MM-DD) i «font», on es pot comprovar.",
  "actualitzat": "2026-11-17",
  "arees": [
   {
@@ -27,7 +27,12 @@
   {
    "codi": "CV-001",
    "nom": "Morella – Vinaròs – Castelló de la Plana",
-   "nom_es": "Morella – Vinaròs – Castellón de la Plana"
+   "nom_es": "Morella – Vinaròs – Castellón de la Plana",
+   "element": "bus:projecte:CV-001",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2025-03-21"
+   }
   },
   {
    "codi": "CV-002",
@@ -38,7 +43,12 @@
   {
    "codi": "CV-003",
    "nom": "Vinaròs – Castelló de la Plana",
-   "nom_es": "Vinaròs – Castellón de la Plana"
+   "nom_es": "Vinaròs – Castellón de la Plana",
+   "element": "bus:projecte:CV-003",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2025-05-08"
+   }
   },
   {
    "codi": "CV-004",
@@ -49,10 +59,7 @@
     "inici": "2025-03-21"
    },
    "font": "https://valencianews.es/comunidad-valenciana/la-generalitat-pone-en-marcha-el-nuevo-servicio-publico-de-autobuses-para-conectar-municipios-del-alto-mijares-lalcalaten-y-la-plana-alta/",
-   "nota": {
-    "ca": "En servici, però encara sense traçat al visor.",
-    "es": "En servicio, pero aún sin trazado en el visor."
-   }
+   "element": "bus:CV-004"
   },
   {
    "codi": "CV-005",
@@ -63,7 +70,12 @@
   {
    "codi": "CV-006",
    "nom": "Castelló Metropolitana Sud",
-   "nom_es": "Castellón Metropolitana Sur"
+   "nom_es": "Castellón Metropolitana Sur",
+   "element": "bus:projecte:CV-006",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2025-05-08"
+   }
   },
   {
    "codi": "CV-007",
@@ -80,7 +92,12 @@
   {
    "codi": "CV-009",
    "nom": "Aeroport de Castelló",
-   "nom_es": "Aeropuerto de Castellón"
+   "nom_es": "Aeropuerto de Castellón",
+   "element": "bus:projecte:CV-009",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2026-04-21"
+   }
   },
   {
    "codi": "CV-101",
@@ -159,27 +176,52 @@
   {
    "codi": "CV-110",
    "nom": "La Ribera",
-   "nom_es": "La Ribera"
+   "nom_es": "La Ribera",
+   "element": "bus:projecte:CV-110",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2023-06-15"
+   }
   },
   {
    "codi": "CV-111",
    "nom": "La Ribera Alta – València",
-   "nom_es": "La Ribera Alta – Valencia"
+   "nom_es": "La Ribera Alta – Valencia",
+   "element": "bus:projecte:CV-111",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2023-06-15"
+   }
   },
   {
    "codi": "CV-112",
    "nom": "Xàtiva Nord",
-   "nom_es": "Xàtiva Norte"
+   "nom_es": "Xàtiva Norte",
+   "element": "bus:projecte:CV-112",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2020-07-13"
+   }
   },
   {
    "codi": "CV-113",
    "nom": "La Safor Nord",
-   "nom_es": "La Safor Norte"
+   "nom_es": "La Safor Norte",
+   "element": "bus:projecte:CV-113",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2023-06-15"
+   }
   },
   {
    "codi": "CV-114",
    "nom": "La Safor Sud",
-   "nom_es": "La Safor Sur"
+   "nom_es": "La Safor Sur",
+   "element": "bus:projecte:CV-114",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2023-06-15"
+   }
   },
   {
    "codi": "CV-115",
@@ -190,7 +232,12 @@
   {
    "codi": "CV-201",
    "nom": "La Marina Alta",
-   "nom_es": "La Marina Alta"
+   "nom_es": "La Marina Alta",
+   "element": "bus:projecte:CV-201",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2025-03-21"
+   }
   },
   {
    "codi": "CV-202",
@@ -201,12 +248,22 @@
   {
    "codi": "CV-204",
    "nom": "Alcoi Metropolità",
-   "nom_es": "Alcoy Metropolitano"
+   "nom_es": "Alcoy Metropolitano",
+   "element": "bus:projecte:CV-204",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2024-08-12"
+   }
   },
   {
    "codi": "CV-205",
    "nom": "Alcoi – Alacant",
-   "nom_es": "Alcoy – Alicante"
+   "nom_es": "Alcoy – Alicante",
+   "element": "bus:projecte:CV-205",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2024-09-12"
+   }
   },
   {
    "codi": "CV-207",
@@ -229,7 +286,12 @@
   {
    "codi": "CV-212",
    "nom": "Alacant – Santa Pola",
-   "nom_es": "Alicante – Santa Pola"
+   "nom_es": "Alicante – Santa Pola",
+   "element": "bus:projecte:CV-212",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2024-08-12"
+   }
   },
   {
    "codi": "CV-213",
@@ -240,12 +302,22 @@
   {
    "codi": "CV-214",
    "nom": "Torrevieja – Alacant",
-   "nom_es": "Torrevieja – Alicante"
+   "nom_es": "Torrevieja – Alicante",
+   "element": "bus:projecte:CV-214",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2025-07-31"
+   }
   },
   {
    "codi": "CV-301",
    "nom": "València – Benidorm",
-   "nom_es": "Valencia – Benidorm"
+   "nom_es": "Valencia – Benidorm",
+   "element": "bus:projecte:CV-301",
+   "estat": "aprovada",
+   "dates": {
+    "aprovacio": "2024-06-10"
+   }
   },
   {
    "codi": "CV-302",
