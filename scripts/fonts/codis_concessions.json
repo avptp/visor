@@ -1,5 +1,5 @@
 {
- "_comentari": "Codi de contracte de cada concessió (full «Datos_concesiones_2025.xlsx»), per identificador del visor. CE = contracte d'emergència. Pendents de revisar: Alacant - Alcoi (CE-709 o CVA-015), Alacant Metropolitano, Alacant Rodalia (CE-705 TAM o CVA-025 NO TAM), Alcalà de Xivert - Alcossebre, Carcaixent - Alzira - Algemesí (CV-101 o CE-DANA24-01), La Serranía - València (CVV-201-P, finalitzat), Morella, València - Benifaió.",
+ "_comentari": "Codi de contracte de cada concessió (full «Datos_concesiones_2025.xlsx»), per identificador del visor. CE = contracte d'emergència. La Serranía - València és la CV-101 (confirmat per l'AVPTP). Pendents de revisar: Alacant - Alcoi (CE-709 o CVA-015), Alacant Metropolitano, Alacant Rodalia (CE-705 TAM o CVA-025 NO TAM), Alcalà de Xivert - Alcossebre, Carcaixent - Alzira - Algemesí (CV-101 o CE-DANA24-01), Morella, València - Benifaió.",
  "codis": {
   "bus:2843785601": "CV-403",
   "bus:6020": "CVA-020",
@@ -36,6 +36,7 @@
   "bus:5905": "CE-905",
   "bus:1002": "CV-002",
   "bus:5011": "CVA-011",
-  "bus:2844733851": "CVV-227"
+  "bus:2844733851": "CVV-227",
+  "bus:2545579951": "CV-101"
  }
 }
