@@ -1,5 +1,7 @@
 {
-  "comentaris": { "correu": "contacte@avptp.org" },
+  "comentaris": {
+    "correu": "contacte@avptp.org"
+  },
   "titol": {
     "ca": "Visor de la xarxa de transport públic",
     "es": "Visor de la red de transporte público"
@@ -404,5 +406,21 @@
       "url": "https://icv.gva.es"
     }
   ],
-  "zoomEtiquetes": 13
+  "zoomEtiquetes": 13,
+  "vistes": {
+    "mapa-concessional": {
+      "nom": {
+        "ca": "Nou mapa concessional GVA",
+        "es": "Nuevo mapa concesional GVA"
+      },
+      "detall": {
+        "ca": "Grau d'implantació de les concessions interurbanes",
+        "es": "Grado de implantación de las concesiones interurbanas"
+      },
+      "script": "js/vistes/mapa-concessional.js",
+      "dades": "dades/mapa_concessional.json",
+      "proves": true,
+      "imatge": "img/vistes/mapa-concessional.svg"
+    }
+  }
 }

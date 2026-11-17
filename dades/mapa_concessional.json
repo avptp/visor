@@ -1,0 +1,263 @@
+{
+ "_comentari": "Dades de la vista «Nou mapa concessional GVA» (en proves). Estat de cada concessió: «servei» (en servici), «aprovada» (projecte aprovat definitivament, sense licitar), «projecte» (aprovat inicialment) o «pendent» (sense informació). Si no s'indica «estat», es pren de l'element del visor («element»): en servici o en projecte. «dates.inici» és l'entrada en servici (AAAA-MM-DD) i «font», on es pot comprovar.",
+ "actualitzat": "2026-11-17",
+ "arees": [
+  {
+   "prefix": "CV-0",
+   "ca": "Castelló",
+   "es": "Castellón"
+  },
+  {
+   "prefix": "CV-1",
+   "ca": "València",
+   "es": "Valencia"
+  },
+  {
+   "prefix": "CV-2",
+   "ca": "Alacant",
+   "es": "Alicante"
+  },
+  {
+   "prefix": "CV-3",
+   "ca": "Interprovincials",
+   "es": "Interprovinciales"
+  }
+ ],
+ "concessions": [
+  {
+   "codi": "CV-001",
+   "nom": "Morella – Vinaròs – Castelló de la Plana",
+   "nom_es": "Morella – Vinaròs – Castellón de la Plana"
+  },
+  {
+   "codi": "CV-002",
+   "nom": "Vinaròs – Benicarló – Peníscola",
+   "nom_es": "Vinaròs – Benicarló – Peñíscola",
+   "element": "bus:1002"
+  },
+  {
+   "codi": "CV-003",
+   "nom": "Vinaròs – Castelló de la Plana",
+   "nom_es": "Vinaròs – Castellón de la Plana"
+  },
+  {
+   "codi": "CV-004",
+   "nom": "L'Alcora – Castelló de la Plana",
+   "nom_es": "L'Alcora – Castellón de la Plana",
+   "estat": "servei",
+   "dates": {
+    "inici": "2025-03-21"
+   },
+   "font": "https://valencianews.es/comunidad-valenciana/la-generalitat-pone-en-marcha-el-nuevo-servicio-publico-de-autobuses-para-conectar-municipios-del-alto-mijares-lalcalaten-y-la-plana-alta/",
+   "nota": {
+    "ca": "En servici, però encara sense traçat al visor.",
+    "es": "En servicio, pero aún sin trazado en el visor."
+   }
+  },
+  {
+   "codi": "CV-005",
+   "nom": "Onda – Castelló de la Plana",
+   "nom_es": "Onda – Castellón de la Plana",
+   "element": "bus:2703102101"
+  },
+  {
+   "codi": "CV-006",
+   "nom": "Castelló Metropolitana Sud",
+   "nom_es": "Castellón Metropolitana Sur"
+  },
+  {
+   "codi": "CV-007",
+   "nom": "La Vall d'Uixó – Castelló de la Plana",
+   "nom_es": "La Vall d'Uixó – Castellón de la Plana",
+   "element": "bus:2076567001"
+  },
+  {
+   "codi": "CV-008",
+   "nom": "Alto Palancia – Sagunt – València",
+   "nom_es": "Alto Palancia – Sagunto – Valencia",
+   "element": "bus:1980348601"
+  },
+  {
+   "codi": "CV-009",
+   "nom": "Aeroport de Castelló",
+   "nom_es": "Aeropuerto de Castellón"
+  },
+  {
+   "codi": "CV-101",
+   "nom": "La Serranía – València",
+   "nom_es": "La Serranía – Valencia",
+   "element": "bus:2545579951",
+   "dates": {
+    "inici": "2025-04-15"
+   },
+   "font": "https://www.eldiario.es/comunitat-valenciana/comarcas/generalitat-pone-marcha-nuevo-servicio-bus-serranos-rincon-ademuz-camp-turia_1_12221649.html"
+  },
+  {
+   "codi": "CV-102",
+   "nom": "València Metropolitana Nord",
+   "nom_es": "Valencia Metropolitana Norte",
+   "element": "atmv:CV102",
+   "dates": {
+    "inici": "2025-05-16"
+   },
+   "font": "https://www.valenciaextra.com/es/sociedad/17-nuevas-lineas-bus-en-valencia-mejorara-movilidad-corredor-norte-metropolitano_572178_102.html"
+  },
+  {
+   "codi": "CV-103",
+   "nom": "València Metropolitana Nord-Oest",
+   "nom_es": "Valencia Metropolitana Noroeste",
+   "element": "atmv:CV103",
+   "dates": {
+    "inici": "2025-05-09"
+   },
+   "font": "https://www.elperiodic.com/pvalencia/generalitat-pone-marcha-nuevo-servicio-metrobus-mejora-frecuencias-conexion-valencia-area-metropolitana-noroeste_1015241"
+  },
+  {
+   "codi": "CV-104",
+   "nom": "Ayora – Requena – València",
+   "nom_es": "Ayora – Requena – Valencia",
+   "element": "bus:2042521951"
+  },
+  {
+   "codi": "CV-105",
+   "nom": "Utiel – Requena",
+   "nom_es": "Utiel – Requena",
+   "element": "bus:2070900901"
+  },
+  {
+   "codi": "CV-106",
+   "nom": "València Metropolitana Oest",
+   "nom_es": "Valencia Metropolitana Oeste",
+   "element": "atmv:CV106",
+   "dates": {
+    "inici": "2025-01-24"
+   },
+   "font": "https://actualidadvalencia.com/generalitat-mejora-oferta-metrobus-valencia/"
+  },
+  {
+   "codi": "CV-107",
+   "nom": "La Hoya de Buñol – València",
+   "nom_es": "La Hoya de Buñol – Valencia",
+   "element": "atmv:CV107"
+  },
+  {
+   "codi": "CV-108",
+   "nom": "València Metropolitana Sud",
+   "nom_es": "Valencia Metropolitana Sur",
+   "element": "atmv:CV108",
+   "dates": {
+    "inici": "2025-02-21"
+   },
+   "font": "https://7televalencia.com/tres-nuevas-lineas-autobus-valencia/"
+  },
+  {
+   "codi": "CV-109",
+   "nom": "Montserrat – València",
+   "nom_es": "Montserrat – Valencia",
+   "element": "atmv:CV109"
+  },
+  {
+   "codi": "CV-110",
+   "nom": "La Ribera",
+   "nom_es": "La Ribera"
+  },
+  {
+   "codi": "CV-111",
+   "nom": "La Ribera Alta – València",
+   "nom_es": "La Ribera Alta – Valencia"
+  },
+  {
+   "codi": "CV-112",
+   "nom": "Xàtiva Nord",
+   "nom_es": "Xàtiva Norte"
+  },
+  {
+   "codi": "CV-113",
+   "nom": "La Safor Nord",
+   "nom_es": "La Safor Norte"
+  },
+  {
+   "codi": "CV-114",
+   "nom": "La Safor Sud",
+   "nom_es": "La Safor Sur"
+  },
+  {
+   "codi": "CV-115",
+   "nom": "Ontinyent – Xàtiva",
+   "nom_es": "Ontinyent – Xàtiva",
+   "element": "bus:2044020301"
+  },
+  {
+   "codi": "CV-201",
+   "nom": "La Marina Alta",
+   "nom_es": "La Marina Alta"
+  },
+  {
+   "codi": "CV-202",
+   "nom": "Les Marines – Alacant",
+   "nom_es": "Las Marinas – Alicante",
+   "element": "bus:1620431002"
+  },
+  {
+   "codi": "CV-204",
+   "nom": "Alcoi Metropolità",
+   "nom_es": "Alcoy Metropolitano"
+  },
+  {
+   "codi": "CV-205",
+   "nom": "Alcoi – Alacant",
+   "nom_es": "Alcoy – Alicante"
+  },
+  {
+   "codi": "CV-207",
+   "nom": "Alacant Metropolità",
+   "nom_es": "Alicante Metropolitano",
+   "element": "bus:projecte:CV-207"
+  },
+  {
+   "codi": "CV-210",
+   "nom": "Vinalopó Alt i Mitjà",
+   "nom_es": "Vinalopó Alto y Medio",
+   "element": "bus:projecte:CV-210"
+  },
+  {
+   "codi": "CV-211",
+   "nom": "Elx Rodalia",
+   "nom_es": "Elche Cercanías",
+   "element": "bus:1473878501"
+  },
+  {
+   "codi": "CV-212",
+   "nom": "Alacant – Santa Pola",
+   "nom_es": "Alicante – Santa Pola"
+  },
+  {
+   "codi": "CV-213",
+   "nom": "La Vega Baja – Alacant",
+   "nom_es": "La Vega Baja – Alicante",
+   "element": "bus:projecte:CV-213"
+  },
+  {
+   "codi": "CV-214",
+   "nom": "Torrevieja – Alacant",
+   "nom_es": "Torrevieja – Alicante"
+  },
+  {
+   "codi": "CV-301",
+   "nom": "València – Benidorm",
+   "nom_es": "Valencia – Benidorm"
+  },
+  {
+   "codi": "CV-302",
+   "nom": "València – Alacant – Elx",
+   "nom_es": "Valencia – Alicante – Elche",
+   "element": "bus:1620431001"
+  },
+  {
+   "codi": "CV-303",
+   "nom": "Castelló – Vila-real – València",
+   "nom_es": "Castellón – Vila-real – Valencia",
+   "element": "bus:projecte:CV-303"
+  }
+ ]
+}

@@ -26,6 +26,7 @@
     actius: new Set(), ocults: new Set(), desplegats: new Set(),
     sel: null, halo: null, parades: null, complet: null, radi: 0,
     estatsOcults: new Set(),
+    vista: null,
   };
   const INTERNES = new Set(['id', 'id_avptp', 'tipus', 'servei', 'serveis', 'nom', 'nom_ca', 'nom_es', 'codi', 'color',
     'parades', 'linies', 'sistema', 'sistema_es', 'subtipus', 'estacions', 'nodes', 'productes', 'concessions',
@@ -43,6 +44,7 @@
   const SVG_TANCA = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
   const SVG_MINIMITZA = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const SVG_AILLAR = '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3" fill="currentColor"/><path d="M3 7V4.5A1.5 1.5 0 0 1 4.5 3H7M13 3h2.5A1.5 1.5 0 0 1 17 4.5V7M17 13v2.5a1.5 1.5 0 0 1-1.5 1.5H13M7 17H4.5A1.5 1.5 0 0 1 3 15.5V13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  const SVG_TORNA = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const SVG_FLETXA = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const SVG_BUS = '<svg viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M5 2.5h10a2 2 0 0 1 2 2V14a1.5 1.5 0 0 1-1 1.4V17a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1.5H7V17a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1.6A1.5 1.5 0 0 1 3 14V4.5a2 2 0 0 1 2-2Zm0 3v4.5h10V5.5H5Zm1 6.6a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2Zm8 0a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2Z"/></svg>';
   const SVG_PDF = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2.5h6.5L16 7v9.5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-13a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M11.5 2.5V7H16M10 9.5v5m0 0-2.2-2.2M10 14.5l2.2-2.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -129,6 +131,9 @@
 
   function colorObjecte(o) {
     const p = o.f.properties;
+    // Una vista específica pot pintar els elements a la seua manera (p. ex. segons l'estat)
+    const cv = E.vista?.color?.(o);
+    if (colorValid(cv)) return cv;
     if (o.tipus === 'node') return '#30364B';
     const forcat = E.cfg.colorsLinies?.[o.id] || (p.id_avptp && E.cfg.colorsLinies?.[p.id_avptp]);
     if (colorValid(forcat)) return forcat.trim();
@@ -606,7 +611,7 @@
 
   /* ---------- Visibilitat i ordre ---------- */
 
-  const esVisibleCapes = (o) => E.actius.has(o.servei) && !E.ocults.has(o.id) && (o.tipus === 'node' || !E.estatsOcults.has(estatDe(o)));
+  const esVisibleCapes = (o) => (E.vista ? E.vista.visible(o) || o === E.sel : E.actius.has(o.servei) && !E.ocults.has(o.id) && (o.tipus === 'node' || !E.estatsOcults.has(estatDe(o))));
   // Amb un element aïllat, només es veu eixe element
   const esVisible = (o) => (E.aillat ? o === E.aillat : esVisibleCapes(o));
 
@@ -716,7 +721,7 @@
     mostraParades(o);
     dibuixaHalo(o);
     pintaFitxa(o);
-    if (E.aillat) aplicaVisibilitat();
+    if (E.aillat || E.vista) aplicaVisibilitat();
     if (opcions.enfoca) enfoca(o);
     const hash = '#' + encodeURIComponent(o.id);
     if (location.hash !== hash) history.replaceState(null, '', location.pathname + location.search + hash);
@@ -732,7 +737,9 @@
     if (E.complet) { E.complet.remove(); E.complet = null; }
     document.querySelectorAll('.node-marca.seleccionat').forEach((el) => el.classList.remove('seleccionat'));
     E.sel = null;
-    if (E.aillat) { E.aillat = null; aplicaVisibilitat(); }
+    const eraAillat = !!E.aillat;
+    E.aillat = null;
+    if (eraAillat || E.vista) aplicaVisibilitat();
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   }
 
@@ -1162,12 +1169,29 @@
     const estats = ESTATS.map((e) => `<label><input type="checkbox" data-estat="${e}" ${E.estatsOcults.has(e) ? '' : 'checked'}>
       <span class="mostra-estat mostra-${e}" aria-hidden="true"></span>${esc(t(`estat_${e}`))}</label>`).join('');
 
+    const blocMapes = `<div class="bloc"><h3>${esc(t('mapa_fons'))}</h3><div class="mapes-base" role="radiogroup" aria-label="${esc(t('mapa_fons'))}">${mapes}</div></div>`;
+    if (E.vista) {
+      // Fletxa per a tornar al visor complet, dalt de tot del panell
+      $('#capes summary').innerHTML = `<span class="titol-vista"><a class="torna-vista" href="${esc(urlVista(null))}"
+        aria-label="${esc(t('torna_visor'))}" title="${esc(t('torna_visor'))}">${SVG_TORNA}</a><span>${esc(E.vista.titol())}</span></span>`;
+      $('#capes-cos').innerHTML = `<div class="vista-cos"></div>${blocMapes}<div class="credits">${credits}</div>`;
+      E.vista.pinta($('#capes-cos .vista-cos'));
+      return;
+    }
+    // Cada vista es presenta com una targeta amb una miniatura
+    const vistes = Object.entries(E.cfg.vistes || {}).map(([id, v]) => `<li><a class="targeta-vista" href="${esc(urlVista(id))}">
+      ${v.imatge ? `<img src="${esc(v.imatge)}" alt="" width="64" height="64" loading="lazy">` : ''}
+      <span class="tv-text"><strong>${esc(tx(v.nom))}</strong>${v.detall ? `<small>${esc(tx(v.detall))}</small>` : ''}
+      ${v.proves ? `<span class="en-proves">${esc(t('vista_proves'))}</span>` : ''}</span>
+      <span class="tv-fletxa" aria-hidden="true">${SVG_FLETXA}</span></a></li>`).join('');
+
     $('#capes-cos').innerHTML = `${grups}
       <div class="bloc"><h3>${esc(t('estat'))}</h3><div class="estats">${estats}</div></div>
       <div class="bloc"><h3>${esc(t('mapa_fons'))}</h3><div class="mapes-base" role="radiogroup" aria-label="${esc(t('mapa_fons'))}">${mapes}</div></div>
       ${window.VisorInforme ? `<div class="bloc informe"><h3>${esc(t('inf_bloc'))}</h3>
         <button type="button" class="boto-informe" data-informe>${SVG_PDF}<span>${esc(t('inf_boto'))}</span></button>
         <p class="informe-estat" aria-live="polite"></p></div>` : ''}
+      ${vistes ? `<div class="bloc vistes"><h3>${esc(t('vistes'))}</h3><ul>${vistes}</ul></div>` : ''}
       <div class="credits">${credits}</div>`;
     actualitzaChecks();
   }
@@ -1240,6 +1264,7 @@
       actualitzaChecks();
     });
     cos.addEventListener('click', (e) => {
+      if (E.vista && E.vista.clic(e)) return;
       const inf = e.target.closest('[data-informe]');
       if (inf) { descarregaInforme(inf); return; }
       const b = e.target.closest('[data-desplega]');
@@ -1391,6 +1416,54 @@
 
   /* ---------- Inici ---------- */
 
+  /* ---------- Vistes específiques (?vista=…) ---------- */
+
+  function urlVista(id) {
+    const u = new URL(location.href);
+    u.hash = '';
+    if (id) u.searchParams.set('vista', id); else u.searchParams.delete('vista');
+    return u.pathname + u.search;
+  }
+
+  function carregaScript(src) {
+    return new Promise((ok, ko) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = ok;
+      s.onerror = () => ko(new Error(src));
+      document.head.appendChild(s);
+    });
+  }
+
+  // Carrega el mòdul i les dades de la vista. Si falla, el visor continua com sempre.
+  async function iniciaVista(id) {
+    const cfg = E.cfg.vistes?.[id];
+    if (!cfg) { avis(t('err_vista')); return; }
+    try {
+      if (!window.VISOR_VISTES?.[id]) await carregaScript(cfg.script);
+      const r = await fetch(cfg.dades, { cache: 'no-cache' });
+      if (!r.ok) throw new Error(cfg.dades);
+      const dades = await r.json();
+      const api = {
+        idioma: () => E.idioma, esc,
+        objecte: (oid) => resol(oid) || null,
+        estat: estatDe,
+        selecciona: (oid) => selecciona(oid, { enfoca: true }),
+        enfocaCapes: (capes) => {
+          const m = marges();
+          E.mapa.fitBounds(L.featureGroup(capes).getBounds(), { paddingTopLeft: m.tl, paddingBottomRight: m.br });
+        },
+        actualitza: () => { aplicaVisibilitat(); programaEtiquetes(); },
+        urlGeneral: () => urlVista(null),
+      };
+      E.vista = window.VISOR_VISTES[id].crea(api, dades);
+      document.documentElement.classList.add('amb-vista');
+    } catch (err) {
+      E.vista = null;
+      avis(t('err_vista'));
+    }
+  }
+
   async function inici() {
     const q = new URLSearchParams(location.search);
     if (q.has('sense-titol')) document.documentElement.classList.add('sense-titol');
@@ -1422,6 +1495,7 @@
 
     ordenaServeis();
     for (const s of E.perServei.keys()) if (E.cfg.serveis[s]?.actiu !== false) E.actius.add(s);
+    if (q.get('vista')) await iniciaVista(q.get('vista'));
     for (const o of E.objectes.values()) if (o.tipus !== 'node') o.capa.setStyle(estilLinia(o));
     construeixIndex();
     pintaCapes();
@@ -1431,6 +1505,7 @@
     reordena();
     $('#capes').open = !esMobil();
     $('#carregant').hidden = true;
+    if (E.vista && !location.hash) E.vista.enfoca();
 
     document.querySelectorAll('.idiomes button').forEach((b) => b.addEventListener('click', () => posaIdioma(b.dataset.idioma, true)));
     $('#fitxa').addEventListener('click', (e) => {
