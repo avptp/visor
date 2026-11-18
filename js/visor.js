@@ -311,7 +311,7 @@
     E.etiquetes = L.layerGroup().addTo(E.mapa);
     E.mapa.on('moveend', programaEtiquetes);
     // Amb un element aïllat, tocar el mapa no tanca la fitxa (s'ix amb el botó d'aïllar o la creu)
-    E.mapa.on('click', () => { if (E.sel && !E.aillat) tancaFitxa(); });
+    E.mapa.on('click', () => { if (E.sel && !E.aillat && !E.bloqueig) tancaFitxa(); });
   }
 
   // Carrega MapLibre i el connector per a Leaflet només la primera vegada que cal un mapa vectorial
@@ -506,7 +506,7 @@
                   icon: L.divIcon({ className: 'etiqueta-codi', html, iconSize: null }),
                   pane: 'etiquetesCodi', keyboard: false, bubblingMouseEvents: false,
                 });
-                m.on('click', (e) => { L.DomEvent.stopPropagation(e); selecciona(o.id); });
+                m.on('click', (e) => { if (E.bloqueig) return; L.DomEvent.stopPropagation(e); selecciona(o.id); });
                 m.bindTooltip(esc(nomDe(o.f.properties)), { direction: 'top', className: 'etiqueta', offset: [0, -10] });
                 E.etiquetes.addLayer(m);
                 n++;
@@ -584,7 +584,8 @@
       o.capa.on('mouseout', () => o.capa.setStyle(estilLinia(o, false)));
     }
 
-    o.capa.on('click', (e) => { L.DomEvent.stopPropagation(e); selecciona(id); });
+    // Mentre una vista dibuixa sobre el mapa (E.bloqueig), els clics no seleccionen elements
+    o.capa.on('click', (e) => { if (E.bloqueig) return; L.DomEvent.stopPropagation(e); selecciona(id); });
     o.capa.bindTooltip(esc(nomDe(p)), {
       sticky: o.tipus !== 'node', direction: 'top', className: 'etiqueta',
       offset: o.tipus === 'node' ? [0, -12] : [0, -4],
@@ -611,7 +612,8 @@
 
   /* ---------- Visibilitat i ordre ---------- */
 
-  const esVisibleCapes = (o) => (E.vista ? E.vista.visible(o) || o === E.sel : E.actius.has(o.servei) && !E.ocults.has(o.id) && (o.tipus === 'node' || !E.estatsOcults.has(estatDe(o))));
+  // Una vista pot decidir què es veu (visible); si no ho fa, valen les capes normals
+  const esVisibleCapes = (o) => (E.vista?.visible ? E.vista.visible(o) || o === E.sel : E.actius.has(o.servei) && !E.ocults.has(o.id) && (o.tipus === 'node' || !E.estatsOcults.has(estatDe(o))));
   // Amb un element aïllat, només es veu eixe element
   const esVisible = (o) => (E.aillat ? o === E.aillat : esVisibleCapes(o));
 
@@ -1441,9 +1443,12 @@
     if (!cfg) { avis(t('err_vista')); return; }
     try {
       if (!window.VISOR_VISTES?.[id]) await carregaScript(cfg.script);
-      const r = await fetch(cfg.dades, { cache: 'no-cache' });
-      if (!r.ok) throw new Error(cfg.dades);
-      const dades = await r.json();
+      let dades = {};
+      if (cfg.dades) {
+        const r = await fetch(cfg.dades, { cache: 'no-cache' });
+        if (!r.ok) throw new Error(cfg.dades);
+        dades = await r.json();
+      }
       const api = {
         idioma: () => E.idioma, esc,
         objecte: (oid) => resol(oid) || null,
@@ -1455,6 +1460,27 @@
         },
         actualitza: () => { aplicaVisibilitat(); programaEtiquetes(); },
         urlGeneral: () => urlVista(null),
+        // Per a vistes que dibuixen o envien coses
+        mapa: E.mapa,
+        bloquejaSeleccio: (b) => { E.bloqueig = !!b; E.mapa.getContainer().classList.toggle('dibuixant', !!b); },
+        cerca: (q) => cerca(q),
+        nom: (o) => nomDe(o.f.properties),
+        codi: (o) => o.f.properties.codi || '',
+        tipusText: (o) => nomServei(o.servei) || '',
+        color: (o) => colorObjecte(o),
+        linies: (o) => {
+          const g = o.f.geometry || {};
+          if (g.type === 'LineString') return [g.coordinates];
+          if (g.type === 'MultiLineString') return g.coordinates;
+          return [];
+        },
+        punt: (o) => (o.f.geometry?.type === 'Point' ? o.f.geometry.coordinates : null),
+        correu: E.cfg.comentaris?.correu || '',
+        imatge: (fx) => window.VisorInforme.imatge({
+          idioma: E.idioma, limit: E.limitLL || [], carregaMaplibre,
+          mapaGris: E.cfg.mapesBase.find((m) => m.id === 'gris') || E.cfg.mapesBase.find((m) => m.tipus === 'vectorial'),
+        }, fx),
+        url: () => location.href,
       };
       E.vista = window.VISOR_VISTES[id].crea(api, dades);
       document.documentElement.classList.add('amb-vista');

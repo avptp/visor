@@ -1,0 +1,5 @@
+{
+ "_comentari": "Configuració de la vista «Fàbrica de propostes». «correu»: on arriben les propostes (si falta, s'usa el de comentaris de config.json). «enviament»: adreça del servici que reenvia el formulari per correu; {correu} es substituïx pel correu de destinació. Amb FormSubmit, el primer enviament genera un correu d'activació que cal confirmar des de la bústia de destinació.",
+ "correu": "contacte@avptp.org",
+ "enviament": "https://formsubmit.co/{correu}"
+}

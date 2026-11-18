@@ -419,8 +419,21 @@
       },
       "script": "js/vistes/mapa-concessional.js",
       "dades": "dades/mapa_concessional.json",
-      "proves": true,
       "imatge": "img/vistes/mapa-concessional.svg"
+    },
+    "fabrica-propostes": {
+      "nom": {
+        "ca": "Fàbrica de propostes",
+        "es": "Fábrica de propuestas"
+      },
+      "detall": {
+        "ca": "Dibuixa la teua proposta sobre el mapa i envia-la a l’AVPTP",
+        "es": "Dibuja tu propuesta sobre el mapa y envíala a la AVPTP"
+      },
+      "script": "js/vistes/fabrica-propostes.js",
+      "dades": "dades/fabrica_propostes.json",
+      "imatge": "img/vistes/fabrica-propostes.svg",
+      "proves": true
     }
   }
 }

@@ -1,6 +1,6 @@
 {
- "_comentari": "Dades de la vista «Nou mapa concessional GVA» (en proves). Estat de cada concessió: «servei» (en servici), «aprovada» (projecte aprovat definitivament, sense licitar), «projecte» (aprovat inicialment) o «pendent» (sense informació). Si no s'indica «estat», es pren de l'element del visor («element»): en servici o en projecte. «dates.inici» és l'entrada en servici i «dates.aprovacio», l'aprovació definitiva del projecte (AAAA-MM-DD) i «font», on es pot comprovar.",
- "actualitzat": "2026-11-17",
+ "_comentari": "Dades de la vista «Nou mapa concessional GVA» (en proves). Estat de cada concessió: «servei» (en servici), «adjudicada» (adjudicada, pendent d'iniciar el servici), «aprovada» (projecte aprovat definitivament, sense licitar), «projecte» (aprovat inicialment) o «pendent» (sense informació). Si no s'indica «estat», es pren de l'element del visor («element»): en servici o en projecte. «dates.inici» és l'entrada en servici i «dates.aprovacio», l'aprovació definitiva del projecte (AAAA-MM-DD, o AAAA-MM si només se'n sap el mes) i «font», on es pot comprovar.",
+ "actualitzat": "2026-11",
  "arees": [
   {
    "prefix": "CV-0",
@@ -178,7 +178,7 @@
    "nom": "La Ribera",
    "nom_es": "La Ribera",
    "element": "bus:projecte:CV-110",
-   "estat": "aprovada",
+   "estat": "adjudicada",
    "dates": {
     "aprovacio": "2023-06-15"
    }
@@ -188,7 +188,7 @@
    "nom": "La Ribera Alta – València",
    "nom_es": "La Ribera Alta – Valencia",
    "element": "bus:projecte:CV-111",
-   "estat": "aprovada",
+   "estat": "adjudicada",
    "dates": {
     "aprovacio": "2023-06-15"
    }
@@ -197,18 +197,20 @@
    "codi": "CV-112",
    "nom": "Xàtiva Nord",
    "nom_es": "Xàtiva Norte",
-   "element": "bus:projecte:CV-112",
-   "estat": "aprovada",
+   "element": "bus:CV-112",
+   "estat": "servei",
    "dates": {
-    "aprovacio": "2020-07-13"
-   }
+    "aprovacio": "2020-07-13",
+    "inici": "2023-02"
+   },
+   "font": "https://comarcalcv.com/xativa/presentada-la-concessio-de-servei-dautobusos-per-xativa-nord-que-donara-servei-a-74-000-habitants/"
   },
   {
    "codi": "CV-113",
    "nom": "La Safor Nord",
    "nom_es": "La Safor Norte",
    "element": "bus:projecte:CV-113",
-   "estat": "aprovada",
+   "estat": "adjudicada",
    "dates": {
     "aprovacio": "2023-06-15"
    }
@@ -218,7 +220,7 @@
    "nom": "La Safor Sud",
    "nom_es": "La Safor Sur",
    "element": "bus:projecte:CV-114",
-   "estat": "aprovada",
+   "estat": "adjudicada",
    "dates": {
     "aprovacio": "2023-06-15"
    }

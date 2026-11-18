@@ -352,5 +352,15 @@ ${fitxes.map(pintaFitxa).join('\n')}
     return html;
   }
 
-  window.VisorInforme = { genera };
+  // Una sola imatge de mapa (fx = { capes, punts, color }), per a altres usos com la fàbrica de propostes
+  async function imatge(api, fx) {
+    const fons = await mapaFons(api);
+    try {
+      return await dibuixaMapa(api, fx, fons);
+    } finally {
+      if (fons) { try { fons.map.remove(); } catch (e) { /* */ } fons.div.remove(); }
+    }
+  }
+
+  window.VisorInforme = { genera, imatge };
 })();

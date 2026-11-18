@@ -359,4 +359,6 @@ El visor pot obrir vistes temàtiques amb el paràmetre `?vista=…`, sense canv
 
 - `?vista=mapa-concessional`: grau d'implantació del nou mapa concessional de la Generalitat. Mostra només les concessions del nou mapa, pintades segons l'estat, amb el percentatge en servici, les fites i la llista de concessions. Les dades són a `dades/mapa_concessional.json` i el codi a `js/vistes/mapa-concessional.js`.
 
+- `?vista=fabrica-propostes` (en proves): permet dibuixar una proposta sobre el mapa (línies, parades i zones), vincular-la a un element del visor o presentar-la com a nova, i enviar-la al correu de l'associació amb una imatge del dibuix i el GeoJSON. L'enviament es fa amb FormSubmit (configurable a `dades/fabrica_propostes.json`); el primer enviament genera un correu d'activació que cal confirmar des de la bústia de l'AVPTP. Codi a `js/vistes/fabrica-propostes.js`.
+
 Per a afegir-ne una altra: crea `js/vistes/<nom>.js` (registra `window.VISOR_VISTES['<nom>'] = { crea }`), el seu fitxer de dades i l'entrada corresponent a `vistes` de `dades/config.json`.

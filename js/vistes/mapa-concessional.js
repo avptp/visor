@@ -1,4 +1,4 @@
-/* Vista «Nou mapa concessional GVA» (en proves)
+/* Vista «Nou mapa concessional GVA»
  *
  * S'obri amb ?vista=mapa-concessional. Mostra només les concessions interurbanes del
  * nou mapa de la Generalitat, pintades segons l'estat (en servici, en projecte), i un
@@ -11,51 +11,54 @@
   const TXT = {
     ca: {
       titol: 'Nou mapa concessional GVA',
-      proves: 'En proves',
       sub: 'Implantació de les concessions interurbanes d’autobús de la Generalitat',
       kpi: 'de les concessions ja funcionen amb el nou mapa',
       kpi_detall: '{n} de {total} concessions',
-      servei: 'En servici', aprovada: 'Aprovació definitiva', projecte: 'Aprovació inicial', pendent: 'Sense informació',
-      aprovada_llarg: 'Aprovada definitivament, sense licitar', projecte_llarg: 'Aprovada inicialment',
+      servei: 'En servici', adjudicada: 'Adjudicada', aprovada: 'Aprovació definitiva', projecte: 'Aprovació inicial', pendent: 'Sense informació',
+      adjudicada_llarg: 'Adjudicada, pendent d’iniciar el servici', aprovada_llarg: 'Aprovada definitivament, sense licitar', projecte_llarg: 'Aprovada inicialment',
       amaga: 'Amaga «{e}» al mapa', mostra: 'Mostra «{e}» al mapa',
       arees: 'Per àrees', concessions: 'Concessions',
       data_inici: 'Entrada en servici: {d}',
       data_aprovacio: 'Aprovació definitiva: {d}',
       sense_tracat: 'Encara sense traçat al visor',
       font: 'font',
-      nota: 'Vista en proves. L’estat de cada concessió és el de les dades que té el visor; les que hi apareixen «sense informació» encara no s’han revisat.',
-      actualitzat: 'Dades revisades el {d}',
+      actualitzat: 'Dades revisades {d}',
+      mesos: ['al gener', 'al febrer', 'al març', 'a l’abril', 'al maig', 'al juny', 'al juliol', 'a l’agost', 'al setembre', 'a l’octubre', 'al novembre', 'al desembre'],
       enfoca: 'Mostra-les totes al mapa',
     },
     es: {
       titol: 'Nuevo mapa concesional GVA',
-      proves: 'En pruebas',
       sub: 'Implantación de las concesiones interurbanas de autobús de la Generalitat',
       kpi: 'de las concesiones ya funcionan con el nuevo mapa',
       kpi_detall: '{n} de {total} concesiones',
-      servei: 'En servicio', aprovada: 'Aprobación definitiva', projecte: 'Aprobación inicial', pendent: 'Sin información',
-      aprovada_llarg: 'Aprobada definitivamente, sin licitar', projecte_llarg: 'Aprobada inicialmente',
+      servei: 'En servicio', adjudicada: 'Adjudicada', aprovada: 'Aprobación definitiva', projecte: 'Aprobación inicial', pendent: 'Sin información',
+      adjudicada_llarg: 'Adjudicada, pendiente de iniciar el servicio', aprovada_llarg: 'Aprobada definitivamente, sin licitar', projecte_llarg: 'Aprobada inicialmente',
       amaga: 'Ocultar «{e}» en el mapa', mostra: 'Mostrar «{e}» en el mapa',
       arees: 'Por áreas', concessions: 'Concesiones',
       data_inici: 'Entrada en servicio: {d}',
       data_aprovacio: 'Aprobación definitiva: {d}',
       sense_tracat: 'Aún sin trazado en el visor',
       font: 'fuente',
-      nota: 'Vista en pruebas. El estado de cada concesión es el de los datos que tiene el visor; las que aparecen «sin información» aún no se han revisado.',
-      actualitzat: 'Datos revisados el {d}',
+      actualitzat: 'Datos revisados {d}',
+      mesos: ['en enero', 'en febrero', 'en marzo', 'en abril', 'en mayo', 'en junio', 'en julio', 'en agosto', 'en septiembre', 'en octubre', 'en noviembre', 'en diciembre'],
       enfoca: 'Mostrarlas todas en el mapa',
     },
   };
-  const ESTATS = ['servei', 'aprovada', 'projecte', 'pendent'];
-  const COLORS = { servei: '#2E7D32', aprovada: '#C62828', projecte: '#D97706', pendent: '#A3ABB1' };
+  const ESTATS = ['servei', 'adjudicada', 'aprovada', 'projecte', 'pendent'];
+  const COLORS = { servei: '#2E7D32', adjudicada: '#1565C0', aprovada: '#C62828', projecte: '#D97706', pendent: '#A3ABB1' };
 
   function crea(api, dades) {
     const { esc } = api;
     const tt = (k, v = {}) => String(TXT[api.idioma()]?.[k] ?? TXT.ca[k] ?? k).replace(/\{(\w+)\}/g, (_, n) => v[n] ?? '');
     const tx = (o) => (o && typeof o === 'object' ? (o[api.idioma()] ?? o.ca ?? '') : (o ?? ''));
+    // AAAA-MM-DD → d/m/aaaa; AAAA-MM (només se'n sap el mes) → m/aaaa
     const data = (s) => {
-      const m = String(s || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
-      return m ? `${+m[3]}/${+m[2]}/${m[1]}` : String(s || '');
+      const m = String(s || '').match(/^(\d{4})-(\d{2})(?:-(\d{2}))?/);
+      return m ? (m[3] ? `${+m[3]}/${+m[2]}/${m[1]}` : `${+m[2]}/${m[1]}`) : String(s || '');
+    };
+    const mesAny = (s) => {
+      const m = String(s || '').match(/^(\d{4})-(\d{2})/);
+      return m ? `${(TXT[api.idioma()] || TXT.ca).mesos[+m[2] - 1]} de ${m[1]}` : String(s || '');
     };
 
     const concs = (dades.concessions || []).map((c) => {
@@ -87,7 +90,7 @@
       const total = concs.length;
       const enServei = compte(concs, 'servei');
       const pct = total ? Math.round((enServei / total) * 100) : 0;
-      const estats = ESTATS.map((e) => {
+      const estats = ESTATS.filter((e) => e !== 'pendent' || compte(concs, e)).map((e) => {
         const n = compte(concs, e);
         const pot = e !== 'pendent' && n > 0;
         const amagat = ocults.has(e);
@@ -117,7 +120,6 @@
       }).join('');
 
       el.innerHTML = `<div class="vc">
-        <p class="vc-proves">${esc(tt('proves'))}</p>
         <p class="vc-sub">${esc(tt('sub'))}</p>
         <div class="vc-kpi"><strong>${pct}<small>%</small></strong>
           <span>${esc(tt('kpi'))}<small>${esc(tt('kpi_detall', { n: enServei, total }))}</small></span></div>
@@ -126,7 +128,7 @@
         <button type="button" class="vc-enfoca" data-vc-enfoca>${esc(tt('enfoca'))}</button>
         <h3>${esc(tt('arees'))}</h3><ul class="vc-arees">${arees}</ul>
         <h3>${esc(tt('concessions'))}</h3><ul class="vc-llista">${llista}</ul>
-        <p class="vc-nota">${esc(tt('nota'))}${dades.actualitzat ? ` ${esc(tt('actualitzat', { d: data(dades.actualitzat) }))}.` : ''}</p>
+        ${dades.actualitzat ? `<p class="vc-nota">${esc(tt('actualitzat', { d: mesAny(dades.actualitzat) }))}.</p>` : ''}
       </div>`;
     }
 
