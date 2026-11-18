@@ -41,6 +41,18 @@
     "tram": "gandia-platja"
    },
    "nom": "València Nord – Gandia"
+  },
+  "rodalies:valencia:C6": {
+   "nom": "Castelló de la Plana – València-Estació del Nord",
+   "treu_parades": [
+    "adif:65312",
+    "adif:65311",
+    "adif:65308",
+    "adif:65306",
+    "adif:65304",
+    "adif:65318"
+   ],
+   "_nota": "Algunes circulacions s'allarguen fins a Vinaròs, però la línia C6 acaba a Castelló de la Plana."
   }
  },
  "trams": {

@@ -177,7 +177,12 @@ def correccions_ferrocarril(dades):
             p['parades'] = [i for i in p.get('parades', []) if i not in treu]
             for i in treu:
                 if i in est and lid in est[i]['properties'].get('linies', []):
-                    est[i]['properties']['linies'].remove(lid)
+                    ep = est[i]['properties']
+                    ep['linies'].remove(lid)
+                    # Si l'estació ja no té cap línia d'eixe servici, deixa de comptar-hi
+                    servei = lid.split(':')[0]
+                    if servei in ep.get('serveis', []) and not any(x.split(':')[0] == servei for x in ep['linies']):
+                        ep['serveis'].remove(servei)
                     canvis_est = True
             noves = d.get('afegeix_parades_inici', []) + d.get('afegeix_parades_final', [])
             if noves:
