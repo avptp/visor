@@ -45,7 +45,7 @@
     },
   };
   const ESTATS = ['servei', 'adjudicada', 'aprovada', 'projecte', 'pendent'];
-  const COLORS = { servei: '#2E7D32', adjudicada: '#1565C0', aprovada: '#C62828', projecte: '#D97706', pendent: '#A3ABB1' };
+  const COLORS = { servei: '#2E7D32', adjudicada: '#1565C0', aprovada: '#D97706', projecte: '#C62828', pendent: '#A3ABB1' };
 
   function crea(api, dades) {
     const { esc } = api;
