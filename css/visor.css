@@ -201,7 +201,9 @@ button.bala:hover { box-shadow: 0 0 0 2px var(--superficie), 0 0 0 4px var(--c);
 
 /* ---------- Fitxa ---------- */
 #fitxa {
-  position: absolute; z-index: 1001;
+  /* fixed i no absolute: amagada fora de la pantalla no ha d'eixamplar la pàgina
+     (a l'iPad i als mòbils feia que tot es veiera allunyat) */
+  position: fixed; z-index: 1001;
   top: calc(14px + env(safe-area-inset-top, 0px)); right: 14px;
   bottom: calc(14px + env(safe-area-inset-bottom, 0px));
   width: min(410px, calc(100vw - 28px));

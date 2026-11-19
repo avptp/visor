@@ -300,7 +300,7 @@
     if (E.cfg.comentaris?.correu) controlComentaris(E.cfg.comentaris.correu).addTo(E.mapa);
     E.mapa.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
     if (E.cfg.atribucioDades) E.mapa.attributionControl.addAttribution(E.cfg.atribucioDades);
-    E.renderer = L.canvas({ padding: 0.5, tolerance: 6 });
+    E.renderer = L.canvas({ padding: margeCanvas(), tolerance: 6 });
     let desat = null;
     try { desat = localStorage.getItem('visor-mapa'); } catch { /* res */ }
     posaMapaBase(E.cfg.mapesBase.some((x) => x.id === desat) ? desat : E.cfg.mapesBase[0].id);
@@ -779,6 +779,19 @@
     b.setAttribute('aria-pressed', String(actiu));
     b.setAttribute('aria-label', txt);
     b.title = txt;
+  }
+
+  // Marge del llenç on es dibuixen les línies. Un marge gran evita redibuixar en arrossegar,
+  // però Safari (iPhone/iPad) deixa en blanc qualsevol llenç de més de 16,7 Mpx. Leaflet
+  // dibuixa a doble resolució en pantalles retina i el llenç fa (1 + 2·marge) voltes la
+  // pantalla per costat, així que es limita el marge perquè no passe de ~12 Mpx.
+  function margeCanvas() {
+    const r = (window.devicePixelRatio || 1) > 1 ? 2 : 1;
+    // El costat més llarg al quadrat: així també val si es gira la pantalla
+    const costat = Math.max(innerWidth, innerHeight, screen.width || 0, screen.height || 0);
+    const area = costat * costat * r * r;
+    const p = (Math.sqrt(12e6 / area) - 1) / 2;
+    return Math.max(0, Math.min(0.5, Math.round(p * 100) / 100));
   }
 
   function marges() {
